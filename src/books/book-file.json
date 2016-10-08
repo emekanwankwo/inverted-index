@@ -1,0 +1,14 @@
+[
+  {
+    "book_name" : "Head First Java",
+    "book_text" : "This is the text content for book one"
+  },
+  {
+    "book_name" : "Node.js in Action",
+    "book_text" : "This is the text content for book two"
+  },
+  {
+    "book_name" : "Angular JS Testing Cookbook",
+    "book_text" : "This is the text content for this book three"
+    }
+]

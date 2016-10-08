@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/andela-cnwankwo/inverted-index/issues"
   },
-  "homepage": "https://github.com/andela-cnwankwo/inverted-index#readme"
+  "homepage": "https://github.com/andela-cnwankwo/inverted-index#readme",
+  "dependencies": {
+    "jsonfile": "^2.4.0"
+  }
 }
