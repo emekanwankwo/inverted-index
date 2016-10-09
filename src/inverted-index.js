@@ -1,5 +1,61 @@
 /**** Inverted Index Application to index, sort and search words in a string ******/
 
+// Define a function to make http request to the JSON file url passed at the argument
+
+var $ = require('jquery');
+
+
+let sendGetRequest = function getRequest(url){
+
+	// Create a new XMLHttpRequest object
+	httpRequest = new XMLHttpRequest();
+
+	// Make a promise to send the http get request
+	let p1 = new Promise((resolve, reject) => {
+
+		// Make sure the request object was created for modern browsers
+		if(httpRequest){
+			httpRequest.onreadystatechange = alertContents;
+			httpRequest.open('GET', url);
+			httpRequest.send();
+		} else{
+			reject('Browser Not Supported');
+		}
+
+		// Method to handle the promise
+		function alertContents() {
+			if (httpRequest.readyState === XMLHttpRequest.DONE) {
+				if (httpRequest.status === 200)
+					resolve(JSON.parse(httpRequest.responseText));
+				else
+					reject('There was an error!');		
+			}
+		}
+	});
+
+	// Handle the promise fufilment
+	p1.then((data) => {
+
+		$(document).ready(function(e) {
+
+			let content = "";
+			for (book of data)
+				for (attribute in book)
+					content += `${attribute}:  ${book[attribute]} <br /><br />`;
+					console.log(content);
+					$('#request_content').html(content);
+			
+
+		});
+		
+
+	})
+	.catch((err) => console.log(err));
+}
+
+let theFileUrl = 'http://localhost:3000/src/books/book-file.json';
+
+sendGetRequest(theFileUrl);
 
 /**
 
@@ -36,23 +92,26 @@ listItems(arr);
 console.log(wordList);
 **/
 
-//Declare modules to read file
-let read = require('jsonfile');
 
-var listContent = function list(path){
+/**
+
+//Declare modules to read file
+var request = require('request');
+
+var listContent = function list(url){
 
 	// Specify file path to read
-	let filePath = path;
+	let filePath = url;
 
 	// Make a promise to read the JSON file located at the path provided
 	let p1 = new Promise(function(resolve, reject){
 
 		// Read the file using the path provided
-		read.readFile(filePath, (err, data) => {
+		request.get('http://ipinfo.io/json', (err, response, body) => {
 
 			// Resolve the promise if there is no error and reject otherwise
-			if(!err)
-				resolve(data);
+			if(response.statusCode === 200)
+				resolve(JSON.parse(data));
 			else
 				reject(err);
 		})
@@ -70,6 +129,8 @@ var listContent = function list(path){
 	.catch((err) => console.log(err));
 }
 
-let theFile = 'src/books/book-file.json';
+//let theFileUrl = 'http://localhost:8080/src/books/book-file.json';
 
-console.log(listContent(theFile));
+//console.log(listContent(theFileUrl));
+
+**/
