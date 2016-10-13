@@ -8,7 +8,11 @@
     "book_text" : "This is the text content for book two"
   },
   {
-    "book_name" : "Angular JS Testing Cookbook",
-    "book_text" : "This is the text content for this book three"
-    }
+    "book_name" : "Angular JS Testing Cookbook 2",
+    "book_text" : "This is the text content for this book three 3"
+  },
+  {
+    "book_name" : "JSON file is object friendly ",
+    "book_text" : "This is the text content for this book four"
+  }
 ]

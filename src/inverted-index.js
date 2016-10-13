@@ -4,133 +4,158 @@
 
 var $ = require('jquery');
 
+class invertedIndex {
 
-let sendGetRequest = function getRequest(url){
+	//TODO: Create a constructor to initialize variables
 
-	// Create a new XMLHttpRequest object
-	httpRequest = new XMLHttpRequest();
+	getRequest(url){
 
-	// Make a promise to send the http get request
-	let p1 = new Promise((resolve, reject) => {
+		// Create a new XMLHttpRequest object
+		let httpRequest = new XMLHttpRequest();
 
-		// Make sure the request object was created for modern browsers
-		if(httpRequest){
-			httpRequest.onreadystatechange = alertContents;
-			httpRequest.open('GET', url);
-			httpRequest.send();
-		} else{
-			reject('Browser Not Supported');
-		}
+		// Make a promise to send the http get request
+		let p1 = new Promise((resolve, reject) => {
 
-		// Method to handle the promise
-		function alertContents() {
-			if (httpRequest.readyState === XMLHttpRequest.DONE) {
-				if (httpRequest.status === 200)
-					resolve(JSON.parse(httpRequest.responseText));
-				else
-					reject('There was an error!');		
+			// Make sure the request object was created for modern browsers
+			if(httpRequest){
+				httpRequest.onreadystatechange = alertContents;
+				httpRequest.open('GET', url);
+				httpRequest.send();
+			} else{
+				reject('Browser Not Supported');
 			}
-		}
-	});
 
-	// Handle the promise fufilment
-	p1.then((data) => {
+			// Method to handle the promise
+			function alertContents() {
+				if (httpRequest.readyState === XMLHttpRequest.DONE) {
+					if (httpRequest.status === 200)
+						resolve(JSON.parse(httpRequest.responseText));
+					else
+						reject('There was an error!');		
+				}
+			}
+		});
 
-		$(document).ready(function(e) {
+		// Handle the promise fufilment
+		p1.then((data) => {
 
 			let content = "";
-			for (book of data)
-				for (attribute in book)
-					content += `${attribute}:  ${book[attribute]} <br /><br />`;
-					console.log(content);
-					$('#request_content').html(content);
-			
+			let wordList = [];
 
-		});
+			$(document).ready(function(e) {
+
+				$('#request_content').html('');
+
+				for (let book of data)
+					for (let attribute in book){
+						wordList.push(book[attribute].split(' '));
+						content += `${attribute}:  ${book[attribute]} <br /><br />`;
+						document.getElementById('request_content').innerHTML = content;
+					}
+
+					let wordLength = newIndex.listArrayItems(wordList).length;
+
+				$('#wordList').html(`Total Number of Words: ${wordLength}`);
+			});
+
+			// Call the createIndex method and pass the new array containing words
+			let wordsItem = newIndex.listArrayItems(wordList).words;
+			//newIndex.createIndex(wordsItem);
+
+
+			/******************************/
+			setTimeout(function () {
+				console.log(wordsItem.length);
+			}, 0);
+
+			/******************************/
+
+		})
+		.catch((err) => console.log(err));
+	}
+
+
+	/** Method to break down contents of an array into strings
+	 *	@Param {array} @Returns {array}
+	 **/
+
+	listArrayItems(data){
+
+		// Return the value if it is not an Array
+		if (!Array.isArray(data))
+			return data;
+	
+
+		//Make a recursive call back to the function if it is an array
+		for (let item of data)
+			wordListResult.push(newIndex.listArrayItems(item));
+	
+	
+		// Remove the undefined elements in the generated array.
+		for (let word in wordListResult)
+			if ((typeof wordListResult[word] !== 'string'))
+				wordListResult.splice(word,1);
+
+		//console.log(wordListResult);
+		return {'length': wordListResult.length, 'words': wordListResult};
+	}
+
+
+	/**
+	* Creates an Index of the file at the path specified
+	* @Param {string: filepath}
+	**/
+
+	createIndex(wordArray) {
+
+		// Create a new object to hold the word index
+		let wordIndex = {};
+
+		// Insert an index for each word in wordArray
+		for (let j = 0; j < wordArray.length; j++)
+			wordIndex[j+1] = wordArray[j];
+
+		console.log(wordArray)
+		console.log(wordIndex[3]);
 		
-
-	})
-	.catch((err) => console.log(err));
+	}
 }
 
-let theFileUrl = 'http://localhost:3000/src/books/book-file.json';
+let wordListResult = [];
 
-sendGetRequest(theFileUrl);
+let newIndex = new invertedIndex;
 
-/**
+//let theFileUrl = 'http://localhost:3000/src/books/book-file.json';
 
-//Create an empty array to hold items
+//newIndex.getRequest(theFileUrl);
 
-var wordList = [];
+angular.module("root", [])
+	.controller("index", ["$scope", function($scope) {
+		$scope.products = [
+			{id: 1, name: "Hockey puck"},
+			{id: 2, name: "Golf club"},
+			{id: 3, name: "Baseball bat"},
+			{id: 4, name: "Lacrosse stick"}
+		];
 
-var listItems = function list(data){
-	
-	
-	// Return the value if it is not an Array
-	
-	if (!Array.isArray(data)){
-		return data;
-	}
-	
+		$scope.columns = ['Document1','Document2','Document3',,'Document4'];
+		$scope.rows = ['Yes','No','Hi','Hello','Not',1,5,10,'23','Yes','No','Not'];
 
-	//Make a recursive call back to the function if it is an array
+		$scope.uniqueWords = [];
 
-	for (item of data)
-		wordList.push(list(item));
-	
-	
-	// Remove the undefined elements in the generated array.
-
-	for (word in wordList)
-		if (wordList[word] === undefined)
-			wordList.splice(word,1);			
-};
-
-var arr= [['a','b','c'],['d','e','f'],['g','h','i','j','k','l'],'n',1,3,6,2];
-
-listItems(arr);
-console.log(wordList);
-**/
-
-
-/**
-
-//Declare modules to read file
-var request = require('request');
-
-var listContent = function list(url){
-
-	// Specify file path to read
-	let filePath = url;
-
-	// Make a promise to read the JSON file located at the path provided
-	let p1 = new Promise(function(resolve, reject){
-
-		// Read the file using the path provided
-		request.get('http://ipinfo.io/json', (err, response, body) => {
-
-			// Resolve the promise if there is no error and reject otherwise
-			if(response.statusCode === 200)
-				resolve(JSON.parse(data));
-			else
-				reject(err);
+		angular.forEach($scope.rows, function(value){
+			let index = $scope.uniqueWords.indexOf(value);
+			if( index === -1)
+				$scope.uniqueWords.push(value);
 		})
 
-	});
-
-	// Specify the callback after the promise is fufilled
-	p1.then((data) => {
-
-		// Iterate for the number of items in the JSON file
-		for(let i = 0; i < data.length; i++){
-			console.log (`\nName: ${data[i].book_name} \nContent: ${data[i].book_text}\n`);
+		$scope.getTheBook = function() {
+			
+			if($scope.urlpath){
+				let theIndex = new invertedIndex;
+				theIndex.getRequest($scope.urlpath);
+			}
+			else
+				console.log('Error: No Path Specified');
 		}
-	})
-	.catch((err) => console.log(err));
-}
-
-//let theFileUrl = 'http://localhost:8080/src/books/book-file.json';
-
-//console.log(listContent(theFileUrl));
-
-**/
+	}]);

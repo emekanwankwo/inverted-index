@@ -2,29 +2,52 @@
 	<head>
 		<title>Gulp Test</title>
 
-		<!-- Import JQuery -->
-  		<script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA=" crossorigin="anonymous"></script>
+		<!-- Import Angular -->
+  		<script type="text/javascript" src="/node_modules/angular/angular.js"></script>
 
-  		<!-- Import Google Fonts  -->
+		<!-- Import JQuery -->
+  		<script src="http://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc=" crossorigin="anonymous"></script>
+
+  		<!-- Import Google Fonts
   		<link href="https://fonts.googleapis.com/css?family=Tangerine|Romanesco&effect=3d-float|Timmana&effect=3d-float|Stalemate&effect=3d-float|Yesteryear&effect=3d-float|Caudex&effect=3d-float" rel="stylesheet" type="text/css">
 
-  		<!-- Import Bootstrap -->
+  		 Import Bootstrap 
 
   		<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   		<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
   		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css">
-
+		-->
 		<script defer src="./dist/build/build.min.js"></script>
 	</head>
-	<body>
+	<body ng-app="root">
 		<h2 id="header_text">Inverted Index</h2>
 		<br>
 		<div id="request_content">
 			<!-- Request content is displayed here -->
 
 		</div>
+		<h3>Word Details</h3>
 		<div id="wordList">
 			
+		</div>
+		<div ng-controller="index">
+			<table>
+				<thead> 
+    				<tr><th>Index </th>
+        				<th ng-repeat="column in columns">{{column}}</th>
+    				</tr>
+				</thead>
+				<tbody>
+    				<tr ng-repeat="word in uniqueWords">
+        				<td> {{word}} </td>
+   					</tr>
+				</tbody>
+			</table>
+		</div>
+		<br>
+		<div ng-controller="index">
+			<input type="text" value="http://localhost:3000/src/books/book-file.json" ng-model="urlpath" placeholder="http://localhost:3000/src/books/book-file.json" name="" />
+			<button class="btn" ng-click="getTheBook()">Click</button>
 		</div>
 	</body>
 </html>
