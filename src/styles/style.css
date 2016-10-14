@@ -6,3 +6,4 @@
 #select_file_div { position: relative; width:90%;}
 #file_content_div { position: relative; width: 45%; float: right; right: 20px; border-top-right-radius: 20px; border-bottom-left-radius: 20px;}
 #file_content_div h2 { position: relative; top:-30; font-size:30px;}
+#display_table_div{ overflow: auto;}
