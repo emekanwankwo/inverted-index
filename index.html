@@ -1,53 +1,82 @@
-<html>
+<html ng-app="root">
 	<head>
 		<title>Gulp Test</title>
 
 		<!-- Import Angular -->
-  		<script type="text/javascript" src="/node_modules/angular/angular.js"></script>
+  		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
 
 		<!-- Import JQuery -->
   		<script src="http://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc=" crossorigin="anonymous"></script>
 
-  		<!-- Import Google Fonts
+		<!-- Import Local script -->
+  		<script type="text/javascript" src="inverted-index.js"></script>
+		  <script type="text/javascript" src="./src/scripts/script.js"></script>
+
+  		 <!--Import Google Fonts-->
   		<link href="https://fonts.googleapis.com/css?family=Tangerine|Romanesco&effect=3d-float|Timmana&effect=3d-float|Stalemate&effect=3d-float|Yesteryear&effect=3d-float|Caudex&effect=3d-float" rel="stylesheet" type="text/css">
+		
+		 <!--Import Local CSS file-->
+  		<link rel="stylesheet" type="text/css" href="./src/styles/style.css">
+		
 
-  		 Import Bootstrap 
-
+  		 <!--Import Bootstrap -->
   		<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   		<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
   		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css">
-		-->
-		<script defer src="./dist/build/build.min.js"></script>
+		
+
 	</head>
-	<body ng-app="root">
-		<h2 id="header_text">Inverted Index</h2>
-		<br>
-		<div id="request_content">
-			<!-- Request content is displayed here -->
+	<body>
+
+		<div id="header_div">
+			<h1 id="header_text" class="font-effect-3d-float">Inverted Index</h1>
+		</div>
+
+		<div ng-controller="rootAppController">
+
+			<div id="display_file">
+				<div id="display_table_div">
+					<table id="index_table" class="table table-striped table-hover ">
+						<thead> 
+							<tr>
+								<th>Index </th><th ng-repeat="column in columns">{{column}}</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="word in uniqueWords">
+								<td> {{word}} </td><td ng-repeat="item in columns">{{}}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<div id="select_file_div">
+					<div class="form-group">
+						<div class="panel panel-info">
+  							<div class="panel-heading">
+    							<h3 class="panel-title"><label class="control-label"><p class="font-effect-3d-float" >Create New Index</p></label><br></h3>
+ 							</div>
+  							<div class="panel-body">
+    							
+								  <input type="file" id="filePath"><br>
+								  <div class="input-group">
+									<span class="input-group-addon">File Path:</span>
+										<input type="input" id="filename" class="form-control">
+									<span class="input-group-btn">
+										<button class="btn btn-default" type="button" ng-click="getTheBook()">Create Index</button>
+									</span>
+								  </div>
+  							</div>
+						</div>
+					
+					
+				</div>
+			</div>
+
 
 		</div>
-		<h3>Word Details</h3>
-		<div id="wordList">
-			
-		</div>
-		<div ng-controller="index">
-			<table>
-				<thead> 
-    				<tr><th>Index </th>
-        				<th ng-repeat="column in columns">{{column}}</th>
-    				</tr>
-				</thead>
-				<tbody>
-    				<tr ng-repeat="word in uniqueWords">
-        				<td> {{word}} </td>
-   					</tr>
-				</tbody>
-			</table>
-		</div>
-		<br>
-		<div ng-controller="index">
-			<input type="text" value="http://localhost:3000/src/books/book-file.json" ng-model="urlpath" placeholder="http://localhost:3000/src/books/book-file.json" name="" />
-			<button class="btn" ng-click="getTheBook()">Click</button>
-		</div>
+
+</div>
+
 	</body>
 </html>

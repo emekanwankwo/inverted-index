@@ -1,0 +1,5 @@
+/********* Styles *********/
+
+#header_text { color: darkslateblue; font-family: "Caudex", serif;}
+#display_file { position: relative; width: 50%;}
+#select_file_div { position: relative; width:90%;}

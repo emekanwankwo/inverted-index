@@ -3,5 +3,6 @@
 	"eqeqeq"        : true,
 	"varstmt"       : true,
 	"browser"       : true,
+	"node"			: true
 
 }
