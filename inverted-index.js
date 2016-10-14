@@ -2,7 +2,6 @@
 
 // Define a function to make http request to the JSON file url passed at the argument
 
-//let theFileUrl = 'http://localhost:3000/src/books/book-file.json';
 
 
 let indexApp = angular.module("root", []);
@@ -23,14 +22,22 @@ indexApp.controller('rootAppController', ["$scope", function($scope) {
 		$scope.getTheBook = function(){
 
 			let filePath = $('#filePath').val();
+			console.log(filePath);
+
+			theIndex = new InvertedIndex();
+			let theArray = theIndex.createIndex();
+			console.log(theArray);
+			
+			console.log(theIndex.getArray(4));
+
 
 			// Call the getRequest method of the InvertedIndex class in app.js
-			$(document).ready(function(e){
+			// $(document).ready(function(e){
 
-				$.getscript("./app.js",function(){
-					InvertedIndex.getRequest(filePath);
-				});
+			// 	$.getscript("./app.js",function(){
+			// 		InvertedIndex.getRequest(filePath);
+			// 	});
 
-			});
+			// });
 		}
 }])

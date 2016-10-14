@@ -3,17 +3,78 @@ class InvertedIndex {
 
     //TODO: Create a constructor to initialize variables
 
+    	/**
+	* Creates an Index of the file at the path specified
+	* @Params {string}
+    * @Returns {}
+	**/
+
+    createIndex(filePath) {
+
+        // Read the contents of the file specified
+        let file = document.querySelector('input[type=file]').files[0];
+
+        if(!file)
+            throw Error('No file selected');            //Throw an Error if no file is selected               
+
+        let reader = new FileReader();
+        reader.readAsText(file);
+
+        let theVar;
+        // Make a promise to resolve the file if it is a JSON file and reject otherwise
+        let promise = new Promise((resolve, reject) => {
+
+            reader.onload = ((e) => {  
+                if (e.target.result)                                    // Check if there is a file selected and resolve
+                    if (JSON.parse(e.target.result))                    // Check if the file can be parsed as a JSON data
+                        resolve(JSON.parse(e.target.result));
+                    else
+                        reject();               
+                else
+                        reject('Invalid File Selected');                // Reject with invalid file if the file cannot be parsed as JSON
+            })
+        })
+
+        .then((data) => {                                               // Handle the returned data if the promise is resolved
+
+            //console.log(data);
+            //return data;
+            let wordList = [];
+            let splitList = [];
+
+            for (let book of data)
+                for (let attribute in book) {
+                    wordList.push(book[attribute].split(' '));
+                }
+
+            // console.log(wordList);
+
+            let word = this.listArrayItems(wordList);
+            let wordsItem = word.words;
+
+            theVar = wordsItem;
+
+            
+
+        })
+        .catch((err) => console.log(err));                               // Catch the error if the promise is rejected
+
+        return theVar;
+
+    }
+
     /**
      * getRequest method to make http request to the server on the specified part
      * @Params {string}
      * @Returns
      */
 
+    getArray(num) {
+        return num * 2;
+    }
+
     getRequest(url) {
 
-        console.log(url);
-
-        return false;
 
         // Create a new XMLHttpRequest object
         let httpRequest = new XMLHttpRequest();       
@@ -72,26 +133,6 @@ class InvertedIndex {
  }
 
 
-	/**
-	* Creates an Index of the file at the path specified
-	* @Params {string}
-    * @Returns {}
-	**/
-
-    createIndex(filePath) {
-
-        // Create a new object to hold the word index
-        let wordIndex = {};
-
-        // Insert an index for each word in wordArray
-        for (let j = 0; j < wordArray.length; j++)
-            wordIndex[j + 1] = wordArray[j];
-
-        console.log(wordArray)
-        console.log(wordIndex[3]);
-
-    }
-
 
     /**
      * getIndex Method to get the index of an element
@@ -118,7 +159,11 @@ class InvertedIndex {
 	 *	@Param {array} @Returns {array}
 	 */
 
+   // wordListResult = []
+
     listArrayItems(data) {
+
+        // data = ['Document1','Document2','Document3','Document4'];
 
         // Return the value if it is not an Array
         if (!Array.isArray(data))
@@ -140,4 +185,4 @@ class InvertedIndex {
     }
 }
 
-module.exports = InvertedIndex;
+let wordListResult = [];
