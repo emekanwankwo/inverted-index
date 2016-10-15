@@ -1,3 +1,4 @@
+<!doctype html>
 <html ng-app="root">
 	<head>
 		<title>Gulp Test</title>
@@ -8,7 +9,7 @@
 
 		<!-- Import JQuery -->
 		<script src="node_modules/jquery/dist/jquery.min.js"></script>
-  		<script src="http://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc=" crossorigin="anonymous"></script>
+  		<!--<script src="http://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc=" crossorigin="anonymous"></script>-->
 
 		<!-- Import Local script -->
 		<script type="text/javascript" src="inverted-index.js"></script>
@@ -16,7 +17,7 @@
 		<script type="text/javascript" src="./src/scripts/script.js"></script>
 
   		 <!--Import Google Fonts-->
-  		<link href="https://fonts.googleapis.com/css?family=Tangerine|Romanesco&effect=3d-float|Timmana&effect=3d-float|Stalemate&effect=3d-float|Yesteryear&effect=3d-float|Caudex&effect=3d-float" rel="stylesheet" type="text/css">
+  		<!--<link href="https://fonts.googleapis.com/css?family=Tangerine|Romanesco&effect=3d-float|Timmana&effect=3d-float|Stalemate&effect=3d-float|Yesteryear&effect=3d-float|Caudex&effect=3d-float" rel="stylesheet" type="text/css">-->
 		
 		 <!--Import Local CSS file-->
   		<link rel="stylesheet" type="text/css" href="./src/styles/style.css">
@@ -46,18 +47,31 @@
 						<table id="index_table" class="table table-striped table-hover ">
 							<thead> 
 								<tr>
-									<th>Term </th><th ng-repeat="column in columns">{{column}}</th>
+									<th>Term </th><th ng-repeat="column in columns track by $index">{{column}}</th>
 								</tr>
 							</thead>
 							<tbody id="word_index_body" style="width: 800px;">
 								<tr id="word_index_row" ng-repeat="word in uniqueWords">
-									<td style="text-align: center;"> {{word}} </td><td ng-repeat="item in columns" style="text-align: center;">x</td>
+									<td style="text-align: center;"> {{word}} </td><td ng-repeat="item in columns track by $index" style="text-align: center;">x</td>
 								</tr>
 							</tbody>
 						</table>
 					</div>
 
+				</div>
+
+				<!-- Display contents of the file-->
+				<div id="file_content_div">
+					<div class="jumbotron">
+						<div style="position: relative; margin: 10px;">
+							<h2>{{storyTitle[theIndex]}}</h2>
+							<p>{{storyContent[theIndex]}}</p>
+							<p ng-if="storyTitle.length>0"><a class="btn btn-primary btn-lg" ng-click="changeStory()">Next</a></p>
+						</div>
+					</div>
+
 					<!-- Create new index panel-->
+					
 					<div id="select_file_div">
 						<div class="form-group">
 							<div class="panel panel-info">
@@ -68,8 +82,8 @@
 									
 									<input type="file" id="filePath"><br>
 									<div class="input-group">
-										<span class="input-group-addon">File Name:</span>
-											<input type="input" id="filename" placeholder="Enter Filename" class="form-control">
+										<span class="input-group-addon">File Url:</span>
+											<input type="input" id="filename" placeholder="Enter File Url" class="form-control">
 										<span class="input-group-btn">
 											<button class="btn btn-default" type="button" ng-click="getTheBook()">Create Index</button>
 										</span>
@@ -79,22 +93,6 @@
 						</div>
 					</div>
 
-				</div>
-
-				<!-- Display contents of the file-->
-				<div id="file_content_div">
-					<h2>Content</h2>
-					<div class="jumbotron">
-						<div style="position: relative; margin: 10px;">
-							<h2>Story</h2>
-							<p>This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.
-								This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.
-								This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.
-								
-							</p>
-							<p><a class="btn btn-primary btn-lg">Next</a></p>
-						</div>
-					</div>
 				</div>
 
 			</div>

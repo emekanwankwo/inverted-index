@@ -1,4 +1,6 @@
 
+/**** Inverted Index Application to index, sort and search words in a string ******/
+
 class InvertedIndex {
 
     //TODO: Create a constructor to initialize variables
@@ -20,65 +22,26 @@ class InvertedIndex {
         let reader = new FileReader();
         reader.readAsText(file);
 
-        let theVar;
-        // Make a promise to resolve the file if it is a JSON file and reject otherwise
+        // Make a promise to resolve the file if it is a JSON file with valid JSON content and reject otherwise
         let promise = new Promise((resolve, reject) => {
 
             reader.onload = ((e) => {  
-                if (e.target.result)                                    // Check if there is a file selected and resolve
-                    if (JSON.parse(e.target.result))                    // Check if the file can be parsed as a JSON data
+                if (e.target.result)                                        // Check if there is a file selected and resolve
+                    
+                    // Try to parse the file as JSON and catch the error if unable to parse and provide a sample JSON structure
+                    try{
+                        if(JSON.parse(e.target.result));
                         resolve(JSON.parse(e.target.result));
-                    else
-                        reject();               
+                    }
+                    catch(e){
+                        reject('File content is not of type JSON. Expected file structure is: [ { "content1" : "item1", "content2" : "item2"  } ]');
+                    }                                       
                 else
-                        reject('Invalid File Selected');                // Reject with invalid file if the file cannot be parsed as JSON
+                        reject('Invalid File Selected');                // Reject with invalid file if the file cannot read
             })
         });
 
         return promise;
-
-        //promise.then(() => { return 'Hello my friend';} ).catch(() => console.log('Error!'))
-
-        // setTimeout(() => {
-        //     theVar = promise;
-        //     console.log(theVar);
-        //     return theVar;
-        // }, 0);
-        
-
-        
-
-        // promise.then((data) => {                                               // Handle the returned data if the promise is resolved
-
-        //     //console.log(data);
-        //     //return data;
-        //     let wordList = [];
-        //     let splitList = [];
-
-        //     for (let book of data)
-        //         for (let attribute in book) {
-        //             wordList.push(book[attribute].split(' '));
-        //         }
-
-        //     // console.log(wordList);
-
-        //     let word = this.listArrayItems(wordList);
-        //     let wordsItem = word.words;
-
-        //     return wordsItem;
-
-        //     // $(document).ready(function(e) {
-        //     //     $('#word_index_body').html("");
-        //     //     //console.log(wordsItem)
-        //     //     for (let i in wordsItem)
-        //     //         // console.log(wordsItem[i]);
-        //     //         $('#word_index_body').append(`<tr id="${wordsItem[i]}"><td> ${wordsItem[i]} </td><td ng-repeat="item in columns">This is document 1 and a document 2</td></tr>`);
-        //     // })
-
-            
-
-        // })
-        // .catch((err) => console.log(err));                               // Catch the error if the promise is rejected
 
     }
 
@@ -88,12 +51,7 @@ class InvertedIndex {
      * @Returns
      */
 
-    getArray(num) {
-        return num * 2;
-    }
-
     getRequest(url) {
-
 
         // Create a new XMLHttpRequest object
         let httpRequest = new XMLHttpRequest();       
@@ -114,7 +72,8 @@ class InvertedIndex {
             function alertContents() {
                 if (httpRequest.readyState === XMLHttpRequest.DONE) {
                     if (httpRequest.status === 200)
-                        resolve(JSON.parse(httpRequest.responseText));
+                        //resolve(JSON.parse(httpRequest.responseText));
+                        resolve(httpRequest.responseText);
                     else
                         reject('There was an error!');
                 }
@@ -124,29 +83,30 @@ class InvertedIndex {
         //Handle the promise fufilment
         p1.then((data) => {
 
-            let content = "";
-            let wordList = [];
+            console.log(data);
+            // let content = "";
+            // let wordList = [];
 
-            $(document).ready(function (e) {
+            // $(document).ready(function (e) {
 
-                $('#request_content').html('');
+            //     $('#request_content').html('');
 
-                for (let book of data)
-                    for (let attribute in book) {
-                        wordList.push(book[attribute].split(' '));
-                        content += `${attribute}:  ${book[attribute]} <br /><br />`;
-                        document.getElementById('request_content').innerHTML = content;
-                    }
+            //     for (let book of data)
+            //         for (let attribute in book) {
+            //             wordList.push(book[attribute].split(' '));
+            //             content += `${attribute}:  ${book[attribute]} <br /><br />`;
+            //             document.getElementById('request_content').innerHTML = content;
+            //         }
 
-                let word = this.listArrayItems(wordList);
-                let wordsItem = word.words;
+            //     let word = this.listArrayItems(wordList);
+            //     let wordsItem = word.words;
 
-                $('#wordList').html(`Total Number of Words: ${wordLength}`);
-            });
+            //     $('#wordList').html(`Total Number of Words: ${wordLength}`);
+            // });
 
-            setTimeout(function () {
-                console.log(wordsItem);
-            }, 0);            
+            // setTimeout(function () {
+            //     console.log(wordsItem);
+            // }, 0);            
         })
             .catch((err) => console.log(err)); 
  }
@@ -178,8 +138,6 @@ class InvertedIndex {
 	 *	@Param {array} @Returns {array}
 	 */
 
-   // wordListResult = []
-
     listArrayItems(data) {
 
         // data = ['Document1','Document2','Document3','Document4'];
@@ -204,4 +162,4 @@ class InvertedIndex {
     }
 }
 
-let wordListResult = ['a','b'];
+let wordListResult = [];
