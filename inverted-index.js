@@ -33,40 +33,52 @@ class InvertedIndex {
                 else
                         reject('Invalid File Selected');                // Reject with invalid file if the file cannot be parsed as JSON
             })
-        })
+        });
 
-        .then((data) => {                                               // Handle the returned data if the promise is resolved
+        return promise;
 
-            //console.log(data);
-            //return data;
-            let wordList = [];
-            let splitList = [];
+        //promise.then(() => { return 'Hello my friend';} ).catch(() => console.log('Error!'))
 
-            for (let book of data)
-                for (let attribute in book) {
-                    wordList.push(book[attribute].split(' '));
-                }
+        // setTimeout(() => {
+        //     theVar = promise;
+        //     console.log(theVar);
+        //     return theVar;
+        // }, 0);
+        
 
-            // console.log(wordList);
+        
 
-            let word = this.listArrayItems(wordList);
-            let wordsItem = word.words;
+        // promise.then((data) => {                                               // Handle the returned data if the promise is resolved
 
+        //     //console.log(data);
+        //     //return data;
+        //     let wordList = [];
+        //     let splitList = [];
 
-            // $(document).ready(function(e) {
-            //     $('#word_index_body').html("");
-            //     //console.log(wordsItem)
-            //     for (let i in wordsItem)
-            //         // console.log(wordsItem[i]);
-            //         $('#word_index_body').append(`<tr id="${wordsItem[i]}"><td> ${wordsItem[i]} </td><td ng-repeat="item in columns">This is document 1 and a document 2</td></tr>`);
-            // })
+        //     for (let book of data)
+        //         for (let attribute in book) {
+        //             wordList.push(book[attribute].split(' '));
+        //         }
+
+        //     // console.log(wordList);
+
+        //     let word = this.listArrayItems(wordList);
+        //     let wordsItem = word.words;
+
+        //     return wordsItem;
+
+        //     // $(document).ready(function(e) {
+        //     //     $('#word_index_body').html("");
+        //     //     //console.log(wordsItem)
+        //     //     for (let i in wordsItem)
+        //     //         // console.log(wordsItem[i]);
+        //     //         $('#word_index_body').append(`<tr id="${wordsItem[i]}"><td> ${wordsItem[i]} </td><td ng-repeat="item in columns">This is document 1 and a document 2</td></tr>`);
+        //     // })
 
             
 
-        })
-        .catch((err) => console.log(err));                               // Catch the error if the promise is rejected
-
-        return theVar;
+        // })
+        // .catch((err) => console.log(err));                               // Catch the error if the promise is rejected
 
     }
 

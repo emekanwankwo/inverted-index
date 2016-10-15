@@ -3,8 +3,8 @@
 		<title>Gulp Test</title>
 
 		<!-- Import Angular -->
-		<!--<script src="node_modules/angular/angular.min.js"></script>-->
-  		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+		<script src="node_modules/angular/angular.min.js"></script>
+  		<!--<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>-->
 
 		<!-- Import JQuery -->
 		<script src="node_modules/jquery/dist/jquery.min.js"></script>
@@ -13,7 +13,7 @@
 		<!-- Import Local script -->
 		<script type="text/javascript" src="inverted-index.js"></script>
   		<script type="text/javascript" src="app.js"></script>
-		  <script type="text/javascript" src="./src/scripts/script.js"></script>
+		<script type="text/javascript" src="./src/scripts/script.js"></script>
 
   		 <!--Import Google Fonts-->
   		<link href="https://fonts.googleapis.com/css?family=Tangerine|Romanesco&effect=3d-float|Timmana&effect=3d-float|Stalemate&effect=3d-float|Yesteryear&effect=3d-float|Caudex&effect=3d-float" rel="stylesheet" type="text/css">
@@ -51,7 +51,7 @@
 							</thead>
 							<tbody id="word_index_body" style="width: 800px;">
 								<tr id="word_index_row" ng-repeat="word in uniqueWords">
-									<td> {{word}} </td><td ng-repeat="item in columns" style="text-align: center;">x</td>
+									<td style="text-align: center;"> {{word}} </td><td ng-repeat="item in columns" style="text-align: center;">x</td>
 								</tr>
 							</tbody>
 						</table>
