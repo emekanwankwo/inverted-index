@@ -16,7 +16,7 @@
     "Story" : "This is the text content for this book three 3"
   },
   {
-    "book_name" : "JSON file is object friendly",
+    "book_name" : "JSON file is friendly",
     "book_text" : "This is the text content for this book four"
   }
 ]

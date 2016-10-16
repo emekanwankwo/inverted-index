@@ -1,8 +1,8 @@
 [{
-    "book_name" : "Head First Java",
+    "book_name" : "Head First JavaScript",
     "book_text" : "This is the text content for book one"
   },
   {
-    "Title" : "JSON file is object friendly",
+    "Title" : "JSON file is variable friendly",
     "Content" : "This is the text content for this book four"
   }]

@@ -12,20 +12,14 @@ indexApp.controller('rootAppController', ["$scope", function($scope) {
 		// Define a template Document for the Inverted Index Landing Page
  		$scope.columns = ['Doc1','Doc2','Doc3','Doc1'];
  		$scope.rows = ['No','Yes','No','Hi','Hello','This',1,5,10,'23','Yes','No','Not'];
-		$scope.rows1 = ['This',1,10,'No','Yes','Yes','No','Not'];
 		
-		$scope.allContent = {
-			"Head First Java": ['Yes','This','Hello',1,5,10,'23','is','Not','book'],
-			"Node.js in Action": ['Doc1','Doc2','Doc3','Doc4'],
-			"JSON file is object friendly": ['Doc1','friendly','This','Doc3','Doc4']
-		};
-		console.log($scope.allContent['Head First Java'])
+		$scope.allContent = {};										// Define an object to hold all book titles and associated array of texts
 
-		$scope.storyTitle = [];			
-		$scope.storyContent = [];
+		$scope.storyTitle = [];										// Define an array to hold all the story titles		
+		$scope.storyContent = [];									// Define an array to hold all story contents
 		$scope.count = 0;
 		
-		$scope.theIndex = 0;	// The index of the current story
+		$scope.theIndex = 0;			// The index of the current story
 		
 		/**
 		 * Method to change the story being displayed by changing the index value
@@ -45,7 +39,7 @@ indexApp.controller('rootAppController', ["$scope", function($scope) {
 		$scope.uniqueWords = [];
 		generateUnique($scope.rows);
 
-		let theNewArray = [];						// Empty array to hold the 
+	//	let theNewArray = [];						// Empty array to hold the 
 		let wordListResult = [];
 
 
@@ -120,23 +114,59 @@ indexApp.controller('rootAppController', ["$scope", function($scope) {
 		 * @Returns {}
 		 */
 		function pushValue(data) {
+			// Check if the data is a single json object(one content) and resolve
+			if(!Array.isArray(data)){
+				let objectTitle = data[Object.keys(data)[0]];
+				let objectTitleArray = data[Object.keys(data)[0]].split(' ');
+				let objectContentArray = data[Object.keys(data)[1]].split(' ');
+				let objectArray = objectTitleArray.concat(objectContentArray);
 
+				try{
+					if(!$scope.allContent[objectTitle]){
+						$scope.allContent[objectTitle] = objectArray;
+						$scope.$apply();
+					} else {
+							throw Error('Name conflicts detected!');
+					}
+				} catch(e){
+					console.log(e);
+				}
+				
+
+			} else {
+				for (let i = 0; i < data.length; i++){
+					let objectTitle = data[i][Object.keys(data[i])[0]];							// Get the first item of each array as title
+					let objectTitleArray = data[i][Object.keys(data[i])[0]].split(' ');			// Convert the title to an array
+					let objectContentArray = data[i][Object.keys(data[i])[1]].split(' ');		// Convert the content to an array
+					let objectArray = objectTitleArray.concat(objectContentArray);				// Concat the title and content arrays
+					
+					try{
+						if(!$scope.allContent[objectTitle]){
+							$scope.allContent[objectTitle] = objectArray;						// Set the title of the text as the key of the word array content.		
+							$scope.$apply();
+						} else {
+							throw Error('Name conflicts detected!');
+						}
+				} catch(e){
+					console.log(e);
+				}
+				} 
+				
+			}
 
 			let titlesArray = [];
 			let titlesItem = [];
 
 			for (let i = 0; i < data.length; i++){
-				$scope.storyTitle.push(data[i][Object.keys(data[i])[0]]);	// Push the first content of each of the objects to the storyTitle array
-				$scope.storyContent.push(data[i][Object.keys(data[i])[1]]);	// Push the second content of each of the objects to the storyContent array
+				$scope.storyTitle.push(data[i][Object.keys(data[i])[0]]);				// Push the first content of each of the objects to the storyTitle array
+				$scope.storyContent.push(data[i][Object.keys(data[i])[1]]);				// Push the second content of each of the objects to the storyContent array
 			}
 
-			// Assign the empty title column template to the title of the new stories 
-			$scope.columns = $scope.storyTitle;
+			// Assign the empty title column template to the keys of the allContent object. 
+			$scope.columns = Object.keys($scope.allContent);
 
 			let wordList = [];
 
-			
-			// Split the contents of the array items anywhere a white space is detected
 
 			// Try to resolve the contents of the JSON as multi-dimensional
 			try {
@@ -170,23 +200,24 @@ indexApp.controller('rootAppController', ["$scope", function($scope) {
 			// Generate a unique array of items from the contents of the new array
 			generateUnique(wordsItem);
 
-			$scope.$apply();		
+			$scope.$apply();	
 		}
 
 		$scope.columnCount = 0;
 
+		/**
+		 * Method to compare the selected word in the array of words and check the
+		 * story where it is.
+		 * @Params {string}{integer}
+		 * @Returns {}
+		 */
 		$scope.checkThis = function(word, columnIndex){
-			console.log(columnIndex);
-			$scope.count = 0;
-			// for(let x of $scope.rows1)
-			// 	if (x == word)
-			// 		$scope.count += 1;
-			// console.log($scope.count)
-			for (let title of $scope.storyTitle){
-				$scope.columnCount = $scope.storyTitle.indexOf(title);
-				if ($scope.columnCount == columnIndex){
-					for (let theContent of $scope.allContent[title])
-						if (theContent == word)
+			$scope.count = 0;												// Initialize a count variable to restart from 0 anytime the function is called.
+			for (let title of $scope.storyTitle){							// Get each of the titles in the storyTitle array
+				$scope.columnCount = $scope.storyTitle.indexOf(title);		// Set the column number as the index of 'this' title
+				if ($scope.columnCount == columnIndex){						// If 'this' column number is the same as the index of the current ng-repeat column
+					for (let theContent of $scope.allContent[title])		// Get the array of words represented by this Index
+						if (theContent == word)								// If the content is equal to the word listed, then the word exists.
 							$scope.count += 1;
 				}
 			}
