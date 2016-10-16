@@ -13,11 +13,10 @@ class InvertedIndex {
 
     createIndex(filePath) {
 
-        // Read the contents of the file specified
         let file = document.querySelector('input[type=file]').files[0];
 
         if(!file)
-            throw Error('No file selected');            //Throw an Error if no file is selected               
+            throw Error('No file selected');              
 
         let reader = new FileReader();
         reader.readAsText(file);
@@ -26,9 +25,8 @@ class InvertedIndex {
         let promise = new Promise((resolve, reject) => {
 
             reader.onload = ((e) => {  
-                if (e.target.result)                                        // Check if there is a file selected and resolve
-                    
-                    // Try to parse the file as JSON and catch the error if unable to parse and provide a sample JSON structure
+                if (e.target.result)
+                
                     try{
                         if(JSON.parse(e.target.result));
                         resolve(JSON.parse(e.target.result));
@@ -37,13 +35,13 @@ class InvertedIndex {
                         reject('File content is not of type JSON. Expected file structure is: [ { "content1" : "item1", "content2" : "item2"  } ]');
                     }                                       
                 else
-                        reject('Invalid File Selected');                // Reject with invalid file if the file cannot read
+                        reject('Invalid File Selected');
             })
         });
 
         return promise;
-
     }
+
 
     /**
      * getRequest method to make http request to the server on the specified part
@@ -72,45 +70,15 @@ class InvertedIndex {
             function alertContents() {
                 if (httpRequest.readyState === XMLHttpRequest.DONE) {
                     if (httpRequest.status === 200)
-                        //resolve(JSON.parse(httpRequest.responseText));
-                        resolve(httpRequest.responseText);
+                        resolve(JSON.parse(httpRequest.responseText));
                     else
                         reject('There was an error!');
                 }
             }
         });
 
-        //Handle the promise fufilment
-        p1.then((data) => {
-
-            console.log(data);
-            // let content = "";
-            // let wordList = [];
-
-            // $(document).ready(function (e) {
-
-            //     $('#request_content').html('');
-
-            //     for (let book of data)
-            //         for (let attribute in book) {
-            //             wordList.push(book[attribute].split(' '));
-            //             content += `${attribute}:  ${book[attribute]} <br /><br />`;
-            //             document.getElementById('request_content').innerHTML = content;
-            //         }
-
-            //     let word = this.listArrayItems(wordList);
-            //     let wordsItem = word.words;
-
-            //     $('#wordList').html(`Total Number of Words: ${wordLength}`);
-            // });
-
-            // setTimeout(function () {
-            //     console.log(wordsItem);
-            // }, 0);            
-        })
-            .catch((err) => console.log(err)); 
+        return p1;
  }
-
 
 
     /**
@@ -140,24 +108,19 @@ class InvertedIndex {
 
     listArrayItems(data) {
 
-        // data = ['Document1','Document2','Document3','Document4'];
-
         // Return the value if it is not an Array
         if (!Array.isArray(data))
             return data;
 
-
         //Make a recursive call back to the function if it is an array
         for (let item of data)
             wordListResult.push(this.listArrayItems(item));
-
 
         // Remove the undefined elements in the generated array.
         for (let word in wordListResult)
             if ((typeof wordListResult[word] !== 'string'))
                 wordListResult.splice(word, 1);
 
-        //console.log(wordListResult);
         return { 'length': wordListResult.length, 'words': wordListResult };
     }
 }

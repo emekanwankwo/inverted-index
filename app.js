@@ -9,12 +9,15 @@ let indexApp = angular.module("root", []);
 
 indexApp.controller('rootAppController', ["$scope", function($scope) {
 
+		// Create a new object for the InvertedIndex class.
+		let theIndex = new InvertedIndex();
+
 		// Define a template Document for the Inverted Index Landing Page
  		$scope.columns = ['Doc1','Doc2','Doc3','Doc1'];
  		$scope.rows = ['No','Yes','No','Hi','Hello','This',1,5,10,'23','Yes','No','Not'];
 		
-		$scope.allContent = {};										// Define an object to hold all book titles and associated array of texts
-
+		let storeContent = [];										// Define an array to store the words
+		$scope.allContent = {};										// Define an object to hold all book titles and associated array of texts. Defined outside the getTheBook scope for data persistence.
 		$scope.storyTitle = [];										// Define an array to hold all the story titles		
 		$scope.storyContent = [];									// Define an array to hold all story contents
 		$scope.count = 0;
@@ -35,7 +38,6 @@ indexApp.controller('rootAppController', ["$scope", function($scope) {
 				$scope.theIndex += 1;
 		}
 
-
 		$scope.uniqueWords = [];
 		generateUnique($scope.rows);
 
@@ -54,6 +56,7 @@ indexApp.controller('rootAppController', ["$scope", function($scope) {
 				if (index === -1)
 					$scope.uniqueWords.push(value);
 			})
+			storeContent = $scope.uniqueWords;										// Store the list of words
 		}
 
 
@@ -64,15 +67,23 @@ indexApp.controller('rootAppController', ["$scope", function($scope) {
 		 */
 		$scope.getTheBook = function(){
 
-			// Create a new object for the InvertedIndex class.
-			theIndex = new InvertedIndex();
-
 			// Check if a url address is entered to make an http get request to the selected JSON
 			let fileUrl = $.trim($('#filename').val());
 
 			if(fileUrl !== ""){
 
-				theIndex.getRequest(fileUrl);
+				$scope.columns = [];
+				$scope.rows = [];
+				$scope.uniqueWords = [];
+
+				let theUrlArray = new Promise((resolve, reject) => { resolve(theIndex.getRequest(fileUrl)); });
+				
+				// Set a timeout for the promise to be fufilled	
+				setTimeout(() => {
+					theUrlArray.then((data) => {
+						pushValue(data);
+					});
+				}, 0);
 
 			} else {
 
@@ -158,8 +169,8 @@ indexApp.controller('rootAppController', ["$scope", function($scope) {
 			let titlesItem = [];
 
 			for (let i = 0; i < data.length; i++){
-				$scope.storyTitle.push(data[i][Object.keys(data[i])[0]]);				// Push the first content of each of the objects to the storyTitle array
-				$scope.storyContent.push(data[i][Object.keys(data[i])[1]]);				// Push the second content of each of the objects to the storyContent array
+				$scope.storyTitle.push(data[i][Object.keys(data[i])[0]]);						// Push the first content of each of the objects to the storyTitle array
+				$scope.storyContent.push(data[i][Object.keys(data[i])[1]]);						// Push the second content of each of the objects to the storyContent array
 			}
 
 			// Assign the empty title column template to the keys of the allContent object. 
@@ -205,10 +216,11 @@ indexApp.controller('rootAppController', ["$scope", function($scope) {
 
 		$scope.columnCount = 0;
 
+
 		/**
 		 * Method to compare the selected word in the array of words and check the
-		 * story where it is.
-		 * @Params {string}{integer}
+		 * story title column where it belongs
+		 * @Params {string} {integer}
 		 * @Returns {}
 		 */
 		$scope.checkThis = function(word, columnIndex){
@@ -224,4 +236,25 @@ indexApp.controller('rootAppController', ["$scope", function($scope) {
 				
 		}
 
+
+		/**
+		 * Method to search for a given keyword
+		 * @Params {string : number}
+		 * @Returns {}
+		 */
+		$scope.searchWord = function(keyword){
+			if($.trim(keyword) === ""){
+				$scope.uniqueWords = storeContent;							// If the search keyword is empty, restore to the stored values
+				$scope.status = '';
+		}
+			else{
+				$scope.status = 'Not Found';
+				$scope.uniqueWords = [];
+				$scope.uniqueWords.push(keyword);
+					for (let item of storeContent)
+						if (item == keyword)
+							$scope.status = 'Found';
+			}
+
+		}
 }])
