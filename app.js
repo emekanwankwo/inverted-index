@@ -10,11 +10,20 @@ let indexApp = angular.module("root", []);
 indexApp.controller('rootAppController', ["$scope", function($scope) {
 
 		// Define a template Document for the Inverted Index Landing Page
- 		$scope.columns = ['Doc1','Doc2','Doc3','Doc'];
- 		$scope.rows = ['Yes','No','Hi','Hello','Not',1,5,10,'23','Yes','No','Not'];
+ 		$scope.columns = ['Doc1','Doc2','Doc3','Doc1'];
+ 		$scope.rows = ['No','Yes','No','Hi','Hello','This',1,5,10,'23','Yes','No','Not'];
+		$scope.rows1 = ['This',1,10,'No','Yes','Yes','No','Not'];
+		
+		$scope.allContent = {
+			"Head First Java": ['Yes','This','Hello',1,5,10,'23','is','Not','book'],
+			"Node.js in Action": ['Doc1','Doc2','Doc3','Doc4'],
+			"JSON file is object friendly": ['Doc1','friendly','This','Doc3','Doc4']
+		};
+		console.log($scope.allContent['Head First Java'])
 
 		$scope.storyTitle = [];			
 		$scope.storyContent = [];
+		$scope.count = 0;
 		
 		$scope.theIndex = 0;	// The index of the current story
 		
@@ -162,6 +171,26 @@ indexApp.controller('rootAppController', ["$scope", function($scope) {
 			generateUnique(wordsItem);
 
 			$scope.$apply();		
+		}
+
+		$scope.columnCount = 0;
+
+		$scope.checkThis = function(word, columnIndex){
+			console.log(columnIndex);
+			$scope.count = 0;
+			// for(let x of $scope.rows1)
+			// 	if (x == word)
+			// 		$scope.count += 1;
+			// console.log($scope.count)
+			for (let title of $scope.storyTitle){
+				$scope.columnCount = $scope.storyTitle.indexOf(title);
+				if ($scope.columnCount == columnIndex){
+					for (let theContent of $scope.allContent[title])
+						if (theContent == word)
+							$scope.count += 1;
+				}
+			}
+				
 		}
 
 }])

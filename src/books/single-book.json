@@ -1,4 +1,8 @@
-{
+[{
     "book_name" : "Head First Java",
     "book_text" : "This is the text content for book one"
-  }
+  },
+  {
+    "Title" : "JSON file is object friendly",
+    "Content" : "This is the text content for this book four"
+  }]
