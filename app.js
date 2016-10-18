@@ -38,23 +38,25 @@ indexApp.controller('rootAppController', ["$scope", function($scope) {
 		}
 
 		$scope.uniqueWords = [];
-		generateUnique($scope.rows);
+		$scope.uniqueWords = generateUniqueArray($scope.rows);
 
 		let wordListResult = [];
 
 
 		/**
-		 * Method to generate unique items from the array given
+		 * Method to generate unique array items from the array given
 		 * @Params {array}
-		 * @Returns {}
+		 * @Returns {array}
 		 */
-		function generateUnique(data) {
+
+		function generateUniqueArray(data) {
+			let uniqueArray = [];
 			angular.forEach(data, (value) => {
-				let index = $scope.uniqueWords.indexOf(value);
+				let index = uniqueArray.indexOf(value);
 				if (index === -1)
-					$scope.uniqueWords.push(value);
+					uniqueArray.push(value);
 			})
-			// storeRowContent = $scope.uniqueWords;										// Store the list of words
+			return uniqueArray;
 		}
 
 
@@ -129,6 +131,7 @@ indexApp.controller('rootAppController', ["$scope", function($scope) {
 				let objectTitleArray = data[Object.keys(data)[0]].split(' ');
 				let objectContentArray = data[Object.keys(data)[1]].split(' ');
 				let objectArray = objectTitleArray.concat(objectContentArray);
+				objectArray = generateUniqueArray(objectArray);
 
 				try{
 					if(!$scope.allContent[objectTitle]){
@@ -148,7 +151,8 @@ indexApp.controller('rootAppController', ["$scope", function($scope) {
 					let objectTitleArray = data[i][Object.keys(data[i])[0]].split(' ');			// Convert the title to an array
 					let objectContentArray = data[i][Object.keys(data[i])[1]].split(' ');		// Convert the content to an array
 					let objectArray = objectTitleArray.concat(objectContentArray);				// Concat the title and content arrays
-					
+					objectArray = generateUniqueArray(objectArray);
+
 					try{
 						if(!$scope.allContent[objectTitle]){
 							$scope.allContent[objectTitle] = objectArray;						// Set the title of the text as the key of the word array content.		
@@ -171,9 +175,9 @@ indexApp.controller('rootAppController', ["$scope", function($scope) {
 				$scope.storyContent.push(data[i][Object.keys(data[i])[1]]);						// Push the second content of each of the objects to the storyContent array
 			}
 
-			// Assign the empty title column template to the keys of the allContent object. 
-			$scope.columns = Object.keys($scope.allContent);
-			storeColumnContent = Object.keys($scope.allContent);
+			// Assign the empty title column template to the unique keys of the allContent object. 
+			$scope.columns = generateUniqueArray(Object.keys($scope.allContent));
+			storeColumnContent = generateUniqueArray(Object.keys($scope.allContent));
 
 			let wordList = [];
 
@@ -208,7 +212,7 @@ indexApp.controller('rootAppController', ["$scope", function($scope) {
             let wordsItem = word.words;
 
 			// Generate a unique array of items from the contents of the new array
-			 generateUnique(wordsItem);
+			 $scope.uniqueWords = generateUniqueArray(wordsItem);
 			 storeRowContent = $scope.uniqueWords;
 
 			$scope.$apply();	
@@ -249,6 +253,9 @@ indexApp.controller('rootAppController', ["$scope", function($scope) {
 		$scope.searchWord = function(keyword){
 			$scope.exists = false;
 			if($.trim(keyword) === ""){
+
+				// @TODO make the push statement to only push unique items.
+
 				if($scope.columns.length === storeColumnContent.length){			// If a search criteria is not specified and the search is empty, set the row of words to the entire array of words.
 					$scope.uniqueWords = storeRowContent;
 				} else {															// If criteria is specified, use the words in that criteria title.
@@ -294,7 +301,7 @@ indexApp.controller('rootAppController', ["$scope", function($scope) {
 			else{
 				$scope.columns = [];
 				$scope.uniqueWords = [];
-				generateUnique($scope.allContent[searchKeyword]);
+				$scope.uniqueWords = generateUniqueArray($scope.allContent[searchKeyword]);
 				$scope.columns.push(searchKeyword);
 			}
 
