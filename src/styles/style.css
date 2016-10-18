@@ -7,3 +7,5 @@
 #file_content_div { position: relative; width: 45%; float: right; right: 20px; border-top-right-radius: 20px; border-bottom-left-radius: 20px;}
 #file_content_div h2 { position: relative; top:-30; font-size:30px;}
 #display_table_div{ overflow: auto;}
+#search_div { position:relative; float: right; right:20px; top: -40px; width: 40%; }
+#search_status { position: relative; bottom: 30px; right:25.5%; width:200px; height: 30px; float:right;}

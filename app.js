@@ -1,6 +1,5 @@
 /**** Inverted Index Application to index, sort and search words in a string ******/
 
-// Define a module 'root' for the application
 
 let indexApp = angular.module("root", []);
 
@@ -9,20 +8,20 @@ let indexApp = angular.module("root", []);
 
 indexApp.controller('rootAppController', ["$scope", function($scope) {
 
-		// Create a new object for the InvertedIndex class.
 		let theIndex = new InvertedIndex();
 
 		// Define a template Document for the Inverted Index Landing Page
- 		$scope.columns = ['Doc1','Doc2','Doc3','Doc1'];
+ 		$scope.columns = ['Doc1','Doc2','Doc3','Doc5'];
  		$scope.rows = ['No','Yes','No','Hi','Hello','This',1,5,10,'23','Yes','No','Not'];
 		
-		let storeContent = [];										// Define an array to store the words
+		let storeRowContent = [];									// Define an array to store row content
+		let storeColumnContent = [];								// Define an array to store column content
 		$scope.allContent = {};										// Define an object to hold all book titles and associated array of texts. Defined outside the getTheBook scope for data persistence.
 		$scope.storyTitle = [];										// Define an array to hold all the story titles		
 		$scope.storyContent = [];									// Define an array to hold all story contents
 		$scope.count = 0;
 		
-		$scope.theIndex = 0;			// The index of the current story
+		$scope.theIndex = 0;
 		
 		/**
 		 * Method to change the story being displayed by changing the index value
@@ -41,7 +40,6 @@ indexApp.controller('rootAppController', ["$scope", function($scope) {
 		$scope.uniqueWords = [];
 		generateUnique($scope.rows);
 
-	//	let theNewArray = [];						// Empty array to hold the 
 		let wordListResult = [];
 
 
@@ -56,7 +54,7 @@ indexApp.controller('rootAppController', ["$scope", function($scope) {
 				if (index === -1)
 					$scope.uniqueWords.push(value);
 			})
-			storeContent = $scope.uniqueWords;										// Store the list of words
+			// storeRowContent = $scope.uniqueWords;										// Store the list of words
 		}
 
 
@@ -175,6 +173,7 @@ indexApp.controller('rootAppController', ["$scope", function($scope) {
 
 			// Assign the empty title column template to the keys of the allContent object. 
 			$scope.columns = Object.keys($scope.allContent);
+			storeColumnContent = Object.keys($scope.allContent);
 
 			let wordList = [];
 
@@ -209,7 +208,8 @@ indexApp.controller('rootAppController', ["$scope", function($scope) {
             let wordsItem = word.words;
 
 			// Generate a unique array of items from the contents of the new array
-			generateUnique(wordsItem);
+			 generateUnique(wordsItem);
+			 storeRowContent = $scope.uniqueWords;
 
 			$scope.$apply();	
 		}
@@ -224,6 +224,9 @@ indexApp.controller('rootAppController', ["$scope", function($scope) {
 		 * @Returns {}
 		 */
 		$scope.checkThis = function(word, columnIndex){
+			columnIndex = storeColumnContent.indexOf(columnIndex);
+			
+			// console.log(columnIndex);
 			$scope.count = 0;												// Initialize a count variable to restart from 0 anytime the function is called.
 			for (let title of $scope.storyTitle){							// Get each of the titles in the storyTitle array
 				$scope.columnCount = $scope.storyTitle.indexOf(title);		// Set the column number as the index of 'this' title
@@ -231,6 +234,7 @@ indexApp.controller('rootAppController', ["$scope", function($scope) {
 					for (let theContent of $scope.allContent[title])		// Get the array of words represented by this Index
 						if (theContent == word)								// If the content is equal to the word listed, then the word exists.
 							$scope.count += 1;
+							
 				}
 			}
 				
@@ -243,17 +247,55 @@ indexApp.controller('rootAppController', ["$scope", function($scope) {
 		 * @Returns {}
 		 */
 		$scope.searchWord = function(keyword){
+			$scope.exists = false;
 			if($.trim(keyword) === ""){
-				$scope.uniqueWords = storeContent;							// If the search keyword is empty, restore to the stored values
+				if($scope.columns.length === storeColumnContent.length){			// If a search criteria is not specified and the search is empty, set the row of words to the entire array of words.
+					$scope.uniqueWords = storeRowContent;
+				} else {															// If criteria is specified, use the words in that criteria title.
+					$scope.uniqueWords = $scope.allContent[$scope.columns[0]];
+				}
 				$scope.status = '';
-		}
+			}
+
 			else{
+				if($scope.columns.length === storeColumnContent.length){			// If a search criteria is not specified, set the row of words to the array of that criteria
+					searchColumn = storeRowContent;
+				} else {
+					searchColumn = $scope.allContent[$scope.columns[0]];
+				}
+
+				// Change the status if found or not found
 				$scope.status = 'Not Found';
 				$scope.uniqueWords = [];
 				$scope.uniqueWords.push(keyword);
-					for (let item of storeContent)
-						if (item == keyword)
+					for (let item of searchColumn){
+						if (item == keyword){
 							$scope.status = 'Found';
+							$scope.exists = true;		
+						}
+					}
+			}
+
+		}
+
+
+		/**
+		 * Checks the searchKeyword and re-adjust column displayed
+		 * @Param {string}
+		 * @Return {}
+		 */
+		$scope.changeCriteria = function(searchKeyword){
+
+			// if the keyword is 'all titles', restore the column and row to the stored content.
+			if((searchKeyword) === "All titles"){
+				$scope.columns = storeColumnContent;			
+				$scope.uniqueWords = storeRowContent;
+			}
+			else{
+				$scope.columns = [];
+				$scope.uniqueWords = [];
+				generateUnique($scope.allContent[searchKeyword]);
+				$scope.columns.push(searchKeyword);
 			}
 
 		}
