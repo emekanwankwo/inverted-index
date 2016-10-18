@@ -5,7 +5,14 @@ class InvertedIndex {
 
     //TODO: Create a constructor to initialize variables
 
-    	/**
+    addIt(one, two){
+        return one + two;
+    }
+
+    doIt(one, two){
+        return one * two;
+    }
+    /**
 	* Creates an Index of the file at the path specified
 	* @Params {string}
     * @Returns {}
