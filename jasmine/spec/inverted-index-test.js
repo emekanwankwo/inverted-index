@@ -1,18 +1,26 @@
-describe("Calculator", function() {
+
+describe("Inverted index class", function() {
 
     let indexFile = new InvertedIndex();
     
-    describe("Addition function", function() {
-        it("should add numbers", function() {
-        expect(indexFile.addIt(1, 1)).toBe(2);
-        expect(indexFile.addIt(2, 2)).toBeGreaterThan(3);
+    describe("createIndex function", function() {
+        let promise = indexFile.createIndex();
+        it("should return an instance of Promise", function() {
+        expect(promise instanceof Promise).toBe(true);
         });
     });
 
-    describe("Multiplication function", function() {
-        it("should multiply numbers", function() {
-        expect(indexFile.doIt(1, 1)).toBe(1);
-        expect(indexFile.doIt(2, 2)).toBeGreaterThan(3);
+    describe("getRequest function", function() {
+        let promise = indexFile.getRequest();
+        it("should return an instance of Promise", function() {
+        expect(promise instanceof Promise).toBe(true);
+        });
+    });
+
+    describe("listArrayItems function", function() {
+        let arrayObject = indexFile.listArrayItems([1,2]);      
+        it("should return an object", function() {
+        expect(typeof arrayObject).toBe('object');
         });
     });
 

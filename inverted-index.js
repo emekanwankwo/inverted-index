@@ -5,13 +5,6 @@ class InvertedIndex {
 
     //TODO: Create a constructor to initialize variables
 
-    addIt(one, two){
-        return one + two;
-    }
-
-    doIt(one, two){
-        return one * two;
-    }
     /**
 	* Creates an Index of the file at the path specified
 	* @Params {string}
@@ -21,6 +14,8 @@ class InvertedIndex {
     createIndex(filePath) {
 
         let file = document.querySelector('input[type=file]').files[0];
+
+        console.log(file.type);
 
         if(!file)
             throw Error('No file selected');              
@@ -46,6 +41,7 @@ class InvertedIndex {
             })
         });
 
+        console.log(promise instanceof Promise);
         return promise;
     }
 
@@ -110,7 +106,8 @@ class InvertedIndex {
 
 
     /** listArrayItems method to list contents of an array into strings
-	 *	@Param {array} @Returns {array}
+	 *	@Param {array} 
+     *  @Returns {array}
 	 */
 
     listArrayItems(data) {
