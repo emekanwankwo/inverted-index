@@ -20,20 +20,6 @@ indexApp.controller('rootAppController', ["$scope", function($scope) {
 
   $scope.theIndex = 0;
 
-  /**
-   * Method to change the story being displayed when user clicks next button
-   * @Params {}
-   * @Returns {}
-   */
-  $scope.changeStory = () => {
-    if ($scope.storyTitle.length === 0)
-      return false;
-    if ($scope.theIndex === $scope.storyTitle.length - 1)
-      $scope.theIndex = 0;
-    else
-      $scope.theIndex += 1;
-  };
-
 
   /**
    * Method to create index.
@@ -98,7 +84,23 @@ indexApp.controller('rootAppController', ["$scope", function($scope) {
     $scope.columns = (wordsIndex.titles);
     $scope.terms = (wordsIndex.words);
     $scope.storeTerms = (wordsIndex.words);
+    $scope.storeColumns = (wordsIndex.titles);
     $scope.$apply();
+  };
+
+
+  /**
+   * Method to change the story being displayed when user clicks next button
+   * @Params {}
+   * @Returns {}
+   */
+  $scope.changeStory = () => {
+    if ($scope.storyTitle.length === 0)
+      return false;
+    if ($scope.theIndex === $scope.storyTitle.length - 1)
+      $scope.theIndex = 0;
+    else
+      $scope.theIndex += 1;
   };
 
 
@@ -120,18 +122,25 @@ indexApp.controller('rootAppController', ["$scope", function($scope) {
     }
   };
 
-
   /**
    * Method to search for a given keyword
    * @Param {string : number}
    * @Return {}
    */
-  $scope.searchWord = (keyword) => {
+  $scope.searchState = false;
+  $scope.searchWord = (keyword, criteria) => {
     $scope.terms = [];
     let searchTerm = keyword.toLowerCase();
     $scope.terms.push(searchTerm);
 
-    let searchQuery = theIndex.searchIndex(searchTerm);
+    let searchQuery = theIndex.searchIndex(searchTerm, criteria);
+    if (searchQuery) {
+      $scope.status = 'Found';
+      $scope.searchState = true;
+    } else {
+      $scope.status = 'Not Found';
+      $scope.searchState = false;
+    }
 
 
     // @TODO Make the search statement to work only when an index has been created.
@@ -166,7 +175,6 @@ indexApp.controller('rootAppController', ["$scope", function($scope) {
     //   }
     // }
     }
-
   }
 
 
@@ -178,13 +186,10 @@ indexApp.controller('rootAppController', ["$scope", function($scope) {
   $scope.changeCriteria = (searchKeyword) => {
 
     // if the keyword is 'all titles', restore the column and row to the stored content.
-    if ((searchKeyword) === "All titles") {
-      $scope.columns = storeColumnContent;
-      $scope.uniqueWords = storeRowContent;
-    } else {
+    if ((searchKeyword) === "All titles")
+      $scope.columns = $scope.storeColumns;
+    else {
       $scope.columns = [];
-      $scope.uniqueWords = [];
-      $scope.uniqueWords = generateUniqueArray($scope.allContent[searchKeyword]);
       $scope.columns.push(searchKeyword);
     }
 

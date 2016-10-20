@@ -186,7 +186,7 @@ class InvertedIndex {
       words: terms,
       titles: columns
     };
-  }
+  };
 
 
   /**
@@ -195,11 +195,17 @@ class InvertedIndex {
    * @Returns {object}
    */
 
-  searchIndex(term) {
-    if (this.indexes[term])
-      return this.indexes[term];
+  searchIndex(term, criteria = 'All Titles') {
+    if (this.indexes[term]) {
+      if ((criteria === 'All Titles') || (criteria === undefined))
+        return true;
+      else {
+        if (this.indexes[term].indexOf(criteria) !== -1)
+          return true;
+      }
+    }
     else
-      return 'No';
+      return false;
 
-  }
+  };
 }

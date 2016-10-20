@@ -73,12 +73,12 @@
 							<option ng-repeat="item in storyTitle" ng-model="item">{{item}}</option>
 						</select>
 					</span>
-					<input type="input" id="searchname" placeholder="Enter search keyword" ng-model="keyword" ng-change="searchWord(keyword)"
+					<input type="input" id="searchname" placeholder="Enter search keyword" ng-model="keyword" ng-change="searchWord(keyword, criteria)"
 					class="form-control">
 					</div>
 					<div id="search_status">
-						<span ng-if="exists" style="color: green; font-weight: bold;" ng-model="status">{{status}}</span>
-						<span ng-if="!exists" style="color: red; font-weight: bold;" ng-model="status">{{status}}</span>
+						<span ng-if="searchState" style="color: green; font-weight: bold;" ng-model="status">{{status}}</span>
+						<span ng-if="!searchState" style="color: red; font-weight: bold;" ng-model="status">{{status}}</span>
 					</div>
 
 				<!-- Display contents of the file-->
