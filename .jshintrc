@@ -3,6 +3,7 @@
 	"eqeqeq"        : true,
 	"varstmt"       : true,
 	"browser"       : true,
+	"esversion"		: 6,
 	"node"			: true
 
 }
