@@ -41,6 +41,18 @@ describe("Inverted index class", function() {
 
   });
 
+  describe("getIndex function", function() {
+    let obj = {
+      'a': ['1', '2'],
+      'b': ['2', '3']
+    };
+    let theData = indexFile.getIndex(obj);
+
+    it("should return an object", function() {
+      expect(typeof theData).toBe('object');
+    });
+  });
+
   describe("mergeObjects function", function() {
     let obj1 = {
       'a': '1',
@@ -81,13 +93,6 @@ describe("Inverted index class", function() {
     let promise = indexFile.getRequest();
     it("should return an instance of Promise", function() {
       expect(promise instanceof Promise).toBe(true);
-    });
-  });
-
-  describe("listArrayItems function", function() {
-    let arrayObject = indexFile.listArrayItems([1, 2]);
-    it("should return an object", function() {
-      expect(typeof arrayObject).toBe('object');
     });
   });
 

@@ -4,6 +4,14 @@
 class InvertedIndex {
 
   //TODO: Create a constructor to initialize variables
+  /**
+   @constructor
+   */
+  constructor() {
+    this.stories = [];
+    this.titles = [];
+    this.indexes = {};
+  }
 
   /**
 	* Creates an Index of the file at the path specified
@@ -13,7 +21,7 @@ class InvertedIndex {
 
   createIndex(data) {
 
-    //@TODO keep files outside the spec so that it can be tested.
+    //@TODO test for empty data;
 
     let objectIndex = {};
 
@@ -21,6 +29,9 @@ class InvertedIndex {
     if (!Array.isArray(data)) {
       let objectTitle = data[Object.keys(data)[0]],
         objectContent = data[Object.keys(data)[1]];
+
+      this.titles.push(objectTitle);
+      this.stories.push(objectContent);
 
       let wordsInText = `${objectTitle} ${objectContent}`;
       wordsInText = this.generateUniqueArray(this.filterWord(wordsInText));
@@ -38,6 +49,9 @@ class InvertedIndex {
         let objectTitle = data[i][Object.keys(data[i])[0]],
           objectContent = data[i][Object.keys(data[i])[1]];
 
+        this.titles.push(objectTitle);
+        this.stories.push(objectContent);
+
         let wordsInText = `${objectTitle} ${objectContent}`;
         wordsInText = this.generateUniqueArray(this.filterWord(wordsInText));
 
@@ -53,35 +67,8 @@ class InvertedIndex {
         }
       }
     }
+    this.indexes = objectIndex;
     return objectIndex;
-
-    // let file = document.querySelector('input[type=file]').files[0];
-
-    // if (!file)
-    //   throw Error('No file selected');
-
-    // let reader = new FileReader();
-    // reader.readAsText(file);
-
-    // // Make a promise to resolve the file if it is a JSON file with valid JSON content and reject otherwise
-    // let promise = new Promise((resolve, reject) => {
-
-    //   reader.onload = ((e) => {
-    //     if (e.target.result)
-
-    //       try {
-    //         if (JSON.parse(e.target.result)) ;
-    //         resolve(JSON.parse(e.target.result));
-    //       } catch (e) {
-    //         reject('File content is not of type JSON. Expected file structure is: [ { "content1" : "item1", "content2" : "item2"  } ]');
-    //     }
-    //     else
-    //       reject('Invalid File Selected');
-    //   })
-    // });
-
-  // console.log(promise instanceof Promise);
-  // return promise;
   }
 
 
@@ -129,6 +116,19 @@ class InvertedIndex {
     return uniqueArray;
   }
 
+
+  /**
+    * getStory method to return an array of titles and corresponding stories
+    * @Params {}
+    * @Returns {object}
+    */
+
+  getStory() {
+    return {
+      titles: this.generateUniqueArray(this.titles),
+      stories: this.stories
+    };
+  }
 
   /**
    * getRequest method to make http request to the server on the specified part
@@ -195,34 +195,11 @@ class InvertedIndex {
    * @Returns {object}
    */
 
-  searchIndex(terms) {}
+  searchIndex(term) {
+    if (this.indexes[term])
+      return this.indexes[term];
+    else
+      return 'No';
 
-
-  /** listArrayItems method to list contents of an array into strings
-	 *	@Param {array} 
-   *  @Returns {array}
-	 */
-
-  listArrayItems(data) {
-
-    // Return the value if it is not an Array
-    if (!Array.isArray(data))
-      return data;
-
-    //Make a recursive call back to the function if it is an array
-    for (let item of data)
-      wordListResult.push(this.listArrayItems(item));
-
-    // Remove the undefined elements in the generated array.
-    for (let word in wordListResult)
-      if ( (typeof wordListResult[word] !== 'string') )
-        wordListResult.splice(word, 1);
-
-    return {
-      'length': wordListResult.length,
-      'words': wordListResult
-    };
   }
 }
-
-let wordListResult = [];
