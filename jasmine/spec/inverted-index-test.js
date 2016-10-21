@@ -21,15 +21,13 @@ describe("Inverted index class", () => {
     let createSingle = indexFile.createIndex(singleJsonFile);
     let createMultiple = indexFile.createIndex(multipleJsonArray);
 
-    it("should return an object which indexes each unique word in a single JSON object to an array of the title", () => {
+    it("should return an object which indexes each unique word in a single or multiple JSON object to an array of the title", () => {
       expect(JSON.stringify(createSingle)).toBe(JSON.stringify({
         'single': ['single title'],
         'title': ['single title'],
         'content': ['single title']
       }));
-    });
 
-    it("should return an object which indexes each unique word in an array of JSON objects to an array of the titles it appears in", () => {
       expect(JSON.stringify(createMultiple)).toBe(JSON.stringify({
         'multiple': ['multiple title1', 'multiple title2'],
         'title1': ['multiple title1'],
@@ -43,13 +41,28 @@ describe("Inverted index class", () => {
 
   describe("getIndex method", () => {
     let obj = {
-      'a': ['1', '2'],
-      'b': ['2', '3']
+      'a': ['doc1', 'doc2'],
+      'b': ['doc2', 'doc3']
     };
+    indexFile.createIndex(obj);
     let theData = indexFile.getIndex(obj);
+    it("should return an object that stores arrays of words and titles", () => {
+      expect(JSON.stringify(theData)).toBe(JSON.stringify({
+        words: ['a', 'b'],
+        titles: ['doc1', 'doc2', 'doc3']
+      }));
+    });
+  });
 
-    it("should return an object", () => {
-      expect(typeof theData).toBe('object');
+  describe("searchIndex method", () => {
+    let theFile = {
+      'a': 'single title',
+      'b': 'single content'
+    };
+    indexFile.createIndex(theFile);
+    it("Should return true if the index exists and false otherwise", () => {
+      expect(indexFile.searchIndex('single')).toBe(true);
+      expect(indexFile.searchIndex('multiple')).toBe(false);
     });
   });
 
