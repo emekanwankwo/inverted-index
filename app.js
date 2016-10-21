@@ -5,6 +5,7 @@ let indexApp = angular.module("invertedIndex", []);
 
 indexApp.controller('rootAppController', ["$scope", ($scope) => {
 
+  let InvertedIndex = require('./inverted-index');
   let theIndex = new InvertedIndex();
 
   // Define a template Document for the Inverted Index Landing Page

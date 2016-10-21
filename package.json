@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "gulp",
+    "start": "node node_modules/gulp/bin/gulp",
     "dev": "npm start"
   },
   "repository": {
@@ -22,6 +22,7 @@
     "angular": "^1.5.8",
     "express": "^4.14.0",
     "graceful-fs": "^4.1.9",
+    "gulp-run": "^1.7.1",
     "jQuery": "^1.7.4",
     "jquery": "^3.1.1",
     "request": "^2.75.0",

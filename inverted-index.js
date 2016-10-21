@@ -170,3 +170,4 @@ class InvertedIndex {
       return false;
   }
 }
+module.exports = InvertedIndex;
