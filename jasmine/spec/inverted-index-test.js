@@ -21,7 +21,7 @@ describe("Inverted index class", () => {
     let createSingle = indexFile.createIndex(singleJsonFile);
     let createMultiple = indexFile.createIndex(multipleJsonArray);
 
-    it("should return an object which indexes each unique word in a single or multiple JSON object to an array of the title", () => {
+    it("should return an object which indexes each word in a single or multiple JSON object to an array of the titles they appear in.", () => {
       expect(JSON.stringify(createSingle)).toBe(JSON.stringify({
         'single': ['single title'],
         'title': ['single title'],
@@ -102,10 +102,19 @@ describe("Inverted index class", () => {
     });
   });
 
-  describe("generateUniqueArray method", () => {
-    let generate = indexFile.generateUniqueArray([1, 1, 2, 2, 'yes', 'yes']);
-    it("should return an array of unique items", () => {
-      expect(JSON.stringify(generate)).toBe(JSON.stringify([1, 2, 'yes']));
+  describe("getStory method", () => {
+    let theStoryFile = {
+      'x': 'story title',
+      'y': 'story content'
+    };
+    let newIndex = new InvertedIndex();
+    newIndex.createIndex(theStoryFile);
+    let theStory = newIndex.getStory();
+    it("should return an object of all the titles and stories", () => {
+      expect(JSON.stringify(theStory)).toBe(JSON.stringify({
+        titles: ['story title'],
+        stories: ['story content']
+      }));
     });
   });
 
