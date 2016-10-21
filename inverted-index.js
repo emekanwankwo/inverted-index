@@ -3,7 +3,6 @@
 
 class InvertedIndex {
 
-  //TODO: Create a constructor to initialize variables
   /**
    @constructor
    */
@@ -130,43 +129,6 @@ class InvertedIndex {
     };
   }
 
-  /**
-   * getRequest method to make http request to the server on the specified part
-   * @Params {string}
-   * @Returns
-   */
-
-  getRequest(url) {
-
-    // Create a new XMLHttpRequest object
-    let httpRequest = new XMLHttpRequest();
-
-    // Make a promise to send the http get request
-    let p1 = new Promise((resolve, reject) => {
-
-      // Make sure the request object was created for modern browsers
-      if (httpRequest) {
-        httpRequest.onreadystatechange = alertContents;
-        httpRequest.open('GET', url);
-        httpRequest.send();
-      } else {
-        reject('Browser Not Supported');
-      }
-
-      // Method to handle the promise
-      function alertContents() {
-        if (httpRequest.readyState === XMLHttpRequest.DONE) {
-          if (httpRequest.status === 200)
-            resolve(JSON.parse(httpRequest.responseText));
-          else
-            reject('There was an error!');
-        }
-      }
-    });
-
-    return p1;
-  }
-
 
   /**
    * getIndex Method to get the index of an element
@@ -186,7 +148,7 @@ class InvertedIndex {
       words: terms,
       titles: columns
     };
-  };
+  }
 
 
   /**
@@ -206,6 +168,5 @@ class InvertedIndex {
     }
     else
       return false;
-
-  };
+  }
 }

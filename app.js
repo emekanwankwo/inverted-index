@@ -3,7 +3,7 @@
 
 let indexApp = angular.module("invertedIndex", []);
 
-indexApp.controller('rootAppController', ["$scope", function($scope) {
+indexApp.controller('rootAppController', ["$scope", ($scope) => {
 
   let theIndex = new InvertedIndex();
 
@@ -11,13 +11,9 @@ indexApp.controller('rootAppController', ["$scope", function($scope) {
   $scope.columns = ['Doc1', 'Doc2', 'Doc3', 'Doc5'];
   $scope.terms = ['No', 'Yes', 'Hi', 'Hello', 'This', 1, 5, 10, '23', 'Not'];
 
-  let storeRowContent = [];
-  let storeColumnContent = [];
   $scope.allContent = {};
   $scope.storyTitle = [];
   $scope.storyContent = [];
-  $scope.count = 0;
-
   $scope.theIndex = 0;
 
 
@@ -27,7 +23,42 @@ indexApp.controller('rootAppController', ["$scope", function($scope) {
    * @Returns {}
    */
 
-  $scope.createIndex = (fileName) => {
+  $scope.createIndex = (url) => {
+
+    if ($.trim(url) !== "") {
+      let httpRequest = new XMLHttpRequest();
+
+      // Make a promise to send the http get request
+      let promise = new Promise((resolve, reject) => {
+
+        // Make sure the request object was created for modern browsers
+        if (httpRequest) {
+          httpRequest.onreadystatechange = alertContents;
+          httpRequest.open('GET', url);
+          httpRequest.send();
+        } else {
+          reject('Browser Not Supported');
+        }
+
+        // function to handle the promise
+        function alertContents() {
+          if (httpRequest.readyState === XMLHttpRequest.DONE) {
+            if (httpRequest.status === 200)
+              resolve(JSON.parse(httpRequest.responseText));
+            else
+              reject('There was an error!');
+          }
+        }
+        ;
+      });
+
+      promise.then((data) => {
+        resolveData(data);
+      })
+        .catch((err) => {
+          throw Error(err);
+        });
+    }
 
     // Ensure a valid file is selected and is has a '.json' extension
     let filepath = $.trim($('#filePath').val());
@@ -56,21 +87,27 @@ indexApp.controller('rootAppController', ["$scope", function($scope) {
         else
           reject('Invalid File Selected');
       });
+    });
+    promise.then((data) => {
+      resolveData(data);
     })
-      .then((data) => {
-        let objectIndex = theIndex.createIndex(data);
-        $scope.allContent = theIndex.mergeObjects($scope.allContent, objectIndex);
-        getIndex($scope.allContent);
-        $scope.storyTitle = theIndex.getStory().titles;
-        $scope.storyContent = theIndex.getStory().stories;
-        $scope.$apply();
-      })
       .catch((err) => console.log(err));
 
+  };
 
-      // // Check if a url address is entered to make an http get request to the selected JSON
-      // let fileUrl = $.trim($('#filename').val());
 
+  /**
+   *  Method to resolve response from the Inverted index function
+   *  @Param {object}
+   *  @Returns {}
+   */
+  resolveData = (data) => {
+    let objectIndex = theIndex.createIndex(data);
+    $scope.allContent = theIndex.mergeObjects($scope.allContent, objectIndex);
+    getIndex($scope.allContent);
+    $scope.storyTitle = theIndex.getStory().titles;
+    $scope.storyContent = theIndex.getStory().stories;
+    $scope.$apply();
   };
 
 
@@ -129,6 +166,8 @@ indexApp.controller('rootAppController', ["$scope", function($scope) {
    */
   $scope.searchState = false;
   $scope.searchWord = (keyword, criteria) => {
+    if (Object.keys($scope.allContent).length === 0)
+      return false;
     $scope.terms = [];
     let searchTerm = keyword.toLowerCase();
     $scope.terms.push(searchTerm);
@@ -148,34 +187,8 @@ indexApp.controller('rootAppController', ["$scope", function($scope) {
     $scope.exists = false;
     if ($.trim(keyword) === "") {
       $scope.terms = $scope.storeTerms;
-
-      // @TODO Make the push statement to only push unique items.
-
-      //   if ($scope.columns.length === storeColumnContent.length) { // If a search criteria is not specified and the search is empty, set the row of words to the entire array of words.
-      //     $scope.uniqueWords = storeRowContent;
-      //   } else { // If criteria is specified, use the words in that criteria title.
-      //     $scope.uniqueWords = $scope.allContent[$scope.columns[0]];
-      //   }
-      //   $scope.status = '';
-      // } else {
-      //   if ($scope.columns.length === storeColumnContent.length) { // If a search criteria is not specified, set the row of words to the array of that criteria
-      //     searchColumn = storeRowContent;
-      //   } else {
-      //     searchColumn = $scope.allContent[$scope.columns[0]];
-      //   }
-
-    // Change the status if found or not found
-    // $scope.status = 'Not Found';
-    // $scope.uniqueWords = [];
-    // $scope.uniqueWords.push(keyword);
-    // for (let item of searchColumn) {
-    //   if (item == keyword) {
-    //     $scope.status = 'Found';
-    //     $scope.exists = true;
-    //   }
-    // }
     }
-  }
+  };
 
 
   /**
@@ -192,6 +205,5 @@ indexApp.controller('rootAppController', ["$scope", function($scope) {
       $scope.columns = [];
       $scope.columns.push(searchKeyword);
     }
-
-  }
-}])
+  };
+}]);

@@ -104,9 +104,9 @@
 									<input type="file" id="filePath" file-model="thefilename" ><br>
 									<div class="input-group">
 										<span class="input-group-addon">File Url:</span>
-											<input type="input" id="filename" placeholder="Enter File Url" class="form-control">
+											<input type="input" id="filename" ng-model="theFileUrl" placeholder="Enter File Url" class="form-control">
 										<span class="input-group-btn">
-											<button class="btn btn-default" type="button" ng-click="createIndex(thefilename)">Create Index</button>
+											<button class="btn btn-default" type="button" ng-click="createIndex(theFileUrl)">Create Index</button>
 										</span>
 									</div>
 
