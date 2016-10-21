@@ -211,13 +211,22 @@
 	   * @Param {string : number}
 	   * @Return {}
 	   */
-	  $scope.searchState = false;
 	  $scope.searchWord = (keyword, criteria) => {
+	    $scope.searchState = false;
 	    if (Object.keys($scope.allContent).length === 0)
 	      return false;
-	    $scope.terms = [];
+
 	    let searchTerm = keyword.toLowerCase();
-	    $scope.terms.push(searchTerm);
+	    $scope.terms = [];
+
+	    try {
+	      $scope.terms = theIndex.generateUniqueArray(searchTerm.split(' '));
+	    } catch (e) {
+	      console.log('Duplicates detected');
+	    }
+
+	    let i = searchTerm.split(' ').length;
+	    searchTerm = searchTerm.split(' ')[i - 1];
 
 	    let searchQuery = theIndex.searchIndex(searchTerm, criteria);
 	    if (searchQuery) {
@@ -225,7 +234,6 @@
 	      $scope.searchState = true;
 	    } else {
 	      $scope.status = 'Not Found';
-	      $scope.searchState = false;
 	    }
 
 
