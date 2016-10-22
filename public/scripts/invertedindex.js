@@ -44,14 +44,21 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
+	module.exports = __webpack_require__(1);
+
+
+/***/ },
+/* 1 */
+/***/ function(module, exports, __webpack_require__) {
+
 	/**** Inverted Index Application to index, sort and search words in a string ******/
 
 
-	let indexApp = angular.module("invertedIndex", []);
+	let indexApp = angular.module('invertedIndex', []);
 
-	indexApp.controller('rootAppController', ["$scope", ($scope) => {
+	indexApp.controller('rootAppController', ['$scope', ($scope) => {
 
-	  let InvertedIndex = __webpack_require__(1);
+	  let InvertedIndex = __webpack_require__(2);
 	  let theIndex = new InvertedIndex();
 
 	  // Define a template Document for the Inverted Index Landing Page
@@ -72,7 +79,7 @@
 
 	  $scope.createIndex = (url) => {
 
-	    if ($.trim(url) !== "") {
+	    if ($.trim(url) !== '') {
 	      let httpRequest = new XMLHttpRequest();
 
 	      // Make a promise to send the http get request
@@ -96,7 +103,6 @@
 	              reject('There was an error!');
 	          }
 	        }
-	        ;
 	      });
 
 	      promise.then((data) => {
@@ -111,7 +117,7 @@
 	    let filepath = $.trim($('#filePath').val());
 	    let fileExt = filepath.substring(filepath.length - 5, filepath.length);
 
-	    if (filepath === "")
+	    if (filepath === '')
 	      throw Error('No file Selected!');
 
 	    if ((fileExt !== '.json') && (fileExt !== '.JSON'))
@@ -225,7 +231,7 @@
 	      console.log('Duplicates detected');
 	    }
 
-	    let i = searchTerm.split(' ').length;
+	    let i = searchTerm.split(' ').length; //get the length of the search field and set the searchterm to the last item.
 	    searchTerm = searchTerm.split(' ')[i - 1];
 
 	    let searchQuery = theIndex.searchIndex(searchTerm, criteria);
@@ -236,11 +242,8 @@
 	      $scope.status = 'Not Found';
 	    }
 
-
-	    // @TODO Make the search statement to work only when an index has been created.
-
 	    $scope.exists = false;
-	    if ($.trim(keyword) === "") {
+	    if ($.trim(keyword) === '') {
 	      $scope.terms = $scope.storeTerms;
 	    }
 	  };
@@ -254,7 +257,7 @@
 	  $scope.changeCriteria = (searchKeyword) => {
 
 	    // if the keyword is 'all titles', restore the column and row to the stored content.
-	    if ((searchKeyword) === "All titles")
+	    if ((searchKeyword) === 'All titles')
 	      $scope.columns = $scope.storeColumns;
 	    else {
 	      $scope.columns = [];
@@ -265,7 +268,7 @@
 
 
 /***/ },
-/* 1 */
+/* 2 */
 /***/ function(module, exports) {
 
 	
@@ -348,7 +351,7 @@
 	      */
 
 	  filterWord(word) {
-	    return word.replace(/[.,\/#!$£%\^&\*;:'{}=\-_`~()]/g, "").toLowerCase().split(" ");
+	    return word.replace(/[.,\/#!$£%\^&\*;:'{}=\-_`~()]/g, '').toLowerCase().split(' ');
 	  }
 
 

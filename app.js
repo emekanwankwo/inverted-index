@@ -1,9 +1,9 @@
 /**** Inverted Index Application to index, sort and search words in a string ******/
 
 
-let indexApp = angular.module("invertedIndex", []);
+let indexApp = angular.module('invertedIndex', []);
 
-indexApp.controller('rootAppController', ["$scope", ($scope) => {
+indexApp.controller('rootAppController', ['$scope', ($scope) => {
 
   let InvertedIndex = require('./inverted-index');
   let theIndex = new InvertedIndex();
@@ -26,7 +26,7 @@ indexApp.controller('rootAppController', ["$scope", ($scope) => {
 
   $scope.createIndex = (url) => {
 
-    if ($.trim(url) !== "") {
+    if ($.trim(url) !== '') {
       let httpRequest = new XMLHttpRequest();
 
       // Make a promise to send the http get request
@@ -50,7 +50,6 @@ indexApp.controller('rootAppController', ["$scope", ($scope) => {
               reject('There was an error!');
           }
         }
-        ;
       });
 
       promise.then((data) => {
@@ -65,7 +64,7 @@ indexApp.controller('rootAppController', ["$scope", ($scope) => {
     let filepath = $.trim($('#filePath').val());
     let fileExt = filepath.substring(filepath.length - 5, filepath.length);
 
-    if (filepath === "")
+    if (filepath === '')
       throw Error('No file Selected!');
 
     if ((fileExt !== '.json') && (fileExt !== '.JSON'))
@@ -190,11 +189,8 @@ indexApp.controller('rootAppController', ["$scope", ($scope) => {
       $scope.status = 'Not Found';
     }
 
-
-    // @TODO Make the search statement to work only when an index has been created.
-
     $scope.exists = false;
-    if ($.trim(keyword) === "") {
+    if ($.trim(keyword) === '') {
       $scope.terms = $scope.storeTerms;
     }
   };
@@ -208,7 +204,7 @@ indexApp.controller('rootAppController', ["$scope", ($scope) => {
   $scope.changeCriteria = (searchKeyword) => {
 
     // if the keyword is 'all titles', restore the column and row to the stored content.
-    if ((searchKeyword) === "All titles")
+    if ((searchKeyword) === 'All titles')
       $scope.columns = $scope.storeColumns;
     else {
       $scope.columns = [];

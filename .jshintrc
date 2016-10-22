@@ -9,6 +9,8 @@
     "camelcase"		: false,
 	"unused"		: true,
 	"jasmine"       : true,
-    "jquery"        : true
+    "jquery"        : true,
+	"quotmark"		: "single",
+	"mocha"			: true
 
 }

@@ -2,15 +2,12 @@
 
 let gulp = require('gulp'),
   runSequence = require('run-sequence'),
-  run = require('gulp-run');
+  run = require('gulp-run'),
+  Server = require('karma').Server;
 
 // Default task to run.
 gulp.task('default', () => {
-  // gulp.start('pack');
-  runSequence(
-    'bundle',
-    ['scripts', 'styles', 'pack']
-  );
+  return runSequence('bundle', ['scripts', 'styles', 'pack']);
 });
 
 // Move the index file to the public directory
@@ -27,8 +24,15 @@ gulp.task('styles', () => {
 
 // Move the scrit files to the public/scripts directory
 gulp.task('scripts', () => {
-  gulp.src('dist/build/*.js')
-    .pipe(gulp.dest('public/scripts'));
+  setTimeout(() => {
+    gulp.src('dist/build/*.js')
+      .pipe(gulp.dest('public/scripts'));
+  }, 1000);
+});
+
+// Test using karma
+gulp.task('test', () => {
+  run('node node_modules/jasmine-node/bin/jasmine-node --color --verbose jasmine/spec').exec();
 });
 
 // Use webpack to create the bundle file.
