@@ -1,0 +1,22 @@
+[
+{
+    "book_name" : "Head First Java",
+    "book_text" : "This is the text content for book one"
+  },
+  {
+    "Title" : "JSON file is object friendly",
+    "Content" : "This is the text content for this book four"
+  },
+  {
+    "book_name" : "Node.js in Action",
+    "book_text" : "This is the text content for book two"
+  },
+  {
+    "Name" : "Angular JS Testing Cookbook 2",
+    "Story" : "This is the text content for this book three 3"
+  },
+  {
+    "book_name" : "JSON file is friendly",
+    "book_text" : "This is the text content for this book four"
+  }
+]

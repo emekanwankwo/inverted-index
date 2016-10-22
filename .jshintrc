@@ -1,0 +1,16 @@
+{
+	
+	"eqeqeq"        : true,
+	"varstmt"       : true,
+	"browser"       : true,
+	"esversion"		: 6,
+	"node"			: true,
+	"bitwise"		: true,
+    "camelcase"		: false,
+	"unused"		: true,
+	"jasmine"       : true,
+    "jquery"        : true,
+	"quotmark"		: "single",
+	"mocha"			: true
+
+}

@@ -1,0 +1,123 @@
+<!doctype html>
+<html ng-app="invertedIndex">
+	<head>
+		<title>Inverted Index</title>
+
+		<!-- Import Angular -->
+		<!--<script src="node_modules/angular/angular.min.js"></script>-->
+  		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+
+		<!-- Import JQuery -->
+		<!--<script src="node_modules/jquery/dist/jquery.min.js"></script>-->
+  		<script src="http://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc=" crossorigin="anonymous"></script>
+
+		<!-- Import Local script -->
+		<script type="text/javascript" src="scripts/invertedindex.js"></script>
+
+  		 <!--Import Google Fonts-->
+  		<link href="https://fonts.googleapis.com/css?family=Tangerine|Romanesco&effect=3d-float|Timmana&effect=3d-float|Stalemate&effect=3d-float|Yesteryear&effect=3d-float|Caudex&effect=3d-float" rel="stylesheet" type="text/css">
+		
+		 <!--Import Local CSS file-->
+  		<link rel="stylesheet" type="text/css" href="styles/style.css">
+		
+
+  		 <!--Import Bootstrap -->
+  		<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  		<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+  		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css">
+		
+		
+		<!-- Import test files -->
+		<!--<script type="text/javascript" src="jasmine/spec/inverted-index-test.js"></script>-->
+		
+	</head>
+	<body>
+
+		<div id="content">
+
+			<div id="header_div">
+				<h1 id="header_text" class="font-effect-3d-float">Inverted Index</h1>
+			</div>
+
+			<div ng-controller="rootAppController">
+
+				<!-- Display the file index and create index options-->
+				<div id="display_file">
+
+					<div id="display_table_div">
+						<table id="index_table" class="table table-striped table-hover ">
+							<thead> 
+								<tr>
+									<th style="text-align: center;">Term </th><th style="text-align: center;" ng-repeat="column in columns">{{column}}</th>
+								</tr>
+							</thead>
+							<tbody id="word_index_body" style="width: 800px;">
+								<tr id="word_index_row" ng-repeat="word in terms">
+									<td style="text-align: center;"> {{word}} </td><td ng-repeat="item in columns" style="text-align: center;">{{checkThis(word, item)}} <label ng-if="count > 0">x</label></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+				</div>
+
+
+				<!-- search input -->
+				<div class="input-group" id="search_div">
+					<!--<span class="input-group-addon">Search word:</span>-->
+					<span class="input-group-addon">
+						<select id="search_criteria" ng-model="criteria" ng-change="changeCriteria(criteria)" style="border: none; width: auto; height: inherit;">
+							<option selected>All titles</option>
+							<option ng-repeat="item in storyTitle" ng-model="item">{{item}}</option>
+						</select>
+					</span>
+					<input type="input" id="searchname" placeholder="Enter search keyword" ng-model="keyword" ng-change="searchWord(keyword, criteria)"
+					class="form-control">
+					</div>
+					<div id="search_status">
+						<span ng-if="searchState" style="color: green; font-weight: bold;" ng-model="status">{{status}}</span>
+						<span ng-if="!searchState" style="color: red; font-weight: bold;" ng-model="status">{{status}}</span>
+					</div>
+
+				<!-- Display contents of the file-->
+				<div id="file_content_div">
+					<div class="jumbotron">
+						<div style="position: relative; margin: 10px;">
+							<h2>{{storyTitle[theIndex]}}</h2>
+							<p>{{storyContent[theIndex]}}</p>
+							<p ng-if="storyTitle.length>0"><a class="btn btn-primary btn-lg" ng-click="changeStory()">Next</a></p>
+						</div>
+					</div>
+
+					<!-- Create new index panel-->
+					
+					<div id="select_file_div">
+						<div class="form-group">
+							<div class="panel panel-info">
+								<div class="panel-heading">
+									<h3 class="panel-title"><label class="control-label"><p class="font-effect-3d-float" style="font-size: 25px;" >Create New Index</p></label><br></h3>
+								</div>
+								<div class="panel-body">
+									
+									<input type="file" id="filePath" file-model="thefilename" ><br>
+									<div class="input-group">
+										<span class="input-group-addon">File Url:</span>
+											<input type="input" id="filename" ng-model="theFileUrl" placeholder=" e.g. http://ipinfo.io/json" class="form-control">
+										<span class="input-group-btn">
+											<button class="btn btn-default" type="button" ng-click="createIndex(theFileUrl)">Create Index</button>
+										</span>
+									</div>
+
+									</div>
+							</div>	
+						</div>
+					</div>
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</body>
+</html>
