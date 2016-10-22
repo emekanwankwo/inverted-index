@@ -4,6 +4,7 @@
   "description": "Inverted index application",
   "main": "index.js",
   "scripts": {
+    "serve": "node node_modules/gulp/bin/gulp serve",
     "test": "node node_modules/gulp/bin/gulp test",
     "start": "node node_modules/gulp/bin/gulp",
     "dev": "npm start"
@@ -42,6 +43,7 @@
     "karma-jasmine": "^1.0.2",
     "karma-mocha": "^1.2.0",
     "mocha": "^3.1.2",
-    "vinyl-source-stream": "^1.1.0"
+    "vinyl-source-stream": "^1.1.0",
+    "webpack-dev-server": "^1.16.2"
   }
 }

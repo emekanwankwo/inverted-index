@@ -159,6 +159,7 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
     }
   };
 
+
   /**
    * Method to search for a given keyword
    * @Param {string : number}

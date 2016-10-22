@@ -1,6 +1,10 @@
 module.exports = {
-  entry: ['./app.js'],
+  entry: ['./src/app.js'],
   output: {
-    filename: 'dist/build/invertedindex.js'
+    filename: 'public/scripts/invertedindex.js'
+  },
+  devServer: {
+    contentBase: './public',
+    hot: true
   }
 };

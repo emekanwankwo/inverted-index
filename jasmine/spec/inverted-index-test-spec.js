@@ -1,5 +1,5 @@
 describe('Inverted index class', () => {
-  let InvertedIndex = require('../../inverted-index');
+  let InvertedIndex = require('../../src/inverted-index');
   let indexFile = new InvertedIndex();
 
   describe('createIndex method', () => {
