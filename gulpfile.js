@@ -3,11 +3,12 @@
 let gulp = require('gulp'),
   runSequence = require('run-sequence'),
   run = require('gulp-run'),
-  Server = require('karma').Server;
+  browserify = require('browserify'),
+  source = require('vinyl-source-stream');
 
 // Default task to run.
 gulp.task('default', () => {
-  return runSequence('bundle', ['scripts', 'styles', 'pack']);
+  return runSequence('bundle', ['scripts', 'styles', 'pack', 'browserifytest']);
 });
 
 // Move the index file to the public directory
@@ -30,9 +31,17 @@ gulp.task('scripts', () => {
   }, 1000);
 });
 
-// Test using karma
+// Test using jasmine-node
 gulp.task('test', () => {
-  run('node node_modules/jasmine-node/bin/jasmine-node --color --verbose jasmine/spec').exec();
+  run('node node_modules/jasmine-node/bin/jasmine-node --color --verbose jasmine/spec/*.js').exec();
+});
+
+// Browserify test spec file to be accessible by the browser
+gulp.task('browserifytest', () => {
+  return browserify('./jasmine/spec/inverted-index-test-spec.js')
+    .bundle()
+    .pipe(source('test-spec.js'))
+    .pipe(gulp.dest('./jasmine/spec/browser'));
 });
 
 // Use webpack to create the bundle file.
