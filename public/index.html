@@ -4,7 +4,6 @@
 		<title>Inverted Index</title>
 
 		<!-- Import Angular -->
-		<!--<script src="node_modules/angular/angular.min.js"></script>-->
   		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
 
 		<!-- Import JQuery -->
@@ -25,10 +24,6 @@
   		<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   		<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
   		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css">
-		
-		
-		<!-- Import test files -->
-		<!--<script type="text/javascript" src="jasmine/spec/inverted-index-test.js"></script>-->
 		
 	</head>
 	<body>
@@ -66,9 +61,8 @@
 				<div class="input-group" id="search_div">
 					<!--<span class="input-group-addon">Search word:</span>-->
 					<span class="input-group-addon">
-						<select id="search_criteria" ng-model="criteria" ng-change="changeCriteria(criteria)" style="border: none; width: auto; height: inherit;">
-							<option selected>All titles</option>
-							<option ng-repeat="item in storyTitle" ng-model="item">{{item}}</option>
+						<select id="search_criteria" ng-model="criteria" ng-options="item for item in storyTitle"  ng-change="changeCriteria(criteria)" style="border: none; width: auto; height: inherit;">
+							<option value="" selected>All titles</option>
 						</select>
 					</span>
 					<input type="input" id="searchname" placeholder="Enter search keyword" ng-model="keyword" ng-change="searchWord(keyword, criteria)"

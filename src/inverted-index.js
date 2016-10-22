@@ -157,9 +157,9 @@ class InvertedIndex {
    * @Returns {object}
    */
 
-  searchIndex(term, criteria = 'All Titles') {
+  searchIndex(term, criteria = null) {
     if (this.indexes[term]) {
-      if ((criteria === 'All Titles') || (criteria === undefined))
+      if ((criteria === null) || (criteria === undefined))
         return true;
       else {
         if (this.indexes[term].indexOf(criteria) !== -1)

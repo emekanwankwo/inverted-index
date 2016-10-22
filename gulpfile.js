@@ -4,11 +4,14 @@ let gulp = require('gulp'),
   runSequence = require('run-sequence'),
   run = require('gulp-run'),
   browserify = require('browserify'),
-  source = require('vinyl-source-stream');
+  source = require('vinyl-source-stream'),
+  webpack = require('webpack'),
+  WebpackDevServer = require('webpack-dev-server'),
+  webpackConfig = require('./webpack.config.js');
 
 // Default task to run.
 gulp.task('default', () => {
-  return runSequence('bundle', ['styles', 'pack'], 'browserifytest');
+  return runSequence('bundle', ['styles', 'pack'], 'browserifytest', 'webpack-dev-server');
 });
 
 // Browserify test spec file to be accessible by the browser
@@ -55,6 +58,3 @@ gulp.task('webpack-dev-server', function() {
     }
   }).listen(5000, 'localhost');
 });
-
-// Create a default watch task
-gulp.task('default', ['webpack-dev-server']);

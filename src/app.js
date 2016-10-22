@@ -204,8 +204,8 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
    */
   $scope.changeCriteria = (searchKeyword) => {
 
-    // if the keyword is 'all titles', restore the column and row to the stored content.
-    if ((searchKeyword) === 'All titles')
+    // if 'all titles' is selected, restore the column and row to the stored content.
+    if ((searchKeyword) === null)
       $scope.columns = $scope.storeColumns;
     else {
       $scope.columns = [];
