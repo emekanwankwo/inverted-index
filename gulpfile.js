@@ -8,12 +8,7 @@ let gulp = require('gulp'),
 
 // Default task to run.
 gulp.task('default', () => {
-  return runSequence('bundle', ['styles', 'pack'], 'browserifytest', ['serve']);
-});
-
-// Run the server
-gulp.task('serve', () => {
-  run('node node_modules/webpack-dev-server/bin/webpack-dev-server --hot --inline --open --config ./webpack.config.js').exec();
+  return runSequence('bundle', ['styles', 'pack'], 'browserifytest');
 });
 
 // Browserify test spec file to be accessible by the browser
@@ -45,3 +40,21 @@ gulp.task('test', () => {
 gulp.task('bundle', () => {
   run('node node_modules/webpack/bin/webpack').exec();
 });
+
+gulp.task('webpack-dev-server', function() {
+  // modify some webpack config options
+  let myConfig = Object.create(webpackConfig);
+  myConfig.devtool = 'eval';
+  myConfig.debug = true;
+
+  // Start a webpack-dev-server
+  new WebpackDevServer(webpack(myConfig), {
+    publicPath: './' + myConfig.output.publicPath,
+    stats: {
+      colors: true
+    }
+  }).listen(5000, 'localhost');
+});
+
+// Create a default watch task
+gulp.task('default', ['webpack-dev-server']);

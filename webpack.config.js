@@ -1,10 +1,29 @@
+let BrowserSyncPlugin = require('browser-sync-webpack-plugin');
+
 module.exports = {
   entry: ['./src/app.js'],
   output: {
-    filename: 'public/scripts/invertedindex.js'
+    filename: 'invertedindex.js',
+    path: __dirname + '/public/scripts'
   },
   devServer: {
     contentBase: './public',
     hot: true
-  }
+  },
+  plugins: [
+    new BrowserSyncPlugin(
+      {
+        // browse to http://localhost:3001/ during development 
+        host: 'localhost',
+        port: 3001,
+        server: {
+          baseDir: ['./public']
+        },
+      },
+      // plugin options 
+      {
+        reload: true
+      }
+    )
+  ]
 };
