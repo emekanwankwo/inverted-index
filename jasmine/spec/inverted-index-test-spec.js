@@ -81,7 +81,7 @@ describe('Inverted index class', () => {
       b: ['2', '3', '4'],
       c: '4'
     };
-    let merge = indexFile.mergeObjects(obj1, obj2)
+    let merge = indexFile.mergeObjects(obj1, obj2);
     it('should merge the content of two objects', () => {
       expect(JSON.stringify(merge)).toBe(JSON.stringify(result));
     });
