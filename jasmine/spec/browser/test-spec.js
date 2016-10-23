@@ -37,6 +37,12 @@ describe('Inverted index class', () => {
       }));
     });
 
+    let emptyFile = {};
+    let emptyJson = indexFile.createIndex(emptyFile);
+    it('Should return false if json file is empty', () => {
+      expect(emptyJson).toBeFalsy();
+    });
+
   });
 
   describe('getIndex method', () => {
@@ -52,6 +58,13 @@ describe('Inverted index class', () => {
         titles: ['doc1', 'doc2', 'doc3']
       }));
     });
+
+    let emptyFile = {};
+    let emptyIndex = indexFile.getIndex(emptyFile);
+    it('should return false if an empty object argument is passed in', () => {
+      expect(emptyIndex).toBeFalsy();
+    });
+
   });
 
   describe('searchIndex method', () => {
@@ -61,8 +74,8 @@ describe('Inverted index class', () => {
     };
     indexFile.createIndex(theFile);
     it('Should return true if the index exists and false otherwise', () => {
-      expect(indexFile.searchIndex('single')).toBe(true);
-      expect(indexFile.searchIndex('multiple')).toBe(false);
+      expect(indexFile.searchIndex('single')).toBeTruthy();
+      expect(indexFile.searchIndex('multiple')).toBeFalsy();
     });
   });
 
@@ -86,6 +99,12 @@ describe('Inverted index class', () => {
     it('should merge the content of two objects', () => {
       expect(JSON.stringify(merge)).toBe(JSON.stringify(result));
     });
+
+    let invalidObject = indexFile.mergeObjects('arg1', 'arg2');
+    it('should return false if the arguments are not objects', () => {
+      expect(invalidObject).toBeFalsy();
+    });
+
   });
 
   describe('filterWord method', () => {
@@ -93,13 +112,25 @@ describe('Inverted index class', () => {
     it('should take a string and return an array of filtered text in lower case', () => {
       expect(JSON.stringify(stringWord)).toBe(JSON.stringify(['this', 'is', 'text', 'to', 'be', 'tested']));
     });
+
+    let notString = indexFile.filterWord(['one, two']);
+    it('should return false if the argument to be filtered is not a string', () => {
+      expect(notString).toBeFalsy();
+    });
+
   });
 
   describe('generateUniqueArray method', () => {
     let generate = indexFile.generateUniqueArray([1, 1, 2, 2, 'yes', 'yes']);
-    it('should return an array of unique items', () => {
+    it('should return an array of unique contents of the array argument', () => {
       expect(JSON.stringify(generate)).toBe(JSON.stringify([1, 2, 'yes']));
     });
+
+    let invalidArray = indexFile.generateUniqueArray('12345');
+    it('should return false if the argument specified is not an array', () => {
+      expect(invalidArray).toBeFalsy();
+    });
+
   });
 
   describe('getStory method', () => {
@@ -142,7 +173,8 @@ class InvertedIndex {
 
   createIndex(data) {
 
-    //@TODO test for empty data;
+    if(Object.keys(data).length <= 0)
+      return false;
 
     let objectIndex = {};
 
@@ -200,6 +232,8 @@ class InvertedIndex {
       */
 
   filterWord(word) {
+    if((typeof word) !== 'string')
+      return false;
     return word.replace(/[.,\/#!$£%\^&\*;:'{}=\-_`~()]/g, '').toLowerCase().split(' ');
   }
 
@@ -210,6 +244,8 @@ class InvertedIndex {
   * @Returns {object}
   */
   mergeObjects(dest, src) {
+    if((typeof dest !== 'object') || (typeof src !== 'object'))
+      return false;
     let makeUnique = this.generateUniqueArray;
     Object.keys(src).forEach(function(key) {
       if (dest[key]) {
@@ -228,6 +264,8 @@ class InvertedIndex {
     * @Returns {array}
     */
   generateUniqueArray(data) {
+    if(!Array.isArray(data))
+      return false;
     let uniqueArray = [];
     data.forEach((value) => {
       let index = uniqueArray.indexOf(value);
@@ -259,6 +297,8 @@ class InvertedIndex {
    */
 
   getIndex(data) {
+    if (Object.keys(data).length <= 0)
+      return false;
     let terms = [];
     let columns = [];
     terms = Object.keys(data);

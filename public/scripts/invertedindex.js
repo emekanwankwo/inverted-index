@@ -301,7 +301,8 @@
 
 	  createIndex(data) {
 
-	    //@TODO test for empty data;
+	    if(Object.keys(data).length <= 0)
+	      return false;
 
 	    let objectIndex = {};
 
@@ -359,6 +360,8 @@
 	      */
 
 	  filterWord(word) {
+	    if((typeof word) !== 'string')
+	      return false;
 	    return word.replace(/[.,\/#!$£%\^&\*;:'{}=\-_`~()]/g, '').toLowerCase().split(' ');
 	  }
 
@@ -369,6 +372,8 @@
 	  * @Returns {object}
 	  */
 	  mergeObjects(dest, src) {
+	    if((typeof dest !== 'object') || (typeof src !== 'object'))
+	      return false;
 	    let makeUnique = this.generateUniqueArray;
 	    Object.keys(src).forEach(function(key) {
 	      if (dest[key]) {
@@ -387,6 +392,8 @@
 	    * @Returns {array}
 	    */
 	  generateUniqueArray(data) {
+	    if(!Array.isArray(data))
+	      return false;
 	    let uniqueArray = [];
 	    data.forEach((value) => {
 	      let index = uniqueArray.indexOf(value);
@@ -418,6 +425,8 @@
 	   */
 
 	  getIndex(data) {
+	    if (Object.keys(data).length <= 0)
+	      return false;
 	    let terms = [];
 	    let columns = [];
 	    terms = Object.keys(data);
