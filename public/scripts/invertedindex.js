@@ -79,7 +79,8 @@
 
 	  $scope.createIndex = (url) => {
 
-	    if ($.trim(url) !== '') {
+	    let filepath = $.trim($('#filePath').val());
+	    if ((filepath === '') && ($.trim(url) !== '')) {
 	      let httpRequest = new XMLHttpRequest();
 
 	      // Make a promise to send the http get request
@@ -100,28 +101,30 @@
 	            if (httpRequest.status === 200)
 	              resolve(JSON.parse(httpRequest.responseText));
 	            else
-	              reject('There was an error!');
+	              reject('There was an error resolving url');
 	          }
 	        }
 	      });
 
 	      promise.then((data) => {
-	        resolveData(data);
+	         resolveData(data);
 	      })
 	        .catch((err) => {
-	          throw Error(err);
+	          showErr(err);
 	        });
-	    }
+	    } else {
 
 	    // Ensure a valid file is selected and is has a '.json' extension
-	    let filepath = $.trim($('#filePath').val());
 	    let fileExt = filepath.substring(filepath.length - 5, filepath.length);
 
-	    if (filepath === '')
-	      throw Error('No file Selected!');
-
-	    if ((fileExt !== '.json') && (fileExt !== '.JSON'))
-	      throw Error('File type must be type JSON');
+	    if ((filepath === '') && ($.trim(url) === '')){
+	      showErr('No url specified or file Selected!');
+	      return false;
+	    }
+	    if ((fileExt !== '.json') && (fileExt !== '.JSON') && ($.trim(url) === '')){
+	      showErr('File type must be type JSON');
+	      return false;
+	    }
 
 	    let thefile = document.getElementById('filePath').files[0];
 	    let reader = new FileReader();
@@ -135,17 +138,36 @@
 	            if (JSON.parse(e.target.result)) ;
 	            resolve(JSON.parse(e.target.result));
 	          } catch (e) {
-	            reject('File content is not of type JSON. Expected file structure is: [ { "content1" : "item1", "content2" : "item2"  } ]');
+	            reject('Invalid JSON file. Expected:{ "title" : "item", "content" : "item"  }');
 	        }
 	        else
 	          reject('Invalid File Selected');
 	      });
 	    });
 	    promise.then((data) => {
-	      resolveData(data);
+	       resolveData(data); 
 	    })
-	      .catch((err) => console.log(err));
+	      .catch((err) => {
+	        showErr(err);
+	      });
+	    }
+	  };
 
+
+	/**
+	 * function to display error for 8 seconds
+	 * @Param{string} error message
+	 */
+
+	  showErr = (errMsg) => {
+	    setTimeout(() => {
+	    $scope.errExist = false;
+	    $scope.errMsg = '';
+	    $scope.$apply();
+	    }, 8000);
+	      $scope.errMsg = errMsg; 
+	      $scope.errExist = true;
+	      $scope.$apply();
 	  };
 
 
@@ -184,14 +206,8 @@
 	   * @Params {}
 	   * @Returns {}
 	   */
-	  $scope.changeStory = () => {
-	    if ($scope.storyTitle.length === 0)
-	      return false;
-	    if ($scope.theIndex === $scope.storyTitle.length - 1)
-	      $scope.theIndex = 0;
-	    else
-	      $scope.theIndex += 1;
-	  };
+	  $scope.changeStory = () => ($scope.storyTitle.length === 0) ? false : ($scope.theIndex === $scope.storyTitle.length - 1) ? $scope.theIndex = 0 : $scope.theIndex += 1;
+
 
 
 	  /**
@@ -205,8 +221,6 @@
 	    try {
 	      if ($scope.allContent[word].indexOf(columnIndex) !== -1)
 	        $scope.count += 1;
-	      else
-	        throw Error('Not found!');
 	    } catch (e) {
 	      // Fail silently
 	    }
@@ -229,7 +243,7 @@
 	    try {
 	      $scope.terms = theIndex.generateUniqueArray(searchTerm.split(' '));
 	    } catch (e) {
-	      console.log('Duplicates detected');
+	      showErr('Duplicates detected');
 	    }
 
 	    let i = searchTerm.split(' ').length; //get the length of the search field and set the searchterm to the last item.
@@ -245,6 +259,7 @@
 
 	    $scope.exists = false;
 	    if ($.trim(keyword) === '') {
+	      $scope.status = '';
 	      $scope.terms = $scope.storeTerms;
 	    }
 	  };
@@ -255,16 +270,8 @@
 	   * @Param {string}
 	   * @Return {}
 	   */
-	  $scope.changeCriteria = (searchKeyword) => {
+	$scope.changeCriteria = (searchKeyword) => ((searchKeyword) === null ? ($scope.columns = $scope.storeColumns) : `${$scope.columns = []} ${$scope.columns.push(searchKeyword)}`);
 
-	    // if 'all titles' is selected, restore the column and row to the stored content.
-	    if ((searchKeyword) === null)
-	      $scope.columns = $scope.storeColumns;
-	    else {
-	      $scope.columns = [];
-	      $scope.columns.push(searchKeyword);
-	    }
-	  };
 	}]);
 
 

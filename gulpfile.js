@@ -57,4 +57,19 @@ gulp.task('webpack-dev-server', function() {
       colors: true
     }
   }).listen(5000, 'localhost');
+
+// Watch files for changes
+gulp.task('watch', () => {
+
+  // Watch .html files
+  gulp.watch('src/*.html', ['pack']);
+
+  // Watch .scss files
+  gulp.watch('src/styles/*.css', ['styles']);
+
+  // Watch .js files
+  gulp.watch('src/*.js', ['bundle']);
+
+});
+
 });
