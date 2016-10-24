@@ -56,7 +56,7 @@ gulp.task('webpack-dev-server', function() {
     stats: {
       colors: true
     }
-  }).listen(5000, 'localhost');
+  }).listen(5000);
 
 // Watch files for changes
 gulp.task('watch', () => {
