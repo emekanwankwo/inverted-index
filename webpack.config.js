@@ -14,8 +14,10 @@ module.exports = {
     new BrowserSyncPlugin(
       {
         // browse to http://localhost:3001/ during development 
-        host: 'localhost',
-        port: 3001,
+        // host: 'localhost',
+        host: 'https://inverted-index-app.herokuapp.com/',
+        // port: 3001,
+        port: 5000,
         server: {
           baseDir: ['./public']
         },
