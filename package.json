@@ -9,8 +9,8 @@
   "scripts": {
     "serve": "node node_modules/gulp/bin/gulp webpack-dev-server",
     "test": "node node_modules/gulp/bin/gulp test",
-    "start": "node node_modules/gulp/bin/gulp",
-    "dev": "npm start"
+    "start": "node server.js",
+    "dev": "node node_modules/gulp/bin/gulp"
   },
   "repository": {
     "type": "git",
