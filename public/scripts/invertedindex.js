@@ -62,7 +62,7 @@
 	  let theIndex = new InvertedIndex();
 
 	  // Define a template Document for the Inverted Index Landing Page
-	  $scope.columns = ['Doc1', 'Doc2', 'Doc3', 'Doc5'];
+	  $scope.columns = ['Doc1', 'Doc2', 'Doc3', 'Doc4'];
 	  $scope.terms = ['No', 'Yes', 'Hi', 'Hello', 'This', 1, 5, 10, '23', 'Not'];
 
 	  $scope.allContent = {};
