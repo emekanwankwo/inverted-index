@@ -8,6 +8,7 @@ let gulp = require('gulp'),
   webpack = require('webpack'),
   WebpackDevServer = require('webpack-dev-server'),
   webpackConfig = require('./webpack.config.js'),
+  istanbul = require('gulp-istanbul'),
   port = process.env.PORT || 3000;
 
 
@@ -36,9 +37,16 @@ gulp.task('styles', () => {
     .pipe(gulp.dest('public/styles'));
 });
 
+gulp.task('pre-test', () => {
+    return gulp.src(['jasmine/spec/*.js'])
+    .pipe(istanbul())
+    .pipe(istanbul.hookRequire());
+});
+
 // Test using jasmine-node
-gulp.task('test', () => {
-  run('node node_modules/jasmine-node/bin/jasmine-node --color --verbose jasmine/spec/*.js').exec();
+gulp.task('test',['pre-test'], () => {
+  run('node node_modules/jasmine-node/bin/jasmine-node --color --verbose jasmine/spec/*.js').exec()
+  .pipe(istanbul.writeReports());
 });
 
 // Use webpack to create the bundle file.

@@ -10,7 +10,8 @@
     "serve": "node node_modules/gulp/bin/gulp webpack-dev-server",
     "test": "node node_modules/gulp/bin/gulp test",
     "start": "node server.js",
-    "dev": "node node_modules/gulp/bin/gulp"
+    "dev": "node node_modules/gulp/bin/gulp",
+    "coverage": "node ./node_modules/.bin/istanbul cover jasmine/spec/*.js  "
   },
   "repository": {
     "type": "git",
@@ -30,6 +31,7 @@
     "express": "^4.14.0",
     "graceful-fs": "^4.1.9",
     "gulp": "^3.9.1",
+    "gulp-istanbul": "^1.1.1",
     "gulp-run": "^1.7.1",
     "istanbul": "^0.4.5",
     "jasmine-core": "^2.5.2",
