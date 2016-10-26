@@ -10,6 +10,7 @@ class InvertedIndex {
     this.stories = [];
     this.titles = [];
     this.indexes = {};
+    this.searchResult = {};
   }
 
   /**
@@ -67,7 +68,7 @@ class InvertedIndex {
         }
       }
     }
-    this.indexes = objectIndex;
+    this.indexes = this.mergeObjects(this.indexes, objectIndex);
     return objectIndex;
   }
 
@@ -167,12 +168,21 @@ class InvertedIndex {
    */
 
   searchIndex(term, criteria = null) {
+    let docPosition = [];
     if (this.indexes[term]) {
-      if ((criteria === null) || (criteria === undefined))
-        return true;
+      if ((criteria === null) || (criteria === undefined)){
+        for(let title of this.indexes[term]){
+          docPosition.push(this.titles.indexOf(title));
+        }
+        this.searchResult[term] = docPosition;
+        return this.searchResult;
+      }
       else {
-        if (this.indexes[term].indexOf(criteria) !== -1)
-          return true;
+        if (this.indexes[term].indexOf(criteria) !== -1){
+          docPosition.push(this.indexes[term].indexOf(criteria));
+          this.searchResult[term] = docPosition;
+        }
+        return this.searchResult;
       }
     }
     else

@@ -2,7 +2,22 @@ describe('Inverted index class', () => {
   let InvertedIndex = require('../../src/inverted-index');
   let indexFile = new InvertedIndex();
 
-  describe('createIndex method', () => {
+  describe('Read book data', () => {
+
+    let emptyFile = {};
+    let emptyJson = indexFile.createIndex(emptyFile);
+    it('Should return false if json file is empty', () => {
+      expect(emptyJson).toBeFalsy();
+    });
+
+  });
+
+  describe('Populate Index', () => {
+    let obj = {
+      'a': ['doc1', 'doc2'],
+      'b': ['doc2', 'doc3']
+    };
+
     let singleJsonFile = {
       'a': 'single title',
       'b': 'single content'
@@ -36,19 +51,6 @@ describe('Inverted index class', () => {
       }));
     });
 
-    let emptyFile = {};
-    let emptyJson = indexFile.createIndex(emptyFile);
-    it('Should return false if json file is empty', () => {
-      expect(emptyJson).toBeFalsy();
-    });
-
-  });
-
-  describe('getIndex method', () => {
-    let obj = {
-      'a': ['doc1', 'doc2'],
-      'b': ['doc2', 'doc3']
-    };
     indexFile.createIndex(obj);
     let theData = indexFile.getIndex(obj);
     it('should return an object that stores arrays of words and titles', () => {
@@ -66,15 +68,15 @@ describe('Inverted index class', () => {
 
   });
 
-  describe('searchIndex method', () => {
+  describe('Search Index', () => {
     let theFile = {
-      'a': 'single title',
+      'a': 'the title',
       'b': 'single content'
     };
     indexFile.createIndex(theFile);
-    it('Should return true if the index exists and false otherwise', () => {
-      expect(indexFile.searchIndex('single')).toBeTruthy();
-      expect(indexFile.searchIndex('multiple')).toBeFalsy();
+    it('Should return an object with the search term as key and an array of the documents as value if term exists and return false otherwise', () => {
+      expect(JSON.stringify(indexFile.searchIndex('single'))).toBe(JSON.stringify({single : [0]}));
+      expect(indexFile.searchIndex('fruit')).toBeFalsy();
     });
   });
 

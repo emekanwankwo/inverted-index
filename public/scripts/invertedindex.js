@@ -238,13 +238,9 @@
 	      return false;
 
 	    let searchTerm = keyword.toLowerCase();
-	    $scope.terms = [];
+	    // $scope.terms = [];
 
-	    try {
-	      $scope.terms = theIndex.generateUniqueArray(searchTerm.split(' '));
-	    } catch (e) {
-	      showErr('Duplicates detected');
-	    }
+	    $scope.terms = theIndex.generateUniqueArray(searchTerm.split(' '));
 
 	    let i = searchTerm.split(' ').length; //get the length of the search field and set the searchterm to the last item.
 	    searchTerm = searchTerm.split(' ')[i - 1];
@@ -291,6 +287,7 @@
 	    this.stories = [];
 	    this.titles = [];
 	    this.indexes = {};
+	    this.searchResult = {};
 	  }
 
 	  /**
@@ -348,7 +345,7 @@
 	        }
 	      }
 	    }
-	    this.indexes = objectIndex;
+	    this.indexes = this.mergeObjects(this.indexes, objectIndex);
 	    return objectIndex;
 	  }
 
@@ -448,12 +445,21 @@
 	   */
 
 	  searchIndex(term, criteria = null) {
+	    let docPosition = [];
 	    if (this.indexes[term]) {
-	      if ((criteria === null) || (criteria === undefined))
-	        return true;
+	      if ((criteria === null) || (criteria === undefined)){
+	        for(let title of this.indexes[term]){
+	          docPosition.push(this.titles.indexOf(title));
+	        }
+	        this.searchResult[term] = docPosition;
+	        return this.searchResult;
+	      }
 	      else {
-	        if (this.indexes[term].indexOf(criteria) !== -1)
-	          return true;
+	        if (this.indexes[term].indexOf(criteria) !== -1){
+	          docPosition.push(this.indexes[term].indexOf(criteria));
+	          this.searchResult[term] = docPosition;
+	        }
+	        return this.searchResult;
 	      }
 	    }
 	    else

@@ -1,4 +1,14 @@
+[
 {
-    "book_name" : "Head First JavaScript",
+    "book_name" : "CHead first JavaScript",
+    "book_text" : "This is the text content for This book one"
+  },
+{
+    "book_name" : "AHead third JavaScript",
+    "book_text" : "This is the text content for This book one"
+  },
+{
+    "book_name" : "BHead second JavaScript",
     "book_text" : "This is the text content for This book one"
   }
+]
