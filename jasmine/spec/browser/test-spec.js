@@ -337,8 +337,8 @@ class InvertedIndex {
         if (this.indexes[term].indexOf(criteria) !== -1){
           docPosition.push(this.indexes[term].indexOf(criteria));
           this.searchResult[term] = docPosition;
+          return this.searchResult;
         }
-        return this.searchResult;
       }
     }
     else
