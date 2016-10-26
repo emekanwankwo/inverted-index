@@ -185,7 +185,6 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
       return false;
 
     let searchTerm = keyword.toLowerCase();
-    // $scope.terms = [];
 
     $scope.terms = theIndex.generateUniqueArray(searchTerm.split(' '));
 
