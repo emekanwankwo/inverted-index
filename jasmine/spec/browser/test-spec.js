@@ -3,7 +3,22 @@ describe('Inverted index class', () => {
   let InvertedIndex = require('../../src/inverted-index');
   let indexFile = new InvertedIndex();
 
-  describe('createIndex method', () => {
+  describe('Read book data', () => {
+
+    let emptyFile = {};
+    let emptyJson = indexFile.createIndex(emptyFile);
+    it('Should return false if json file is empty', () => {
+      expect(emptyJson).toBeFalsy();
+    });
+
+  });
+
+  describe('Populate Index', () => {
+    let obj = {
+      'a': ['doc1', 'doc2'],
+      'b': ['doc2', 'doc3']
+    };
+
     let singleJsonFile = {
       'a': 'single title',
       'b': 'single content'
@@ -37,19 +52,6 @@ describe('Inverted index class', () => {
       }));
     });
 
-    let emptyFile = {};
-    let emptyJson = indexFile.createIndex(emptyFile);
-    it('Should return false if json file is empty', () => {
-      expect(emptyJson).toBeFalsy();
-    });
-
-  });
-
-  describe('getIndex method', () => {
-    let obj = {
-      'a': ['doc1', 'doc2'],
-      'b': ['doc2', 'doc3']
-    };
     indexFile.createIndex(obj);
     let theData = indexFile.getIndex(obj);
     it('should return an object that stores arrays of words and titles', () => {
@@ -67,15 +69,16 @@ describe('Inverted index class', () => {
 
   });
 
-  describe('searchIndex method', () => {
+  describe('Search Index', () => {
+    let newSearchIndex = new InvertedIndex();
     let theFile = {
-      'a': 'single title',
-      'b': 'single content'
+      'a': 'the title',
+      'b': 'movie content'
     };
-    indexFile.createIndex(theFile);
-    it('Should return true if the index exists and false otherwise', () => {
-      expect(indexFile.searchIndex('single')).toBeTruthy();
-      expect(indexFile.searchIndex('multiple')).toBeFalsy();
+    newSearchIndex.createIndex(theFile);
+    it('Should return an object with the search term as key and an array of the documents as value if term exists and return false otherwise', () => {
+      expect(JSON.stringify(newSearchIndex.searchIndex('movie'))).toBe(JSON.stringify({movie : [0]}));
+      expect(newSearchIndex.searchIndex('fruit')).toBeFalsy();
     });
   });
 
@@ -163,6 +166,7 @@ class InvertedIndex {
     this.stories = [];
     this.titles = [];
     this.indexes = {};
+    this.searchResult = {};
   }
 
   /**
@@ -220,7 +224,7 @@ class InvertedIndex {
         }
       }
     }
-    this.indexes = objectIndex;
+    this.indexes = this.mergeObjects(this.indexes, objectIndex);
     return objectIndex;
   }
 
@@ -320,12 +324,21 @@ class InvertedIndex {
    */
 
   searchIndex(term, criteria = null) {
+    let docPosition = [];
     if (this.indexes[term]) {
-      if ((criteria === null) || (criteria === undefined))
-        return true;
+      if ((criteria === null) || (criteria === undefined)){
+        for(let title of this.indexes[term]){
+          docPosition.push(this.titles.indexOf(title));
+        }
+        this.searchResult[term] = docPosition;
+        return this.searchResult;
+      }
       else {
-        if (this.indexes[term].indexOf(criteria) !== -1)
-          return true;
+        if (this.indexes[term].indexOf(criteria) !== -1){
+          docPosition.push(this.indexes[term].indexOf(criteria));
+          this.searchResult[term] = docPosition;
+        }
+        return this.searchResult;
       }
     }
     else

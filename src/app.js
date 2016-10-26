@@ -185,13 +185,8 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
       return false;
 
     let searchTerm = keyword.toLowerCase();
-    $scope.terms = [];
 
-    try {
-      $scope.terms = theIndex.generateUniqueArray(searchTerm.split(' '));
-    } catch (e) {
-      showErr('Duplicates detected');
-    }
+    $scope.terms = theIndex.generateUniqueArray(searchTerm.split(' '));
 
     let i = searchTerm.split(' ').length; //get the length of the search field and set the searchterm to the last item.
     searchTerm = searchTerm.split(' ')[i - 1];
