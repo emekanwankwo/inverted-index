@@ -2,13 +2,13 @@ engines:
   eslint:
     enabled: true
   duplication:
-  	enabled: true
+    enabled: true
     config:
-    	languages:
-      - javascript
+      languages:
+        - javascript
 ratings:
   paths:
-  - "**.js"
+    - "**.js"
 exclude_paths:
-- jasmine/spec/browser/*
-- public/**
+  - jasmine/spec/browser/*
+  - public/**
