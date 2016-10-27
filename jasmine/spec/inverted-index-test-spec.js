@@ -77,6 +77,7 @@ describe('Inverted index class', () => {
     newSearchIndex.createIndex(theFile);
     it('Should return an object with the search term as key and an array of the documents as value if term exists and return false otherwise', () => {
       expect(JSON.stringify(newSearchIndex.searchIndex('movie'))).toBe(JSON.stringify({movie : [0]}));
+      expect(JSON.stringify(newSearchIndex.searchIndex('content', 'the title'))).toBe(JSON.stringify({movie : [0], content : [0]}));
       expect(newSearchIndex.searchIndex('fruit')).toBeFalsy();
     });
   });
