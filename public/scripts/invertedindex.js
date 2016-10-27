@@ -1,6 +1,6 @@
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
-/******/ 	var installedModules = {};
+/******/ 	let installedModules = {};
 
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
@@ -10,7 +10,7 @@
 /******/ 			return installedModules[moduleId].exports;
 
 /******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = installedModules[moduleId] = {
+/******/ 		let module = installedModules[moduleId] = {
 /******/ 			exports: {},
 /******/ 			id: moduleId,
 /******/ 			loaded: false
@@ -321,11 +321,7 @@
 
 	      for (let word of wordsInText)
 	        objectIndex[word] = [objectTitle];
-	        // try {
-	        //   objectIndex[word] = [objectTitle];
-	        // } catch (e) {
-	        //   throw Error('Could not create index');
-	        // }
+	        
 	    } else {
 	      let dataLength = data.length;
 	      for (let i = 0; i < dataLength; i++) {
@@ -341,14 +337,10 @@
 	        wordsInText = this.generateUniqueArray(this.filterWord(wordsInText));
 
 	        for (let word of wordsInText) {
-	          // try {
-	            if (objectIndex[word])
-	              objectIndex[word] = objectIndex[word].concat([objectTitle]);
-	            else
-	              objectIndex[word] = [objectTitle];
-	          // } catch (e) {
-	          //   throw Error('Could not create index');
-	          // }
+	          if (objectIndex[word])
+	            objectIndex[word] = objectIndex[word].concat([objectTitle]);
+	          else
+	            objectIndex[word] = [objectTitle];
 	        }
 	      }
 	    }
