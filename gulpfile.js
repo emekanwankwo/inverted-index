@@ -37,16 +37,9 @@ gulp.task('styles', () => {
     .pipe(gulp.dest('public/styles'));
 });
 
-gulp.task('pre-test', () => {
-    return gulp.src(['jasmine/spec/*.js'])
-    .pipe(istanbul())
-    .pipe(istanbul.hookRequire());
-});
-
 // Test using jasmine-node
-gulp.task('test',['pre-test'], () => {
-  run('node node_modules/jasmine-node/bin/jasmine-node --color --verbose jasmine/spec/*.js').exec()
-  .pipe(istanbul.writeReports());
+gulp.task('test', () => {
+  run('istanbul cover jasmine-node jasmine/spec/inverted-index-test-spec.js').exec();
 });
 
 // Use webpack to create the bundle file.
