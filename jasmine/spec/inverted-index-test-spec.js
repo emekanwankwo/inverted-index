@@ -10,6 +10,14 @@ describe('Inverted index class', () => {
       expect(emptyJson).toBeFalsy();
     });
 
+    let wrongFormat1 = [ { 'text': 'Some may trust in' }, { 'title': 'Travis' } ];
+    let wrongFormat2 = { 'title': 'Some may trust in', 'text1': 'Travis', 'text2': 'CI' };
+
+    it('Should return false if json object is not formatted to have only two keys', () => {
+      expect(indexFile.createIndex(wrongFormat1)).toBeFalsy();
+      expect(indexFile.createIndex(wrongFormat2)).toBeFalsy();
+    });
+
   });
 
   describe('Populate Index', () => {

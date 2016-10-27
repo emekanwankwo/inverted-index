@@ -9,7 +9,7 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
   let theIndex = new InvertedIndex();
 
   // Define a template Document for the Inverted Index Landing Page
-  $scope.columns = ['Doc1', 'Doc2', 'Doc3'];
+  $scope.columns = [''];
   $scope.terms = [''];
 
   $scope.allContent = {};
@@ -125,6 +125,10 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
    */
   resolveData = (data) => {
     let objectIndex = theIndex.createIndex(data);
+    if (!objectIndex){
+      showErr('Error! ensure your json file has a title key and a content key');
+      return false;
+    }
     $scope.allContent = theIndex.mergeObjects($scope.allContent, objectIndex);
     getIndex($scope.allContent);
     $scope.storyTitle = theIndex.getStory().titles;

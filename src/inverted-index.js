@@ -30,6 +30,8 @@ class InvertedIndex {
     if (!Array.isArray(data)) {
       let objectTitle = data[Object.keys(data)[0]],
         objectContent = data[Object.keys(data)[1]];
+        if(Object.keys(data).length !== 2)
+          return false;
 
       this.titles.push(objectTitle);
       this.stories.push(objectContent);
@@ -37,18 +39,16 @@ class InvertedIndex {
       let wordsInText = `${objectTitle} ${objectContent}`;
       wordsInText = this.generateUniqueArray(this.filterWord(wordsInText));
 
-      for (let word of wordsInText) {
-        try {
-          objectIndex[word] = [objectTitle];
-        } catch (e) {
-          throw Error('Could not create index');
-        }
-      }
+      for (let word of wordsInText)
+        objectIndex[word] = [objectTitle];
+        
     } else {
       let dataLength = data.length;
       for (let i = 0; i < dataLength; i++) {
         let objectTitle = data[i][Object.keys(data[i])[0]],
           objectContent = data[i][Object.keys(data[i])[1]];
+          if(Object.keys(data[i]).length !== 2)
+            return false;
 
         this.titles.push(objectTitle);
         this.stories.push(objectContent);
@@ -57,14 +57,10 @@ class InvertedIndex {
         wordsInText = this.generateUniqueArray(this.filterWord(wordsInText));
 
         for (let word of wordsInText) {
-          try {
-            if (objectIndex[word])
-              objectIndex[word] = objectIndex[word].concat([objectTitle]);
-            else
-              objectIndex[word] = [objectTitle];
-          } catch (e) {
-            throw Error('Could not create index');
-          }
+          if (objectIndex[word])
+            objectIndex[word] = objectIndex[word].concat([objectTitle]);
+          else
+            objectIndex[word] = [objectTitle];
         }
       }
     }

@@ -11,6 +11,14 @@ describe('Inverted index class', () => {
       expect(emptyJson).toBeFalsy();
     });
 
+    let wrongFormat1 = [ { 'text': 'Some may trust in' }, { 'title': 'Travis' } ];
+    let wrongFormat2 = { 'title': 'Some may trust in', 'text1': 'Travis', 'text2': 'CI' };
+
+    it('Should return false if json object is not formatted to have only two keys', () => {
+      expect(indexFile.createIndex(wrongFormat1)).toBeFalsy();
+      expect(indexFile.createIndex(wrongFormat2)).toBeFalsy();
+    });
+
   });
 
   describe('Populate Index', () => {
@@ -187,6 +195,8 @@ class InvertedIndex {
     if (!Array.isArray(data)) {
       let objectTitle = data[Object.keys(data)[0]],
         objectContent = data[Object.keys(data)[1]];
+        if(Object.keys(data).length !== 2)
+          return false;
 
       this.titles.push(objectTitle);
       this.stories.push(objectContent);
@@ -194,18 +204,20 @@ class InvertedIndex {
       let wordsInText = `${objectTitle} ${objectContent}`;
       wordsInText = this.generateUniqueArray(this.filterWord(wordsInText));
 
-      for (let word of wordsInText) {
-        try {
-          objectIndex[word] = [objectTitle];
-        } catch (e) {
-          throw Error('Could not create index');
-        }
-      }
+      for (let word of wordsInText)
+        objectIndex[word] = [objectTitle];
+        // try {
+        //   objectIndex[word] = [objectTitle];
+        // } catch (e) {
+        //   throw Error('Could not create index');
+        // }
     } else {
       let dataLength = data.length;
       for (let i = 0; i < dataLength; i++) {
         let objectTitle = data[i][Object.keys(data[i])[0]],
           objectContent = data[i][Object.keys(data[i])[1]];
+          if(Object.keys(data[i]).length !== 2)
+            return false;
 
         this.titles.push(objectTitle);
         this.stories.push(objectContent);
@@ -214,14 +226,14 @@ class InvertedIndex {
         wordsInText = this.generateUniqueArray(this.filterWord(wordsInText));
 
         for (let word of wordsInText) {
-          try {
+          // try {
             if (objectIndex[word])
               objectIndex[word] = objectIndex[word].concat([objectTitle]);
             else
               objectIndex[word] = [objectTitle];
-          } catch (e) {
-            throw Error('Could not create index');
-          }
+          // } catch (e) {
+          //   throw Error('Could not create index');
+          // }
         }
       }
     }

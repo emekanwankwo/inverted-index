@@ -1,14 +1,1 @@
-[
-{
-    "book_name" : "CHead first JavaScript",
-    "book_text" : "This is the text content for This book one"
-  },
-{
-    "book_name" : "AHead third JavaScript",
-    "book_text" : "This is the text content for This book one"
-  },
-{
-    "book_name" : "BHead second JavaScript",
-    "book_text" : "This is the text content for This book one"
-  }
-]
+[ { "text": "Some may trust in", "text1": "Some may trust in", "text2": "Some may trust in", "text3": "Some may trust in" }]

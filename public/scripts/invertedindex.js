@@ -62,7 +62,7 @@
 	  let theIndex = new InvertedIndex();
 
 	  // Define a template Document for the Inverted Index Landing Page
-	  $scope.columns = ['Doc1', 'Doc2', 'Doc3'];
+	  $scope.columns = [''];
 	  $scope.terms = [''];
 
 	  $scope.allContent = {};
@@ -178,6 +178,10 @@
 	   */
 	  resolveData = (data) => {
 	    let objectIndex = theIndex.createIndex(data);
+	    if (!objectIndex){
+	      showErr('Error! ensure your json file has a title key and a content key');
+	      return false;
+	    }
 	    $scope.allContent = theIndex.mergeObjects($scope.allContent, objectIndex);
 	    getIndex($scope.allContent);
 	    $scope.storyTitle = theIndex.getStory().titles;
@@ -306,6 +310,8 @@
 	    if (!Array.isArray(data)) {
 	      let objectTitle = data[Object.keys(data)[0]],
 	        objectContent = data[Object.keys(data)[1]];
+	        if(Object.keys(data).length !== 2)
+	          return false;
 
 	      this.titles.push(objectTitle);
 	      this.stories.push(objectContent);
@@ -313,18 +319,20 @@
 	      let wordsInText = `${objectTitle} ${objectContent}`;
 	      wordsInText = this.generateUniqueArray(this.filterWord(wordsInText));
 
-	      for (let word of wordsInText) {
-	        try {
-	          objectIndex[word] = [objectTitle];
-	        } catch (e) {
-	          throw Error('Could not create index');
-	        }
-	      }
+	      for (let word of wordsInText)
+	        objectIndex[word] = [objectTitle];
+	        // try {
+	        //   objectIndex[word] = [objectTitle];
+	        // } catch (e) {
+	        //   throw Error('Could not create index');
+	        // }
 	    } else {
 	      let dataLength = data.length;
 	      for (let i = 0; i < dataLength; i++) {
 	        let objectTitle = data[i][Object.keys(data[i])[0]],
 	          objectContent = data[i][Object.keys(data[i])[1]];
+	          if(Object.keys(data[i]).length !== 2)
+	            return false;
 
 	        this.titles.push(objectTitle);
 	        this.stories.push(objectContent);
@@ -333,14 +341,14 @@
 	        wordsInText = this.generateUniqueArray(this.filterWord(wordsInText));
 
 	        for (let word of wordsInText) {
-	          try {
+	          // try {
 	            if (objectIndex[word])
 	              objectIndex[word] = objectIndex[word].concat([objectTitle]);
 	            else
 	              objectIndex[word] = [objectTitle];
-	          } catch (e) {
-	            throw Error('Could not create index');
-	          }
+	          // } catch (e) {
+	          //   throw Error('Could not create index');
+	          // }
 	        }
 	      }
 	    }
