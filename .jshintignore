@@ -1,5 +1,2 @@
-# Ignore jasmine folder
 jasmine
-
-#Ignore bundled files in public folder
 public

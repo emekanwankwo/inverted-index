@@ -68,8 +68,7 @@ describe('Inverted index class', () => {
       }));
     });
 
-    let emptyFile = {};
-    let emptyIndex = indexFile.getIndex(emptyFile);
+    let emptyIndex = indexFile.getIndex({});
     it('should return false if an empty object argument is passed in', () => {
       expect(emptyIndex).toBeFalsy();
     });
@@ -102,9 +101,9 @@ describe('Inverted index class', () => {
     };
 
     let result = {
-      a: '1',
-      b: ['2', '3', '4'],
-      c: '4'
+      'a': '1',
+      'b': ['2', '3', '4'],
+      'c': '4'
     };
     let merge = indexFile.mergeObjects(obj1, obj2);
     it('should merge the content of two objects', () => {

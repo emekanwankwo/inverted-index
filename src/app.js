@@ -144,10 +144,10 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
    */
   getIndex = (data) => {
     let wordsIndex = theIndex.getIndex(data);
-    $scope.columns = (wordsIndex.titles);
-    $scope.terms = (wordsIndex.words);
-    $scope.storeTerms = (wordsIndex.words);
-    $scope.storeColumns = (wordsIndex.titles);
+    $scope.columns = wordsIndex.titles;
+    $scope.terms = wordsIndex.words;
+    $scope.storeTerms = wordsIndex.words;
+    $scope.storeColumns = wordsIndex.titles;
     $scope.$apply();
   };
 
