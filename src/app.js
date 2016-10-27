@@ -9,8 +9,8 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
   let theIndex = new InvertedIndex();
 
   // Define a template Document for the Inverted Index Landing Page
-  $scope.columns = [''];
-  $scope.terms = [''];
+  $scope.columns = [];
+  $scope.terms = [];
 
   $scope.allContent = {};
   $scope.storyTitle = [];
@@ -27,6 +27,13 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
   $scope.createIndex = (url) => {
 
     let filepath = $.trim($('#filePath').val());
+
+    if ((filepath === '') && ($.trim(url) === '')){
+      $('#selectEmptyMsg').show();
+      return false;
+    }
+    
+    $('#selectEmptyMsg').hide();
     if ((filepath === '') && ($.trim(url) !== '')) {
       let httpRequest = new XMLHttpRequest();
 
@@ -64,13 +71,8 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
     // Ensure a valid file is selected and is has a '.json' extension
     let fileExt = filepath.substring(filepath.length - 5, filepath.length);
 
-    if ((filepath === '') && ($.trim(url) === '')){
-      showErr('No url specified or file Selected!');
-      return false;
-    }
     if ((fileExt !== '.json') && (fileExt !== '.JSON') && ($.trim(url) === '')){
-      showErr('File type must be type JSON');
-      return false;
+      return sfalse;
     }
 
     let thefile = document.getElementById('filePath').files[0];

@@ -11,8 +11,8 @@ describe('Inverted index class', () => {
       expect(emptyJson).toBeFalsy();
     });
 
-    let wrongFormat1 = [ { 'text': 'Some may trust in' }, { 'title': 'Travis' } ];
-    let wrongFormat2 = { 'title': 'Some may trust in', 'text1': 'Travis', 'text2': 'CI' };
+    let wrongFormat1 = [ { text: 'Some may trust in' }, { title: 'Travis' } ];
+    let wrongFormat2 = { title: 'Some may trust in', text1: 'Travis', text2: 'CI' };
 
     it('Should return false if json object is not formatted to have only two keys', () => {
       expect(indexFile.createIndex(wrongFormat1)).toBeFalsy();
@@ -23,21 +23,21 @@ describe('Inverted index class', () => {
 
   describe('Populate Index', () => {
     let obj = {
-      'a': ['doc1', 'doc2'],
-      'b': ['doc2', 'doc3']
+      a: ['doc1', 'doc2'],
+      b: ['doc2', 'doc3']
     };
 
     let singleJsonFile = {
-      'a': 'single title',
-      'b': 'single content'
+      a: 'single title',
+      b: 'single content'
     };
 
     let multipleJsonArray = [{
-      'a': 'multiple title1',
-      'b': 'multiple content1'
+      a: 'multiple title1',
+      b: 'multiple content1'
     }, {
-      'c': 'multiple title2',
-      'd': 'multiple content2'
+      c: 'multiple title2',
+      d: 'multiple content2'
     }
     ];
 
@@ -46,17 +46,17 @@ describe('Inverted index class', () => {
 
     it('should return an object which indexes each word in a single or multiple JSON object to an array of the titles they appear in.', () => {
       expect(JSON.stringify(createSingle)).toBe(JSON.stringify({
-        'single': ['single title'],
-        'title': ['single title'],
-        'content': ['single title']
+        single: ['single title'],
+        title: ['single title'],
+        content: ['single title']
       }));
 
       expect(JSON.stringify(createMultiple)).toBe(JSON.stringify({
-        'multiple': ['multiple title1', 'multiple title2'],
-        'title1': ['multiple title1'],
-        'content1': ['multiple title1'],
-        'title2': ['multiple title2'],
-        'content2': ['multiple title2'],
+        multiple: ['multiple title1', 'multiple title2'],
+        title1: ['multiple title1'],
+        content1: ['multiple title1'],
+        title2: ['multiple title2'],
+        content2: ['multiple title2'],
       }));
     });
 
@@ -69,8 +69,7 @@ describe('Inverted index class', () => {
       }));
     });
 
-    let emptyFile = {};
-    let emptyIndex = indexFile.getIndex(emptyFile);
+    let emptyIndex = indexFile.getIndex({});
     it('should return false if an empty object argument is passed in', () => {
       expect(emptyIndex).toBeFalsy();
     });
@@ -80,8 +79,8 @@ describe('Inverted index class', () => {
   describe('Search Index', () => {
     let newSearchIndex = new InvertedIndex();
     let theFile = {
-      'a': 'the title',
-      'b': 'movie content'
+      a: 'the title',
+      b: 'movie content'
     };
     newSearchIndex.createIndex(theFile);
     it('Should return an object with the search term as key and an array of the documents as value if term exists and return false otherwise', () => {
@@ -93,13 +92,13 @@ describe('Inverted index class', () => {
 
   describe('mergeObjects method', () => {
     let obj1 = {
-      'a': '1',
-      'b': ['2', '3']
+      a: '1',
+      b: ['2', '3']
     };
 
     let obj2 = {
-      'c': '4',
-      'b': ['4']
+      c: '4',
+      b: ['4']
     };
 
     let result = {
@@ -147,8 +146,8 @@ describe('Inverted index class', () => {
 
   describe('getStory method', () => {
     let theStoryFile = {
-      'x': 'story title',
-      'y': 'story content'
+      x: 'story title',
+      y: 'story content'
     };
     let newIndex = new InvertedIndex();
     newIndex.createIndex(theStoryFile);
