@@ -105,8 +105,12 @@
 	        // function to handle the promise
 	        function alertContents() {
 	          if (httpRequest.readyState === XMLHttpRequest.DONE) {
-	            if (httpRequest.status === 200) resolve(JSON.parse(httpRequest.responseText));
-	            else reject('There was an error resolving url');
+	            if (httpRequest.status === 200) {
+	              resolve(JSON.parse(httpRequest.responseText));
+	            }
+	            else {
+	              reject('There was an error resolving url');
+	            }
 	          }
 	        }
 	      });
@@ -121,7 +125,10 @@
 	      // Ensure a valid file is selected and is has a '.json' extension
 	      let fileExt = thefile.name.substring(thefile.name.length - 5, thefile.name.length);
 
-	      if ((fileExt !== '.json') && (fileExt !== '.JSON') && ($.trim(url) === '')) return false;
+	      if ((fileExt !== '.json') && (fileExt !== '.JSON') && ($.trim(url) === '')){
+	        showErr('Please select a valid json file');
+	        return false;
+	      }
 	      let reader = new FileReader();
 	      reader.readAsText(thefile);
 
@@ -130,12 +137,15 @@
 	        reader.onload = ((e) => {
 	          if (e.target.result)
 	            try {
-	              if (JSON.parse(e.target.result)) resolve(JSON.parse(e.target.result));
+	              if (JSON.parse(e.target.result)) {
+	                resolve(JSON.parse(e.target.result));
+	              }
 	            } catch (e) {
 	              reject('Invalid JSON file. Expected:{ "title" : "item", "content" : "item"  }');
 	          }
-	          else
+	          else{
 	            reject('Invalid File Selected');
+	          }
 	        });
 	      });
 	      promise.then((data) => {
@@ -217,8 +227,9 @@
 	  $scope.checkThis = (word, columnIndex) => {
 	    $scope.count = 0;
 	    try {
-	      if ($scope.allContent[word].indexOf(columnIndex) !== -1)
+	      if ($scope.allContent[word].indexOf(columnIndex) !== -1){
 	        $scope.count += 1;
+	      }
 	    } catch (e) {
 	      // Fail silently
 	    }
@@ -232,7 +243,9 @@
 	   */
 	  $scope.searchWord = (keyword, criteria) => {
 	    $scope.searchState = false;
-	    if (Object.keys($scope.allContent).length === 0) return false;
+	    if (Object.keys($scope.allContent).length === 0) {
+	      return false;
+	    }
 
 	    let searchTerm = keyword.toLowerCase();
 
@@ -294,16 +307,16 @@
 
 	  createIndex(data) {
 
-	    if (Object.keys(data).length <= 0) return false;
+	    if (Object.keys(data).length !== 0){
+	      return false;
+	    }
 
 	    let objectIndex = {};
 
 	    // Check if the data is a single json object(one content) and resolve
 	    if (!Array.isArray(data)) {
 	      let objectTitle = data[Object.keys(data)[0]],
-	        objectContent = data[Object.keys(data)[1]];
-
-	      if (Object.keys(data).length !== 2) return false;
+	        objectContent = data[Object.keys(data)[1]];  
 
 	      this.titles.push(objectTitle);
 	      this.stories.push(objectContent);
@@ -321,7 +334,10 @@
 	        let objectTitle = data[i][Object.keys(data[i])[0]],
 	          objectContent = data[i][Object.keys(data[i])[1]];
 
-	        if (Object.keys(data[i]).length !== 2) return false;
+	        if (Object.keys(data[i]).length !== 2){
+	          return false;
+	        }
+	        
 
 	        this.titles.push(objectTitle);
 	        this.stories.push(objectContent);
@@ -330,10 +346,12 @@
 	        wordsInText = this.generateUniqueArray(this.filterWord(wordsInText));
 
 	        for (let word of wordsInText) {
-	          if (objectIndex[word])
+	          if (objectIndex[word]){
 	            objectIndex[word] = objectIndex[word].concat([objectTitle]);
-	          else
+	          }
+	          else{
 	            objectIndex[word] = [objectTitle];
+	          }
 	        }
 	      }
 	    }
@@ -350,7 +368,10 @@
 
 	  filterWord(word) {
 
-	    if ((typeof word) !== 'string') return false;
+	    if ((typeof word) !== 'string'){
+	      return false;
+	    }
+
 	    return word.replace(/[.,\/#!$£%\^&\*;:'{}=\-_`~()]/g, '').toLowerCase().split(' ');
 	  }
 
@@ -361,13 +382,17 @@
 	  * @Returns {object}
 	  */
 	  mergeObjects(dest, src) {
-	    if ((typeof dest !== 'object') || (typeof src !== 'object')) return false;
+	    if ((typeof dest !== 'object') || (typeof src !== 'object')){
+	      return false;
+	    }
 	    let makeUnique = this.generateUniqueArray;
 	    Object.keys(src).forEach(function(key) {
-	      if (dest[key])
+	      if (dest[key]){
 	        dest[key] = makeUnique(dest[key].concat(src[key]));
-	      else
+	      }   
+	      else {
 	        dest[key] = src[key];
+	      }
 	    });
 	    return dest;
 	  }
@@ -379,11 +404,15 @@
 	    * @Returns {array}
 	    */
 	  generateUniqueArray(data) {
-	    if (!Array.isArray(data)) return false;
+	    if (!Array.isArray(data)){
+	      return false;
+	    }
 	    let uniqueArray = [];
 	    data.forEach((value) => {
 	      let index = uniqueArray.indexOf(value);
-	      if (index === -1) uniqueArray.push(value);
+	      if (index === -1){
+	        uniqueArray.push(value);
+	      }
 	    });
 	    return uniqueArray;
 	  }
@@ -410,7 +439,9 @@
 	   */
 
 	  getIndex(data) {
-	    if (Object.keys(data).length <= 0) return false;
+	    if (Object.keys(data).length <= 0){
+	      return false;
+	    }
 	    let terms = [];
 	    let columns = [];
 	    terms = Object.keys(data);
@@ -449,7 +480,9 @@
 	        }
 	      }
 	    }
-	    else return false;
+	    else{
+	      return false;
+	    }
 	  }
 	}
 	module.exports = InvertedIndex;

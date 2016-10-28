@@ -52,8 +52,12 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
         // function to handle the promise
         function alertContents() {
           if (httpRequest.readyState === XMLHttpRequest.DONE) {
-            if (httpRequest.status === 200) resolve(JSON.parse(httpRequest.responseText));
-            else reject('There was an error resolving url');
+            if (httpRequest.status === 200) {
+              resolve(JSON.parse(httpRequest.responseText));
+            }
+            else {
+              reject('There was an error resolving url');
+            }
           }
         }
       });
@@ -68,7 +72,10 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
       // Ensure a valid file is selected and is has a '.json' extension
       let fileExt = thefile.name.substring(thefile.name.length - 5, thefile.name.length);
 
-      if ((fileExt !== '.json') && (fileExt !== '.JSON') && ($.trim(url) === '')) return false;
+      if ((fileExt !== '.json') && (fileExt !== '.JSON') && ($.trim(url) === '')){
+        showErr('Please select a valid json file');
+        return false;
+      }
       let reader = new FileReader();
       reader.readAsText(thefile);
 
@@ -77,12 +84,15 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
         reader.onload = ((e) => {
           if (e.target.result)
             try {
-              if (JSON.parse(e.target.result)) resolve(JSON.parse(e.target.result));
+              if (JSON.parse(e.target.result)) {
+                resolve(JSON.parse(e.target.result));
+              }
             } catch (e) {
               reject('Invalid JSON file. Expected:{ "title" : "item", "content" : "item"  }');
           }
-          else
+          else{
             reject('Invalid File Selected');
+          }
         });
       });
       promise.then((data) => {
@@ -164,8 +174,9 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
   $scope.checkThis = (word, columnIndex) => {
     $scope.count = 0;
     try {
-      if ($scope.allContent[word].indexOf(columnIndex) !== -1)
+      if ($scope.allContent[word].indexOf(columnIndex) !== -1){
         $scope.count += 1;
+      }
     } catch (e) {
       // Fail silently
     }
@@ -179,7 +190,9 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
    */
   $scope.searchWord = (keyword, criteria) => {
     $scope.searchState = false;
-    if (Object.keys($scope.allContent).length === 0) return false;
+    if (Object.keys($scope.allContent).length === 0) {
+      return false;
+    }
 
     let searchTerm = keyword.toLowerCase();
 
