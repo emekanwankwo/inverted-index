@@ -185,7 +185,7 @@ class InvertedIndex {
 
   createIndex(data) {
 
-    if (Object.keys(data).length !== 0){
+    if (Object.keys(data).length <= 0){
       return false;
     }
 
@@ -193,6 +193,10 @@ class InvertedIndex {
 
     // Check if the data is a single json object(one content) and resolve
     if (!Array.isArray(data)) {
+      if (Object.keys(data).length !== 2){
+        return false;
+      }
+
       let objectTitle = data[Object.keys(data)[0]],
         objectContent = data[Object.keys(data)[1]];  
 
@@ -209,13 +213,11 @@ class InvertedIndex {
     } else {
       let dataLength = data.length;
       for (let i = 0; i < dataLength; i++) {
-        let objectTitle = data[i][Object.keys(data[i])[0]],
-          objectContent = data[i][Object.keys(data[i])[1]];
-
         if (Object.keys(data[i]).length !== 2){
           return false;
         }
-        
+        let objectTitle = data[i][Object.keys(data[i])[0]],
+          objectContent = data[i][Object.keys(data[i])[1]];
 
         this.titles.push(objectTitle);
         this.stories.push(objectContent);
