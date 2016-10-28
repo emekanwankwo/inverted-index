@@ -8,7 +8,7 @@ let gulp = require('gulp'),
   webpack = require('webpack'),
   WebpackDevServer = require('webpack-dev-server'),
   webpackConfig = require('./webpack.config.js'),
-  port = process.env.PORT || 5000;
+  port = process.env.PORT || 7000;
 
 
 // Default task to run.
