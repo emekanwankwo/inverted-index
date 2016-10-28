@@ -21,7 +21,7 @@ class InvertedIndex {
 
   createIndex(data) {
 
-    if (Object.keys(data).length !== 0){
+    if (Object.keys(data).length !== 2){
       return false;
     }
 
