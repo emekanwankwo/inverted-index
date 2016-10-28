@@ -183,47 +183,47 @@ class InvertedIndex {
   * @Returns {object}
 	**/
 
-  createIndex(data) {
+  createIndex(thisObject) {
 
-    if (Object.keys(data).length <= 0){
+    if (Object.keys(thisObject).length <= 0){
       return false;
     }
 
     let objectIndex = {};
 
     // Check if the data is a single json object(one content) and resolve
-    if (!Array.isArray(data)) {
-      if (Object.keys(data).length !== 2){
+    if (!Array.isArray(thisObject)) {
+      if (Object.keys(thisObject).length !== 2){
         return false;
       }
 
-      let objectTitle = data[Object.keys(data)[0]],
-        objectContent = data[Object.keys(data)[1]];  
+      let objectTitle = thisObject[Object.keys(thisObject)[0]],
+        objectContent = thisObject[Object.keys(thisObject)[1]];  
 
       this.titles.push(objectTitle);
       this.stories.push(objectContent);
 
       let wordsInText = `${objectTitle} ${objectContent}`;
-      wordsInText = this.generateUniqueArray(this.filterWord(wordsInText));
+      wordsInText = this.generateUniqueArray(this.filter(wordsInText));
 
       for (let word of wordsInText) {
         objectIndex[word] = [objectTitle];
       }
 
     } else {
-      let dataLength = data.length;
+      let dataLength = thisObject.length;
       for (let i = 0; i < dataLength; i++) {
-        if (Object.keys(data[i]).length !== 2){
+        if (Object.keys(thisObject[i]).length !== 2){
           return false;
         }
-        let objectTitle = data[i][Object.keys(data[i])[0]],
-          objectContent = data[i][Object.keys(data[i])[1]];
+        let objectTitle = thisObject[i][Object.keys(thisObject[i])[0]],
+          objectContent = thisObject[i][Object.keys(thisObject[i])[1]];
 
         this.titles.push(objectTitle);
         this.stories.push(objectContent);
 
         let wordsInText = `${objectTitle} ${objectContent}`;
-        wordsInText = this.generateUniqueArray(this.filterWord(wordsInText));
+        wordsInText = this.generateUniqueArray(this.filter(wordsInText));
 
         for (let word of wordsInText) {
           if (objectIndex[word]){
@@ -246,13 +246,13 @@ class InvertedIndex {
       * @Returns {array}
       */
 
-  filterWord(word) {
+  filter(anArray) {
 
-    if ((typeof word) !== 'string'){
+    if ((typeof anArray) !== 'string'){
       return false;
     }
 
-    return word.replace(/[.,\/#!$£%\^&\*;:'{}=\-_`~()]/g, '').toLowerCase().split(' ');
+    return anArray.replace(/[.,\/#!$£%\^&\*;:'{}=\-_`~()]/g, '').toLowerCase().split(' ');
   }
 
 
@@ -283,12 +283,12 @@ class InvertedIndex {
     * @Params {array}
     * @Returns {array}
     */
-  generateUniqueArray(data) {
-    if (!Array.isArray(data)){
+  generateUniqueArray(thisArray) {
+    if (!Array.isArray(thisArray)){
       return false;
     }
     let uniqueArray = [];
-    data.forEach((value) => {
+    thisArray.forEach((value) => {
       let index = uniqueArray.indexOf(value);
       if (index === -1){
         uniqueArray.push(value);
@@ -318,15 +318,15 @@ class InvertedIndex {
    * @Returns {object}
    */
 
-  getIndex(data) {
-    if (Object.keys(data).length <= 0){
+  getIndex(anObject) {
+    if (Object.keys(anObject).length <= 0){
       return false;
     }
     let terms = [];
     let columns = [];
-    terms = Object.keys(data);
+    terms = Object.keys(anObject);
     for (let term of terms) {
-      columns = columns.concat(data[term]);
+      columns = columns.concat(anObject[term]);
     }
     columns = this.generateUniqueArray(columns);
 

@@ -115,8 +115,8 @@
 	        }
 	      });
 
-	      promise.then((data) => {
-	        resolveData(data);
+	      promise.then((response) => {
+	        resolveData(response);
 	      })
 	        .catch((err) => {
 	          showErr(err);
@@ -135,21 +135,22 @@
 	      let promise = new Promise((resolve, reject) => {
 
 	        reader.onload = ((e) => {
-	          if (e.target.result)
+	          if (e.target.result) {
 	            try {
 	              if (JSON.parse(e.target.result)) {
 	                resolve(JSON.parse(e.target.result));
 	              }
 	            } catch (e) {
 	              reject('Invalid JSON file. Expected:{ "title" : "item", "content" : "item"  }');
+	            }
 	          }
 	          else{
 	            reject('Invalid File Selected');
 	          }
 	        });
 	      });
-	      promise.then((data) => {
-	        resolveData(data);
+	      promise.then((response) => {
+	        resolveData(response);
 	      })
 	        .catch((err) => {
 	          showErr(err);
@@ -180,14 +181,13 @@
 	   *  @Param {object}
 	   *  @Returns {}
 	   */
-	  resolveData = (data) => {
-	    let objectIndex = theIndex.createIndex(data);
+	  resolveData = (jsonData) => {
+	    let objectIndex = theIndex.createIndex(jsonData);
 	    if (!objectIndex) {
 	      showErr('Error! ensure your json file has a title key and a content key');
 	      return false;
 	    }
 	    $scope.allContent = theIndex.mergeObjects($scope.allContent, objectIndex);
-	    getIndex($scope.allContent);
 	    $scope.storyTitle = theIndex.getStory().titles;
 	    $scope.storyContent = theIndex.getStory().stories;
 	    $scope.$apply();
@@ -199,8 +199,9 @@
 	   * @Param {object}
 	   * @Returns {}
 	   */
-	  getIndex = (data) => {
-	    let wordsIndex = theIndex.getIndex(data);
+	  getIndex = (thisObject) => {
+	    hisObject = $scope.allContent;
+	    let wordsIndex = theIndex.getIndex(thisObject);
 	    $scope.columns = wordsIndex.titles;
 	    $scope.terms = wordsIndex.words;
 	    $scope.storeTerms = wordsIndex.words;
@@ -214,7 +215,25 @@
 	   * @Params {}
 	   * @Returns {}
 	   */
-	  $scope.changeStory = () => ($scope.storyTitle.length === 0) ? false : ($scope.theIndex === $scope.storyTitle.length - 1) ? $scope.theIndex = 0 : $scope.theIndex += 1;
+	  // $scope.changeStory = () => ($scope.storyTitle.length === 0) ? false :
+	    // if ($scope.theIndex === $scope.storyTitle.length - 1){
+	    //  ? $scope.theIndex = 0 : $scope.theIndex += 1;
+	    // }
+	    $scope.changeStory = (currentStoryIndex) => {
+	      $scope.theIndex = currentStoryIndex;
+
+	      //@TODO create methos to move to the next/previous index.
+
+	      // if ($scope.storyTitle.length === 0){
+	      //   return false;
+	      // } else{
+	      //   if ($scope.theIndex === $scope.storyTitle.length - 1){
+	      //     $scope.theIndex = 0; 
+	      //   } else {
+	      //     $scope.theIndex += 1;
+	      //   }
+	      // }
+	    };
 
 
 
@@ -305,47 +324,47 @@
 	  * @Returns {object}
 		**/
 
-	  createIndex(data) {
+	  createIndex(thisObject) {
 
-	    if (Object.keys(data).length <= 0){
+	    if (Object.keys(thisObject).length <= 0){
 	      return false;
 	    }
 
 	    let objectIndex = {};
 
 	    // Check if the data is a single json object(one content) and resolve
-	    if (!Array.isArray(data)) {
-	      if (Object.keys(data).length !== 2){
+	    if (!Array.isArray(thisObject)) {
+	      if (Object.keys(thisObject).length !== 2){
 	        return false;
 	      }
 
-	      let objectTitle = data[Object.keys(data)[0]],
-	        objectContent = data[Object.keys(data)[1]];  
+	      let objectTitle = thisObject[Object.keys(thisObject)[0]],
+	        objectContent = thisObject[Object.keys(thisObject)[1]];  
 
 	      this.titles.push(objectTitle);
 	      this.stories.push(objectContent);
 
 	      let wordsInText = `${objectTitle} ${objectContent}`;
-	      wordsInText = this.generateUniqueArray(this.filterWord(wordsInText));
+	      wordsInText = this.generateUniqueArray(this.filter(wordsInText));
 
 	      for (let word of wordsInText) {
 	        objectIndex[word] = [objectTitle];
 	      }
 
 	    } else {
-	      let dataLength = data.length;
+	      let dataLength = thisObject.length;
 	      for (let i = 0; i < dataLength; i++) {
-	        if (Object.keys(data[i]).length !== 2){
+	        if (Object.keys(thisObject[i]).length !== 2){
 	          return false;
 	        }
-	        let objectTitle = data[i][Object.keys(data[i])[0]],
-	          objectContent = data[i][Object.keys(data[i])[1]];
+	        let objectTitle = thisObject[i][Object.keys(thisObject[i])[0]],
+	          objectContent = thisObject[i][Object.keys(thisObject[i])[1]];
 
 	        this.titles.push(objectTitle);
 	        this.stories.push(objectContent);
 
 	        let wordsInText = `${objectTitle} ${objectContent}`;
-	        wordsInText = this.generateUniqueArray(this.filterWord(wordsInText));
+	        wordsInText = this.generateUniqueArray(this.filter(wordsInText));
 
 	        for (let word of wordsInText) {
 	          if (objectIndex[word]){
@@ -368,13 +387,13 @@
 	      * @Returns {array}
 	      */
 
-	  filterWord(word) {
+	  filter(anArray) {
 
-	    if ((typeof word) !== 'string'){
+	    if ((typeof anArray) !== 'string'){
 	      return false;
 	    }
 
-	    return word.replace(/[.,\/#!$£%\^&\*;:'{}=\-_`~()]/g, '').toLowerCase().split(' ');
+	    return anArray.replace(/[.,\/#!$£%\^&\*;:'{}=\-_`~()]/g, '').toLowerCase().split(' ');
 	  }
 
 
@@ -405,12 +424,12 @@
 	    * @Params {array}
 	    * @Returns {array}
 	    */
-	  generateUniqueArray(data) {
-	    if (!Array.isArray(data)){
+	  generateUniqueArray(thisArray) {
+	    if (!Array.isArray(thisArray)){
 	      return false;
 	    }
 	    let uniqueArray = [];
-	    data.forEach((value) => {
+	    thisArray.forEach((value) => {
 	      let index = uniqueArray.indexOf(value);
 	      if (index === -1){
 	        uniqueArray.push(value);
@@ -440,15 +459,15 @@
 	   * @Returns {object}
 	   */
 
-	  getIndex(data) {
-	    if (Object.keys(data).length <= 0){
+	  getIndex(anObject) {
+	    if (Object.keys(anObject).length <= 0){
 	      return false;
 	    }
 	    let terms = [];
 	    let columns = [];
-	    terms = Object.keys(data);
+	    terms = Object.keys(anObject);
 	    for (let term of terms) {
-	      columns = columns.concat(data[term]);
+	      columns = columns.concat(anObject[term]);
 	    }
 	    columns = this.generateUniqueArray(columns);
 

@@ -62,8 +62,8 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
         }
       });
 
-      promise.then((data) => {
-        resolveData(data);
+      promise.then((response) => {
+        resolveData(response);
       })
         .catch((err) => {
           showErr(err);
@@ -82,21 +82,22 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
       let promise = new Promise((resolve, reject) => {
 
         reader.onload = ((e) => {
-          if (e.target.result)
+          if (e.target.result) {
             try {
               if (JSON.parse(e.target.result)) {
                 resolve(JSON.parse(e.target.result));
               }
             } catch (e) {
               reject('Invalid JSON file. Expected:{ "title" : "item", "content" : "item"  }');
+            }
           }
           else{
             reject('Invalid File Selected');
           }
         });
       });
-      promise.then((data) => {
-        resolveData(data);
+      promise.then((response) => {
+        resolveData(response);
       })
         .catch((err) => {
           showErr(err);
@@ -127,14 +128,13 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
    *  @Param {object}
    *  @Returns {}
    */
-  resolveData = (data) => {
-    let objectIndex = theIndex.createIndex(data);
+  resolveData = (jsonData) => {
+    let objectIndex = theIndex.createIndex(jsonData);
     if (!objectIndex) {
       showErr('Error! ensure your json file has a title key and a content key');
       return false;
     }
     $scope.allContent = theIndex.mergeObjects($scope.allContent, objectIndex);
-    getIndex($scope.allContent);
     $scope.storyTitle = theIndex.getStory().titles;
     $scope.storyContent = theIndex.getStory().stories;
     $scope.$apply();
@@ -146,8 +146,9 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
    * @Param {object}
    * @Returns {}
    */
-  getIndex = (data) => {
-    let wordsIndex = theIndex.getIndex(data);
+  getIndex = (thisObject) => {
+    hisObject = $scope.allContent;
+    let wordsIndex = theIndex.getIndex(thisObject);
     $scope.columns = wordsIndex.titles;
     $scope.terms = wordsIndex.words;
     $scope.storeTerms = wordsIndex.words;
@@ -161,7 +162,25 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
    * @Params {}
    * @Returns {}
    */
-  $scope.changeStory = () => ($scope.storyTitle.length === 0) ? false : ($scope.theIndex === $scope.storyTitle.length - 1) ? $scope.theIndex = 0 : $scope.theIndex += 1;
+  // $scope.changeStory = () => ($scope.storyTitle.length === 0) ? false :
+    // if ($scope.theIndex === $scope.storyTitle.length - 1){
+    //  ? $scope.theIndex = 0 : $scope.theIndex += 1;
+    // }
+    $scope.changeStory = (currentStoryIndex) => {
+      $scope.theIndex = currentStoryIndex;
+
+      //@TODO create methos to move to the next/previous index.
+
+      // if ($scope.storyTitle.length === 0){
+      //   return false;
+      // } else{
+      //   if ($scope.theIndex === $scope.storyTitle.length - 1){
+      //     $scope.theIndex = 0; 
+      //   } else {
+      //     $scope.theIndex += 1;
+      //   }
+      // }
+    };
 
 
 
