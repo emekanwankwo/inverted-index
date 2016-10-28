@@ -119,7 +119,7 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
     }, 8000);
     $scope.errMsg = errMsg;
     $scope.errExist = true;
-    $scope.$apply();
+    return false;
   };
 
 
@@ -146,14 +146,17 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
    * @Param {object}
    * @Returns {}
    */
-  getIndex = (thisObject) => {
-    hisObject = $scope.allContent;
-    let wordsIndex = theIndex.getIndex(thisObject);
+  $scope.getIndex = () => {
+    let wordsIndex = theIndex.getIndex();
+    if(!wordsIndex){
+      showErr('Error! no file uploaded!');
+      return false;
+    }
+
     $scope.columns = wordsIndex.titles;
     $scope.terms = wordsIndex.words;
     $scope.storeTerms = wordsIndex.words;
     $scope.storeColumns = wordsIndex.titles;
-    $scope.$apply();
   };
 
 
@@ -169,7 +172,7 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
     $scope.changeStory = (currentStoryIndex) => {
       $scope.theIndex = currentStoryIndex;
 
-      //@TODO create methos to move to the next/previous index.
+      //@TODO create method to move to the next/previous index.
 
       // if ($scope.storyTitle.length === 0){
       //   return false;

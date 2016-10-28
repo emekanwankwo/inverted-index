@@ -42,7 +42,7 @@
 						<table id="index_table" class="table table-striped table-hover ">
 							<thead> 
 								<tr>
-									<th style="text-align: center;"><label ng-if="storyTitle.length>0">Term </label></th><th style="text-align: center;" ng-repeat="column in columns">{{column}}</th>
+									<th style="text-align: center;"><label ng-if="terms.length>0">Term </label></th><th style="text-align: center;" ng-repeat="column in columns">{{column}}</th>
 								</tr>
 							</thead>
 							<tbody id="word_index_body" style="width: 800px;">
@@ -57,7 +57,11 @@
 
 
 				<!-- search input -->
-				<div class="input-group" id="search_div">
+				<div id="search_status">
+					<span ng-if="searchState" style="color: green; font-weight: bold;" ng-model="status">{{status}}</span>
+					<span ng-if="!searchState" style="color: red; font-weight: bold;" ng-model="status">{{status}}</span>
+				</div>
+				<div class="input-group" id="search_div" ng-if="terms.length>0">
 					<!--<span class="input-group-addon">Search word:</span>-->
 					<span class="input-group-addon">
 						<select id="search_criteria" ng-model="criteria" ng-options="item for item in storyTitle"  ng-change="changeCriteria(criteria)" style="border: none; width: auto; height: inherit;">
@@ -67,12 +71,8 @@
 					<input type="input" id="searchname" placeholder="Enter search keyword" ng-model="keyword" ng-change="searchWord(keyword, criteria)"
 					class="form-control">
 					</div>
-					<div id="search_status">
-						<span ng-if="searchState" style="color: green; font-weight: bold;" ng-model="status">{{status}}</span>
-						<span ng-if="!searchState" style="color: red; font-weight: bold;" ng-model="status">{{status}}</span>
-					</div>
 
-				<div id="alert_div" ng-if="errExist">
+				<div id="alert_div" align="center" ng-if="errExist">
   					<span><strong class="font-effect-3d-float"><p id="errMsg">{{errMsg}}</p></strong></span>
 				</div>
 
@@ -104,9 +104,12 @@
 									<input type="file" id="filePath" file-model="thefilename" ><p id="selectEmptyMsg" style="color: red; display:none;"><i>Select a json file</i></p><br>
 									<div class="input-group">
 										<span class="input-group-addon">File Url:</span>
-											<input type="input" id="filename" ng-model="theFileUrl" placeholder=" e.g. https://ipinfo.io/json" class="form-control">
+											<input type="input" id="filename" ng-model="theFileUrl" placeholder=" e.g. https://inverted-index-develop.herokuapp.com//books/books.json" class="form-control">
 										<span class="input-group-btn">
-											<button class="btn btn-default" type="button" ng-click="createIndex(theFileUrl)">Create Index</button>
+											<button class="btn btn-default" type="button" ng-click="createIndex(theFileUrl)">Upload File</button>
+										</span>
+										<span class="input-group-btn">
+											<button class="btn btn-default" type="button" ng-click="getIndex()">Show Index</button>
 										</span>
 									</div>
 

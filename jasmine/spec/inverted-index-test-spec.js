@@ -1,11 +1,12 @@
 describe('Inverted index class', () => {
-  let InvertedIndex = require('../../src/inverted-index');
+  const InvertedIndex = require('../../src/inverted-index');
+  const book = require('../../public/books/books.json');
+  
   let indexFile = new InvertedIndex();
 
   describe('Read book data', () => {
 
-    let emptyFile = {};
-    let emptyJson = indexFile.createIndex(emptyFile);
+    let emptyJson = indexFile.createIndex({});
     it('Should return false if json file is empty', () => {
       expect(emptyJson).toBeFalsy();
     });
@@ -21,24 +22,24 @@ describe('Inverted index class', () => {
   });
 
   describe('Populate Index', () => {
-    let obj = {
-      a: ['doc1', 'doc2'],
-      b: ['doc2', 'doc3']
-    };
+    // let obj = {
+    //   a: ['doc1', 'doc2'],
+    //   b: ['doc2', 'doc3']
+    // };
 
-    let singleJsonFile = {
-      a: 'single title',
-      b: 'single content'
-    };
+    // let singleJsonFile = {
+    //   a: 'single title',
+    //   b: 'single content'
+    // };
 
-    let multipleJsonArray = [{
-      a: 'multiple title1',
-      b: 'multiple content1'
-    }, {
-      c: 'multiple title2',
-      d: 'multiple content2'
-    }
-    ];
+    // let multipleJsonArray = [{
+    //   a: 'multiple title1',
+    //   b: 'multiple content1'
+    // }, {
+    //   c: 'multiple title2',
+    //   d: 'multiple content2'
+    // }
+    // ];
 
     let createSingle = indexFile.createIndex(singleJsonFile);
     let createMultiple = indexFile.createIndex(multipleJsonArray);

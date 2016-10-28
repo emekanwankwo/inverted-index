@@ -172,7 +172,7 @@
 	    }, 8000);
 	    $scope.errMsg = errMsg;
 	    $scope.errExist = true;
-	    $scope.$apply();
+	    return false;
 	  };
 
 
@@ -199,14 +199,17 @@
 	   * @Param {object}
 	   * @Returns {}
 	   */
-	  getIndex = (thisObject) => {
-	    hisObject = $scope.allContent;
-	    let wordsIndex = theIndex.getIndex(thisObject);
+	  $scope.getIndex = () => {
+	    let wordsIndex = theIndex.getIndex();
+	    if(!wordsIndex){
+	      showErr('Error! no file uploaded!');
+	      return false;
+	    }
+
 	    $scope.columns = wordsIndex.titles;
 	    $scope.terms = wordsIndex.words;
 	    $scope.storeTerms = wordsIndex.words;
 	    $scope.storeColumns = wordsIndex.titles;
-	    $scope.$apply();
 	  };
 
 
@@ -222,7 +225,7 @@
 	    $scope.changeStory = (currentStoryIndex) => {
 	      $scope.theIndex = currentStoryIndex;
 
-	      //@TODO create methos to move to the next/previous index.
+	      //@TODO create method to move to the next/previous index.
 
 	      // if ($scope.storyTitle.length === 0){
 	      //   return false;
@@ -459,15 +462,15 @@
 	   * @Returns {object}
 	   */
 
-	  getIndex(anObject) {
-	    if (Object.keys(anObject).length <= 0){
+	  getIndex() {
+	    if (Object.keys(this.indexes).length <= 0){
 	      return false;
 	    }
 	    let terms = [];
 	    let columns = [];
-	    terms = Object.keys(anObject);
+	    terms = Object.keys(this.indexes);
 	    for (let term of terms) {
-	      columns = columns.concat(anObject[term]);
+	      columns = columns.concat(this.indexes[term]);
 	    }
 	    columns = this.generateUniqueArray(columns);
 

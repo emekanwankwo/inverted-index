@@ -318,15 +318,15 @@ class InvertedIndex {
    * @Returns {object}
    */
 
-  getIndex(anObject) {
-    if (Object.keys(anObject).length <= 0){
+  getIndex() {
+    if (Object.keys(this.indexes).length <= 0){
       return false;
     }
     let terms = [];
     let columns = [];
-    terms = Object.keys(anObject);
+    terms = Object.keys(this.indexes);
     for (let term of terms) {
-      columns = columns.concat(anObject[term]);
+      columns = columns.concat(this.indexes[term]);
     }
     columns = this.generateUniqueArray(columns);
 
