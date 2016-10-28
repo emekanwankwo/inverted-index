@@ -23,6 +23,9 @@ An inverted index (also referred to as postings file or inverted file) is an ind
 
     - Search results rendered in real-time.
 
+### Content formatting
+    - Sample json file: [{ title: 'Book Title', content: 'This is the book content'}]
+
 ### How to use
  [Click here](https://inverted-index-develop.herokuapp.com/) to open the application.
 
