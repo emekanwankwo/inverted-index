@@ -28,11 +28,11 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
 
     let thefile = document.getElementById('filePath').files[0];
 
-    if ((!thefile) && ($.trim(url) === '')){
+    if ((!thefile) && ($.trim(url) === '')) {
       $('#selectEmptyMsg').show();
       return false;
     }
-    
+
     $('#selectEmptyMsg').hide();
     if ((thefile.name === '') && ($.trim(url) !== '')) {
       let httpRequest = new XMLHttpRequest();
@@ -59,56 +59,56 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
       });
 
       promise.then((data) => {
-         resolveData(data);
+        resolveData(data);
       })
         .catch((err) => {
           showErr(err);
         });
     } else {
-    // Ensure a valid file is selected and is has a '.json' extension
-    let fileExt = thefile.name.substring(thefile.name.length - 5, thefile.name.length);
+      // Ensure a valid file is selected and is has a '.json' extension
+      let fileExt = thefile.name.substring(thefile.name.length - 5, thefile.name.length);
 
-    if ((fileExt !== '.json') && (fileExt !== '.JSON') && ($.trim(url) === '')) return false;
-    let reader = new FileReader();
-    reader.readAsText(thefile);
+      if ((fileExt !== '.json') && (fileExt !== '.JSON') && ($.trim(url) === '')) return false;
+      let reader = new FileReader();
+      reader.readAsText(thefile);
 
-    let promise = new Promise((resolve, reject) => {
+      let promise = new Promise((resolve, reject) => {
 
-      reader.onload = ((e) => {
-        if (e.target.result)
-          try {
-            if (JSON.parse(e.target.result)) resolve(JSON.parse(e.target.result));
-          } catch (e) {
-            reject('Invalid JSON file. Expected:{ "title" : "item", "content" : "item"  }');
-        }
-        else
-          reject('Invalid File Selected');
+        reader.onload = ((e) => {
+          if (e.target.result)
+            try {
+              if (JSON.parse(e.target.result)) resolve(JSON.parse(e.target.result));
+            } catch (e) {
+              reject('Invalid JSON file. Expected:{ "title" : "item", "content" : "item"  }');
+          }
+          else
+            reject('Invalid File Selected');
+        });
       });
-    });
-    promise.then((data) => {
-       resolveData(data); 
-    })
-      .catch((err) => {
-        showErr(err);
-      });
+      promise.then((data) => {
+        resolveData(data);
+      })
+        .catch((err) => {
+          showErr(err);
+        });
     }
   };
 
 
-/**
- * function to display error for 8 seconds
- * @Param{string} error message
- */
+  /**
+   * function to display error for 8 seconds
+   * @Param{string} error message
+   */
 
   showErr = (errMsg) => {
     setTimeout(() => {
-    $scope.errExist = false;
-    $scope.errMsg = '';
-    $scope.$apply();
-    }, 8000);
-      $scope.errMsg = errMsg; 
-      $scope.errExist = true;
+      $scope.errExist = false;
+      $scope.errMsg = '';
       $scope.$apply();
+    }, 8000);
+    $scope.errMsg = errMsg;
+    $scope.errExist = true;
+    $scope.$apply();
   };
 
 
@@ -119,7 +119,7 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
    */
   resolveData = (data) => {
     let objectIndex = theIndex.createIndex(data);
-    if (!objectIndex){
+    if (!objectIndex) {
       showErr('Error! ensure your json file has a title key and a content key');
       return false;
     }
@@ -164,7 +164,8 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
   $scope.checkThis = (word, columnIndex) => {
     $scope.count = 0;
     try {
-      if ($scope.allContent[word].indexOf(columnIndex) !== -1) $scope.count += 1;
+      if ($scope.allContent[word].indexOf(columnIndex) !== -1)
+        $scope.count += 1;
     } catch (e) {
       // Fail silently
     }
@@ -208,6 +209,6 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
    * @Param {string}
    * @Return {}
    */
-$scope.changeCriteria = (searchKeyword) => ((searchKeyword) === null ? ($scope.columns = $scope.storeColumns) : `${$scope.columns = []} ${$scope.columns.push(searchKeyword)}`);
+  $scope.changeCriteria = (searchKeyword) => ((searchKeyword) === null ? ($scope.columns = $scope.storeColumns) : `${$scope.columns = []} ${$scope.columns.push(searchKeyword)}`);
 
 }]);

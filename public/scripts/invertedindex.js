@@ -81,11 +81,11 @@
 
 	    let thefile = document.getElementById('filePath').files[0];
 
-	    if ((!thefile) && ($.trim(url) === '')){
+	    if ((!thefile) && ($.trim(url) === '')) {
 	      $('#selectEmptyMsg').show();
 	      return false;
 	    }
-	    
+
 	    $('#selectEmptyMsg').hide();
 	    if ((thefile.name === '') && ($.trim(url) !== '')) {
 	      let httpRequest = new XMLHttpRequest();
@@ -112,56 +112,56 @@
 	      });
 
 	      promise.then((data) => {
-	         resolveData(data);
+	        resolveData(data);
 	      })
 	        .catch((err) => {
 	          showErr(err);
 	        });
 	    } else {
-	    // Ensure a valid file is selected and is has a '.json' extension
-	    let fileExt = thefile.name.substring(thefile.name.length - 5, thefile.name.length);
+	      // Ensure a valid file is selected and is has a '.json' extension
+	      let fileExt = thefile.name.substring(thefile.name.length - 5, thefile.name.length);
 
-	    if ((fileExt !== '.json') && (fileExt !== '.JSON') && ($.trim(url) === '')) return false;
-	    let reader = new FileReader();
-	    reader.readAsText(thefile);
+	      if ((fileExt !== '.json') && (fileExt !== '.JSON') && ($.trim(url) === '')) return false;
+	      let reader = new FileReader();
+	      reader.readAsText(thefile);
 
-	    let promise = new Promise((resolve, reject) => {
+	      let promise = new Promise((resolve, reject) => {
 
-	      reader.onload = ((e) => {
-	        if (e.target.result)
-	          try {
-	            if (JSON.parse(e.target.result)) resolve(JSON.parse(e.target.result));
-	          } catch (e) {
-	            reject('Invalid JSON file. Expected:{ "title" : "item", "content" : "item"  }');
-	        }
-	        else
-	          reject('Invalid File Selected');
+	        reader.onload = ((e) => {
+	          if (e.target.result)
+	            try {
+	              if (JSON.parse(e.target.result)) resolve(JSON.parse(e.target.result));
+	            } catch (e) {
+	              reject('Invalid JSON file. Expected:{ "title" : "item", "content" : "item"  }');
+	          }
+	          else
+	            reject('Invalid File Selected');
+	        });
 	      });
-	    });
-	    promise.then((data) => {
-	       resolveData(data); 
-	    })
-	      .catch((err) => {
-	        showErr(err);
-	      });
+	      promise.then((data) => {
+	        resolveData(data);
+	      })
+	        .catch((err) => {
+	          showErr(err);
+	        });
 	    }
 	  };
 
 
-	/**
-	 * function to display error for 8 seconds
-	 * @Param{string} error message
-	 */
+	  /**
+	   * function to display error for 8 seconds
+	   * @Param{string} error message
+	   */
 
 	  showErr = (errMsg) => {
 	    setTimeout(() => {
-	    $scope.errExist = false;
-	    $scope.errMsg = '';
-	    $scope.$apply();
-	    }, 8000);
-	      $scope.errMsg = errMsg; 
-	      $scope.errExist = true;
+	      $scope.errExist = false;
+	      $scope.errMsg = '';
 	      $scope.$apply();
+	    }, 8000);
+	    $scope.errMsg = errMsg;
+	    $scope.errExist = true;
+	    $scope.$apply();
 	  };
 
 
@@ -172,7 +172,7 @@
 	   */
 	  resolveData = (data) => {
 	    let objectIndex = theIndex.createIndex(data);
-	    if (!objectIndex){
+	    if (!objectIndex) {
 	      showErr('Error! ensure your json file has a title key and a content key');
 	      return false;
 	    }
@@ -217,7 +217,8 @@
 	  $scope.checkThis = (word, columnIndex) => {
 	    $scope.count = 0;
 	    try {
-	      if ($scope.allContent[word].indexOf(columnIndex) !== -1) $scope.count += 1;
+	      if ($scope.allContent[word].indexOf(columnIndex) !== -1)
+	        $scope.count += 1;
 	    } catch (e) {
 	      // Fail silently
 	    }
@@ -261,7 +262,7 @@
 	   * @Param {string}
 	   * @Return {}
 	   */
-	$scope.changeCriteria = (searchKeyword) => ((searchKeyword) === null ? ($scope.columns = $scope.storeColumns) : `${$scope.columns = []} ${$scope.columns.push(searchKeyword)}`);
+	  $scope.changeCriteria = (searchKeyword) => ((searchKeyword) === null ? ($scope.columns = $scope.storeColumns) : `${$scope.columns = []} ${$scope.columns.push(searchKeyword)}`);
 
 	}]);
 
@@ -293,7 +294,7 @@
 
 	  createIndex(data) {
 
-	    if(Object.keys(data).length <= 0) return false;
+	    if (Object.keys(data).length <= 0) return false;
 
 	    let objectIndex = {};
 
@@ -302,7 +303,7 @@
 	      let objectTitle = data[Object.keys(data)[0]],
 	        objectContent = data[Object.keys(data)[1]];
 
-	        if (Object.keys(data).length !== 2) return false;
+	      if (Object.keys(data).length !== 2) return false;
 
 	      this.titles.push(objectTitle);
 	      this.stories.push(objectContent);
@@ -310,10 +311,10 @@
 	      let wordsInText = `${objectTitle} ${objectContent}`;
 	      wordsInText = this.generateUniqueArray(this.filterWord(wordsInText));
 
-	      for (let word of wordsInText){
+	      for (let word of wordsInText) {
 	        objectIndex[word] = [objectTitle];
 	      }
-	        
+
 	    } else {
 	      let dataLength = data.length;
 	      for (let i = 0; i < dataLength; i++) {
@@ -329,8 +330,10 @@
 	        wordsInText = this.generateUniqueArray(this.filterWord(wordsInText));
 
 	        for (let word of wordsInText) {
-	          if (objectIndex[word]) objectIndex[word] = objectIndex[word].concat([objectTitle]);
-	          else objectIndex[word] = [objectTitle];
+	          if (objectIndex[word])
+	            objectIndex[word] = objectIndex[word].concat([objectTitle]);
+	          else
+	            objectIndex[word] = [objectTitle];
 	        }
 	      }
 	    }
@@ -361,8 +364,10 @@
 	    if ((typeof dest !== 'object') || (typeof src !== 'object')) return false;
 	    let makeUnique = this.generateUniqueArray;
 	    Object.keys(src).forEach(function(key) {
-	      if (dest[key]) dest[key] = makeUnique(dest[key].concat(src[key]));
-	      else dest[key] = src[key];
+	      if (dest[key])
+	        dest[key] = makeUnique(dest[key].concat(src[key]));
+	      else
+	        dest[key] = src[key];
 	    });
 	    return dest;
 	  }
@@ -409,7 +414,7 @@
 	    let terms = [];
 	    let columns = [];
 	    terms = Object.keys(data);
-	    for (let term of terms){
+	    for (let term of terms) {
 	      columns = columns.concat(data[term]);
 	    }
 	    columns = this.generateUniqueArray(columns);
@@ -430,15 +435,14 @@
 	  searchIndex(term, criteria = null) {
 	    let docPosition = [];
 	    if (this.indexes[term]) {
-	      if ((criteria === null) || (criteria === undefined)){
-	        for(let title of this.indexes[term]){
+	      if ((criteria === null) || (criteria === undefined)) {
+	        for (let title of this.indexes[term]) {
 	          docPosition.push(this.titles.indexOf(title));
 	        }
 	        this.searchResult[term] = docPosition;
 	        return this.searchResult;
-	      }
-	      else {
-	        if (this.indexes[term].indexOf(criteria) !== -1){
+	      } else {
+	        if (this.indexes[term].indexOf(criteria) !== -1) {
 	          docPosition.push(this.indexes[term].indexOf(criteria));
 	          this.searchResult[term] = docPosition;
 	          return this.searchResult;

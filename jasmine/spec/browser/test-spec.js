@@ -185,7 +185,7 @@ class InvertedIndex {
 
   createIndex(data) {
 
-    if(Object.keys(data).length <= 0) return false;
+    if (Object.keys(data).length <= 0) return false;
 
     let objectIndex = {};
 
@@ -194,7 +194,7 @@ class InvertedIndex {
       let objectTitle = data[Object.keys(data)[0]],
         objectContent = data[Object.keys(data)[1]];
 
-        if (Object.keys(data).length !== 2) return false;
+      if (Object.keys(data).length !== 2) return false;
 
       this.titles.push(objectTitle);
       this.stories.push(objectContent);
@@ -202,10 +202,10 @@ class InvertedIndex {
       let wordsInText = `${objectTitle} ${objectContent}`;
       wordsInText = this.generateUniqueArray(this.filterWord(wordsInText));
 
-      for (let word of wordsInText){
+      for (let word of wordsInText) {
         objectIndex[word] = [objectTitle];
       }
-        
+
     } else {
       let dataLength = data.length;
       for (let i = 0; i < dataLength; i++) {
@@ -221,8 +221,10 @@ class InvertedIndex {
         wordsInText = this.generateUniqueArray(this.filterWord(wordsInText));
 
         for (let word of wordsInText) {
-          if (objectIndex[word]) objectIndex[word] = objectIndex[word].concat([objectTitle]);
-          else objectIndex[word] = [objectTitle];
+          if (objectIndex[word])
+            objectIndex[word] = objectIndex[word].concat([objectTitle]);
+          else
+            objectIndex[word] = [objectTitle];
         }
       }
     }
@@ -253,8 +255,10 @@ class InvertedIndex {
     if ((typeof dest !== 'object') || (typeof src !== 'object')) return false;
     let makeUnique = this.generateUniqueArray;
     Object.keys(src).forEach(function(key) {
-      if (dest[key]) dest[key] = makeUnique(dest[key].concat(src[key]));
-      else dest[key] = src[key];
+      if (dest[key])
+        dest[key] = makeUnique(dest[key].concat(src[key]));
+      else
+        dest[key] = src[key];
     });
     return dest;
   }
@@ -301,7 +305,7 @@ class InvertedIndex {
     let terms = [];
     let columns = [];
     terms = Object.keys(data);
-    for (let term of terms){
+    for (let term of terms) {
       columns = columns.concat(data[term]);
     }
     columns = this.generateUniqueArray(columns);
@@ -322,15 +326,14 @@ class InvertedIndex {
   searchIndex(term, criteria = null) {
     let docPosition = [];
     if (this.indexes[term]) {
-      if ((criteria === null) || (criteria === undefined)){
-        for(let title of this.indexes[term]){
+      if ((criteria === null) || (criteria === undefined)) {
+        for (let title of this.indexes[term]) {
           docPosition.push(this.titles.indexOf(title));
         }
         this.searchResult[term] = docPosition;
         return this.searchResult;
-      }
-      else {
-        if (this.indexes[term].indexOf(criteria) !== -1){
+      } else {
+        if (this.indexes[term].indexOf(criteria) !== -1) {
           docPosition.push(this.indexes[term].indexOf(criteria));
           this.searchResult[term] = docPosition;
           return this.searchResult;
