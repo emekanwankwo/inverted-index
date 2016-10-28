@@ -8,7 +8,6 @@ let gulp = require('gulp'),
   webpack = require('webpack'),
   WebpackDevServer = require('webpack-dev-server'),
   webpackConfig = require('./webpack.config.js'),
-  istanbul = require('gulp-istanbul'),
   port = process.env.PORT || 3000;
 
 

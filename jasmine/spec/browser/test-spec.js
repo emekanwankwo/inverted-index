@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){let a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);let f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}let l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){let n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}let i=typeof require=="function"&&require;for(let o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 describe('Inverted index class', () => {
   let InvertedIndex = require('../../src/inverted-index');
   let indexFile = new InvertedIndex();
@@ -180,13 +180,12 @@ class InvertedIndex {
   /**
 	* Creates an Index of the file at the path specified
 	* @Params {string}
-  * @Returns {}
+  * @Returns {object}
 	**/
 
   createIndex(data) {
 
-    if(Object.keys(data).length <= 0)
-      return false;
+    if(Object.keys(data).length <= 0) return false;
 
     let objectIndex = {};
 
@@ -194,8 +193,8 @@ class InvertedIndex {
     if (!Array.isArray(data)) {
       let objectTitle = data[Object.keys(data)[0]],
         objectContent = data[Object.keys(data)[1]];
-        if(Object.keys(data).length !== 2)
-          return false;
+
+        if (Object.keys(data).length !== 2) return false;
 
       this.titles.push(objectTitle);
       this.stories.push(objectContent);
@@ -203,16 +202,17 @@ class InvertedIndex {
       let wordsInText = `${objectTitle} ${objectContent}`;
       wordsInText = this.generateUniqueArray(this.filterWord(wordsInText));
 
-      for (let word of wordsInText)
+      for (let word of wordsInText){
         objectIndex[word] = [objectTitle];
+      }
         
     } else {
       let dataLength = data.length;
       for (let i = 0; i < dataLength; i++) {
         let objectTitle = data[i][Object.keys(data[i])[0]],
           objectContent = data[i][Object.keys(data[i])[1]];
-          if(Object.keys(data[i]).length !== 2)
-            return false;
+
+        if (Object.keys(data[i]).length !== 2) return false;
 
         this.titles.push(objectTitle);
         this.stories.push(objectContent);
@@ -221,10 +221,8 @@ class InvertedIndex {
         wordsInText = this.generateUniqueArray(this.filterWord(wordsInText));
 
         for (let word of wordsInText) {
-          if (objectIndex[word])
-            objectIndex[word] = objectIndex[word].concat([objectTitle]);
-          else
-            objectIndex[word] = [objectTitle];
+          if (objectIndex[word]) objectIndex[word] = objectIndex[word].concat([objectTitle]);
+          else objectIndex[word] = [objectTitle];
         }
       }
     }
@@ -240,8 +238,8 @@ class InvertedIndex {
       */
 
   filterWord(word) {
-    if((typeof word) !== 'string')
-      return false;
+
+    if ((typeof word) !== 'string') return false;
     return word.replace(/[.,\/#!$£%\^&\*;:'{}=\-_`~()]/g, '').toLowerCase().split(' ');
   }
 
@@ -252,15 +250,11 @@ class InvertedIndex {
   * @Returns {object}
   */
   mergeObjects(dest, src) {
-    if((typeof dest !== 'object') || (typeof src !== 'object'))
-      return false;
+    if ((typeof dest !== 'object') || (typeof src !== 'object')) return false;
     let makeUnique = this.generateUniqueArray;
     Object.keys(src).forEach(function(key) {
-      if (dest[key]) {
-        dest[key] = makeUnique(dest[key].concat(src[key]));
-      }
-      else
-        dest[key] = src[key];
+      if (dest[key]) dest[key] = makeUnique(dest[key].concat(src[key]));
+      else dest[key] = src[key];
     });
     return dest;
   }
@@ -272,13 +266,11 @@ class InvertedIndex {
     * @Returns {array}
     */
   generateUniqueArray(data) {
-    if(!Array.isArray(data))
-      return false;
+    if (!Array.isArray(data)) return false;
     let uniqueArray = [];
     data.forEach((value) => {
       let index = uniqueArray.indexOf(value);
-      if (index === -1)
-        uniqueArray.push(value);
+      if (index === -1) uniqueArray.push(value);
     });
     return uniqueArray;
   }
@@ -305,13 +297,13 @@ class InvertedIndex {
    */
 
   getIndex(data) {
-    if (Object.keys(data).length <= 0)
-      return false;
+    if (Object.keys(data).length <= 0) return false;
     let terms = [];
     let columns = [];
     terms = Object.keys(data);
-    for (let term of terms)
+    for (let term of terms){
       columns = columns.concat(data[term]);
+    }
     columns = this.generateUniqueArray(columns);
 
     return {
@@ -345,8 +337,7 @@ class InvertedIndex {
         }
       }
     }
-    else
-      return false;
+    else return false;
   }
 }
 module.exports = InvertedIndex;
