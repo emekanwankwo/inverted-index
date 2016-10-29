@@ -9,20 +9,33 @@ describe('Inverted index class', () => {
     it('Assert that JSON file is not empty', () => {
       expect(book).not.toEqual({});
     });
+
+    it('Should return false if the number of keys of the book object is not exactly 2', () => {
+      const Book1 = {title: 'new title', content1 : 'A new content1', content2 : 'A new content2'};
+      const Book2 = book;
+      Book2[1] = {content: 'content'};
+      expect(indexFile.createIndex(Book1)).toBeFalsy();
+      expect(indexFile.createIndex(Book2)).toBeFalsy();
+    });
   });
 
   describe('Populate Index', () => {
     const indexObject = indexFile.createIndex(book);
     it('Should create an index', () => {
-      expect(indexObject).not.toBeFalsy();
+      expect(indexObject).toBeTruthy();
     });
 
     it('Should map string keys to the appropriate json object', () => {
-      expect(indexObject['alice']).toEqual(['Alice in Wonderland']);
-      expect(indexObject['a']).toEqual(['Alice in Wonderland','The Lord of the Rings: The Fellowship of the Ring.']);
-      expect(indexObject['unusual']).toEqual(['The Lord of the Rings: The Fellowship of the Ring.']);
+      const getTheIndex = indexFile.getIndex();
+      expect(getTheIndex['alice']).toEqual(['Alice in Wonderland']);
+      expect(getTheIndex['a']).toEqual(['Alice in Wonderland','The Lord of the Rings: The Fellowship of the Ring.']);
+      expect(getTheIndex['unusual']).toEqual(['The Lord of the Rings: The Fellowship of the Ring.']);
     });
-   
+
+    it('Should return false if no index is created', () => {
+      const noIndex = new InvertedIndex();
+      expect(noIndex.getIndex()).toBeFalsy();
+    });
   });
 
   describe('Search index', () => {
@@ -115,8 +128,8 @@ class InvertedIndex {
 
   /**
 	* Creates an Index of the file at the path specified
-	* @Params {string}
-  * @Returns {object}
+	* @param {string}
+  * @returns {object}
 	**/
 
   createIndex(thisObject) {
@@ -159,43 +172,45 @@ class InvertedIndex {
         this.stories.push(objectContent);
 
         let wordsInText = `${objectTitle} ${objectContent}`;
+        console.log(wordsInText);
         wordsInText = this.generateUniqueArray(this.filter(wordsInText));
-
-        for (let word of wordsInText) {
-          if (objectIndex[word]){
-            objectIndex[word] = objectIndex[word].concat([objectTitle]);
-          }
-          else{
-            objectIndex[word] = [objectTitle];
+        if(wordsInText){
+          for (let word of wordsInText) {
+            if (objectIndex[word]){
+              objectIndex[word] = objectIndex[word].concat([objectTitle]);
+            }
+            else{
+              objectIndex[word] = [objectTitle];
+            }
           }
         }
       }
     }
     this.indexes = this.mergeObjects(this.indexes, objectIndex);
-    return objectIndex;
+    return true;
   }
 
 
   /**
       * Method to filter out special characters and create a string out of the words specified
-      * @Params {string}
-      * @Returns {array}
+      * @param {string}
+      * @returns {array}
       */
 
-  filter(anArray) {
+  filter(aString) {
 
-    if ((typeof anArray) !== 'string'){
+    if ((typeof aString) !== 'string'){
       return false;
     }
 
-    return anArray.replace(/[.,\/#!$£%\^&\*;:'{}=\-_`~()]/g, '').toLowerCase().split(' ');
+    return aString.replace(/[.,\/#!$£%\^&\*;:'{}=\-_`~()]/g, '').toLowerCase().split(' ');
   }
 
 
   /**
   * Method to merge two objects.
-  * @Params {object} {object}
-  * @Returns {object}
+  * @param {object} {object}
+  * @returns {object}
   */
   mergeObjects(dest, src) {
     if ((typeof dest !== 'object') || (typeof src !== 'object')){
@@ -216,8 +231,8 @@ class InvertedIndex {
 
   /**
     * Method to generate unique array items from the array specified.
-    * @Params {array}
-    * @Returns {array}
+    * @param {array}
+    * @returns {array}
     */
   generateUniqueArray(thisArray) {
     if (!Array.isArray(thisArray)){
@@ -236,8 +251,8 @@ class InvertedIndex {
 
   /**
     * getStory method to return an array of titles and corresponding stories
-    * @Params {}
-    * @Returns {object}
+    * @param {}
+    * @returns {object}
     */
 
   getStory() {
@@ -251,32 +266,23 @@ class InvertedIndex {
   /**
    * getIndex Method to get the index of an element
    * @param {object}
-   * @Returns {object}
+   * @returns {object}
    */
 
   getIndex() {
-    if (Object.keys(this.indexes).length <= 0){
+    // Check if an index has been created
+    if (!Object.keys(this.indexes)[0]){
       return false;
     }
-    let terms = [];
-    let columns = [];
-    terms = Object.keys(this.indexes);
-    for (let term of terms) {
-      columns = columns.concat(this.indexes[term]);
-    }
-    columns = this.generateUniqueArray(columns);
 
-    return {
-      words: terms,
-      titles: columns
-    };
+    return this.indexes;
   }
 
 
   /**
    * searchIndex method to search for index
-   * @Params {string}
-   * @Returns {object}
+   * @param {string}
+   * @returns {object}
    */
 
   searchIndex(term, criteria = null) {

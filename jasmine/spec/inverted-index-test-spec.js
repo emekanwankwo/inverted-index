@@ -8,20 +8,33 @@ describe('Inverted index class', () => {
     it('Assert that JSON file is not empty', () => {
       expect(book).not.toEqual({});
     });
+
+    it('Should return false if the number of keys of the book object is not exactly 2', () => {
+      const Book1 = {title: 'new title', content1 : 'A new content1', content2 : 'A new content2'};
+      const Book2 = book;
+      Book2[1] = {content: 'content'};
+      expect(indexFile.createIndex(Book1)).toBeFalsy();
+      expect(indexFile.createIndex(Book2)).toBeFalsy();
+    });
   });
 
   describe('Populate Index', () => {
     const indexObject = indexFile.createIndex(book);
     it('Should create an index', () => {
-      expect(indexObject).not.toBeFalsy();
+      expect(indexObject).toBeTruthy();
     });
 
     it('Should map string keys to the appropriate json object', () => {
-      expect(indexObject['alice']).toEqual(['Alice in Wonderland']);
-      expect(indexObject['a']).toEqual(['Alice in Wonderland','The Lord of the Rings: The Fellowship of the Ring.']);
-      expect(indexObject['unusual']).toEqual(['The Lord of the Rings: The Fellowship of the Ring.']);
+      const getTheIndex = indexFile.getIndex();
+      expect(getTheIndex['alice']).toEqual(['Alice in Wonderland']);
+      expect(getTheIndex['a']).toEqual(['Alice in Wonderland','The Lord of the Rings: The Fellowship of the Ring.']);
+      expect(getTheIndex['unusual']).toEqual(['The Lord of the Rings: The Fellowship of the Ring.']);
     });
-   
+
+    it('Should return false if no index is created', () => {
+      const noIndex = new InvertedIndex();
+      expect(noIndex.getIndex()).toBeFalsy();
+    });
   });
 
   describe('Search index', () => {

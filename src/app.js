@@ -20,8 +20,8 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
 
   /**
    * Method to create index.
-   * @Params {}
-   * @Returns {}
+   * @Param {string}
+   * @returns {}
    */
 
   $scope.createIndex = (url) => {
@@ -108,7 +108,7 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
 
   /**
    * function to display error for 8 seconds
-   * @Param{string} error message
+   * @param {string} error message
    */
 
   showErr = (errMsg) => {
@@ -119,14 +119,15 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
     }, 8000);
     $scope.errMsg = errMsg;
     $scope.errExist = true;
+    $scope.$apply();
     return false;
   };
 
 
   /**
    *  Method to resolve response from the Inverted index function
-   *  @Param {object}
-   *  @Returns {}
+   *  @param {object}
+   *  @returns {}
    */
   resolveData = (jsonData) => {
     let objectIndex = theIndex.createIndex(jsonData);
@@ -134,7 +135,6 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
       showErr('Error! ensure your json file has a title key and a content key');
       return false;
     }
-    $scope.allContent = theIndex.mergeObjects($scope.allContent, objectIndex);
     $scope.storyTitle = theIndex.getStory().titles;
     $scope.storyContent = theIndex.getStory().stories;
     $scope.$apply();
@@ -143,8 +143,8 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
 
   /**
    * Method to get the index of the object
-   * @Param {object}
-   * @Returns {}
+   * @param {object}
+   * @returns {}
    */
   $scope.getIndex = () => {
     let wordsIndex = theIndex.getIndex();
@@ -152,23 +152,23 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
       showErr('Error! no file uploaded!');
       return false;
     }
-
-    $scope.columns = wordsIndex.titles;
-    $scope.terms = wordsIndex.words;
-    $scope.storeTerms = wordsIndex.words;
-    $scope.storeColumns = wordsIndex.titles;
+    $scope.allContent = theIndex.mergeObjects($scope.allContent, wordsIndex);
+    $scope.terms = Object.keys(wordsIndex);
+    $scope.storeTerms = $scope.terms;
+    for (let term of $scope.terms) {
+      $scope.columns = $scope.columns.concat(wordsIndex[term]);
+    }
+    $scope.columns = theIndex.generateUniqueArray($scope.columns);
+    $scope.storeColumns = $scope.columns;
   };
 
 
   /**
    * Method to change the story being displayed when user clicks next button
-   * @Params {}
-   * @Returns {}
+   * @params {}
+   * @returns {}
    */
-  // $scope.changeStory = () => ($scope.storyTitle.length === 0) ? false :
-    // if ($scope.theIndex === $scope.storyTitle.length - 1){
-    //  ? $scope.theIndex = 0 : $scope.theIndex += 1;
-    // }
+
     $scope.changeStory = (currentStoryIndex) => {
       $scope.theIndex = currentStoryIndex;
 
@@ -190,8 +190,8 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
   /**
    * Method to compare the selected word in the array of words and check the
    * story title column where it belongs
-   * @Param {string} {integer}
-   * @Return {}
+   * @param {string} {integer}
+   * @returns {}
    */
   $scope.checkThis = (word, columnIndex) => {
     $scope.count = 0;
@@ -207,8 +207,8 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
 
   /**
    * Method to search for a given keyword
-   * @Param {string : number}
-   * @Return {}
+   * @param {string : number}
+   * @returns {}
    */
   $scope.searchWord = (keyword, criteria) => {
     $scope.searchState = false;
@@ -241,8 +241,8 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
 
   /**
    * Checks the searchKeyword and re-adjust column displayed
-   * @Param {string}
-   * @Return {}
+   * @param {string}
+   * @returns {}
    */
   $scope.changeCriteria = (searchKeyword) => ((searchKeyword) === null ? ($scope.columns = $scope.storeColumns) : `${$scope.columns = []} ${$scope.columns.push(searchKeyword)}`);
 
