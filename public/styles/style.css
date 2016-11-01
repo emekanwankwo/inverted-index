@@ -1,0 +1,13 @@
+/********* Styles *********/
+
+#content { position: relative; margin:20px; }
+#header_text { color: darkslateblue; font-family: "Caudex", serif;}
+#display_file { position: relative; width: 50%; float: left;}
+#select_file_div { position: relative; width:100%;}
+#file_content_div { position: absolute; width: 45%; float: right; right: 0px; border-top-right-radius: 20px; border-bottom-left-radius: 20px;}
+#file_content_div h2 { position: relative; top:-30; font-size:30px;}
+#display_table_div{ overflow: auto;}
+#search_div { position:relative; float: right; right:10px; top: -40px; width: 44%; }
+#search_status { position: absolute; top: 20px; right:37%; width:200px; height: 30px; float:right; z-index: 9999;}
+#alert_div{ position: relative; width: 40%; background-color: indianred; height: 50px; margin: 0 auto; border-radius: 15px; z-index: 999999; text-align: center;}
+#alert_div span{ position: absolute; width: 90%; top: 15px; left: 25px; font-family: "Caudex", serif; margin: 0 auto; float: left;}
