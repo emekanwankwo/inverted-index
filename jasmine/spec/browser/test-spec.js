@@ -52,8 +52,10 @@ describe('Inverted index class', () => {
   describe('Search index', () => {
     it('Should return an array of the indices of the correct objects that contain the words in the search query', () => {
       expect(indexFile.searchIndex('alice')).toEqual({alice : [0]});
-      expect(indexFile.searchIndex('of')).toEqual({alice : [0], of : [0,1]});
-      expect(indexFile.searchIndex('alliance')).toEqual({alice : [0], of : [0,1], alliance : [1]});
+      expect(indexFile.searchIndex('of')).toEqual({of : [0,1]});
+      expect(indexFile.searchIndex('alliance')).toEqual({alliance : [1]});
+      expect(indexFile.searchIndex('of','Alice in Wonderland')).toEqual({of : [0]});
+      expect(indexFile.searchIndex('foodie')).toBeFalsy();
     });
   })
 
@@ -275,6 +277,7 @@ class InvertedIndex {
 
   searchIndex(term, criteria = null) {
     const docPosition = [];
+    this.searchResult = {}
     if (this.indexes[term]) {
       if ((criteria === null) || (criteria === undefined)) {
         for (let title of this.indexes[term]) {

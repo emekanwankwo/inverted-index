@@ -174,6 +174,7 @@ class InvertedIndex {
 
   searchIndex(term, criteria = null) {
     const docPosition = [];
+    this.searchResult = {};
     if (this.indexes[term]) {
       if ((criteria === null) || (criteria === undefined)) {
         for (let title of this.indexes[term]) {
