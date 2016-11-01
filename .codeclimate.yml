@@ -10,5 +10,5 @@ ratings:
   paths:
     - "**.js"
 exclude_paths:
-  - jasmine/spec/browser/*
+  - jasmine/**
   - public/**
