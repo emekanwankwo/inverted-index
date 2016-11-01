@@ -87,7 +87,7 @@
 	    }
 
 	    $('#selectEmptyMsg').hide();
-	    if ((thefile.name === '') && ($.trim(url) !== '')) {
+	    if (!thefile && ($.trim(url) !== '')) {
 	      const httpRequest = new XMLHttpRequest();
 
 	      // Make a promise to send the http get request
@@ -227,7 +227,6 @@
 	    };
 
 	    $scope.nextPrev = function (value) {
-	      console.log(value);
 	      if(value === 'next'){
 	        if ($scope.theIndex === $scope.storyTitle.length-1){
 	          return false;

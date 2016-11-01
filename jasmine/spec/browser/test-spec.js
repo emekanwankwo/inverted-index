@@ -37,14 +37,12 @@ describe('Inverted index class', () => {
     it('Should create an index', () => {
       expect(indexObject).toBeTruthy();
     });
-
     it('Should map string keys to the appropriate json object', () => {
       const getTheIndex = indexFile.getIndex();
       expect(getTheIndex['alice']).toEqual(['Alice in Wonderland']);
       expect(getTheIndex['a']).toEqual(['Alice in Wonderland','The Lord of the Rings: The Fellowship of the Ring.']);
       expect(getTheIndex['unusual']).toEqual(['The Lord of the Rings: The Fellowship of the Ring.']);
     });
-
     it('Should return false if no index is created', () => {
       const noIndex = new InvertedIndex();
       expect(noIndex.getIndex()).toBeFalsy();
