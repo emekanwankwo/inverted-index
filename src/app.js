@@ -34,7 +34,7 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
     }
 
     $('#selectEmptyMsg').hide();
-    if ((thefile.name === '') && ($.trim(url) !== '')) {
+    if (!thefile && ($.trim(url) !== '')) {
       const httpRequest = new XMLHttpRequest();
 
       // Make a promise to send the http get request
