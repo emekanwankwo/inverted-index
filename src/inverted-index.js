@@ -15,86 +15,102 @@ class InvertedIndex {
 
   /**
 	* Creates an Index of the file at the path specified
-	* @Params {string}
-  * @Returns {object}
+	* @param {string}
+  * @returns {object}
 	**/
 
-  createIndex(data) {
+  createIndex(thisObject) {
 
-    if (Object.keys(data).length <= 0) return false;
+    if (Object.keys(thisObject).length <= 0){
+      return false;
+    }
 
     let objectIndex = {};
 
     // Check if the data is a single json object(one content) and resolve
-    if (!Array.isArray(data)) {
-      let objectTitle = data[Object.keys(data)[0]],
-        objectContent = data[Object.keys(data)[1]];
+    if (!Array.isArray(thisObject)) {
+      if (Object.keys(thisObject).length !== 2){
+        return false;
+      }
 
-      if (Object.keys(data).length !== 2) return false;
+      const objectTitle = thisObject[Object.keys(thisObject)[0]],
+        objectContent = thisObject[Object.keys(thisObject)[1]];  
 
       this.titles.push(objectTitle);
       this.stories.push(objectContent);
 
       let wordsInText = `${objectTitle} ${objectContent}`;
-      wordsInText = this.generateUniqueArray(this.filterWord(wordsInText));
+      wordsInText = this.generateUniqueArray(this.filter(wordsInText));
 
-      for (let word of wordsInText) {
-        objectIndex[word] = [objectTitle];
+      if(wordsInText) {
+        for (let word of wordsInText) {
+          objectIndex[word] = [objectTitle];
+        }
       }
-
     } else {
-      let dataLength = data.length;
+      const dataLength = thisObject.length;
       for (let i = 0; i < dataLength; i++) {
-        let objectTitle = data[i][Object.keys(data[i])[0]],
-          objectContent = data[i][Object.keys(data[i])[1]];
-
-        if (Object.keys(data[i]).length !== 2) return false;
+        if (Object.keys(thisObject[i]).length !== 2){
+          return false;
+        }
+        const objectTitle = thisObject[i][Object.keys(thisObject[i])[0]],
+          objectContent = thisObject[i][Object.keys(thisObject[i])[1]];
 
         this.titles.push(objectTitle);
         this.stories.push(objectContent);
 
         let wordsInText = `${objectTitle} ${objectContent}`;
-        wordsInText = this.generateUniqueArray(this.filterWord(wordsInText));
-
-        for (let word of wordsInText) {
-          if (objectIndex[word])
-            objectIndex[word] = objectIndex[word].concat([objectTitle]);
-          else
-            objectIndex[word] = [objectTitle];
+        wordsInText = this.generateUniqueArray(this.filter(wordsInText));
+        if(wordsInText){
+          for (let word of wordsInText) {
+            if (objectIndex[word]){
+              objectIndex[word] = objectIndex[word].concat([objectTitle]);
+            }
+            else{
+              objectIndex[word] = [objectTitle];
+            }
+          }
         }
       }
     }
     this.indexes = this.mergeObjects(this.indexes, objectIndex);
-    return objectIndex;
+    return true;
   }
 
 
   /**
       * Method to filter out special characters and create a string out of the words specified
-      * @Params {string}
-      * @Returns {array}
+      * @param {string}
+      * @returns {array}
       */
 
-  filterWord(word) {
+  filter(aString) {
 
-    if ((typeof word) !== 'string') return false;
-    return word.replace(/[.,\/#!$£%\^&\*;:'{}=\-_`~()]/g, '').toLowerCase().split(' ');
+    if ((typeof aString) !== 'string'){
+      return false;
+    }
+
+    return aString.replace(/[.,\/#!$£%\^&\*;:'{}=\-_`~()]/g, '').toLowerCase().split(' ');
   }
 
 
   /**
   * Method to merge two objects.
-  * @Params {object} {object}
-  * @Returns {object}
+  * @param {object} {object}
+  * @returns {object}
   */
   mergeObjects(dest, src) {
-    if ((typeof dest !== 'object') || (typeof src !== 'object')) return false;
-    let makeUnique = this.generateUniqueArray;
+    if ((typeof dest !== 'object') || (typeof src !== 'object')){
+      return false;
+    }
+    const makeUnique = this.generateUniqueArray;
     Object.keys(src).forEach(function(key) {
-      if (dest[key])
+      if (dest[key]){
         dest[key] = makeUnique(dest[key].concat(src[key]));
-      else
+      }   
+      else {
         dest[key] = src[key];
+      }
     });
     return dest;
   }
@@ -102,15 +118,19 @@ class InvertedIndex {
 
   /**
     * Method to generate unique array items from the array specified.
-    * @Params {array}
-    * @Returns {array}
+    * @param {array}
+    * @returns {array}
     */
-  generateUniqueArray(data) {
-    if (!Array.isArray(data)) return false;
-    let uniqueArray = [];
-    data.forEach((value) => {
+  generateUniqueArray(thisArray) {
+    if (!Array.isArray(thisArray)){
+      return false;
+    }
+    const uniqueArray = [];
+    thisArray.forEach((value) => {
       let index = uniqueArray.indexOf(value);
-      if (index === -1) uniqueArray.push(value);
+      if (index === -1){
+        uniqueArray.push(value);
+      }
     });
     return uniqueArray;
   }
@@ -118,8 +138,8 @@ class InvertedIndex {
 
   /**
     * getStory method to return an array of titles and corresponding stories
-    * @Params {}
-    * @Returns {object}
+    * @param {}
+    * @returns {object}
     */
 
   getStory() {
@@ -133,34 +153,27 @@ class InvertedIndex {
   /**
    * getIndex Method to get the index of an element
    * @param {object}
-   * @Returns {object}
+   * @returns {object}
    */
 
-  getIndex(data) {
-    if (Object.keys(data).length <= 0) return false;
-    let terms = [];
-    let columns = [];
-    terms = Object.keys(data);
-    for (let term of terms) {
-      columns = columns.concat(data[term]);
+  getIndex() {
+    // Check if an index has been created
+    if (!Object.keys(this.indexes)[0]){
+      return false;
     }
-    columns = this.generateUniqueArray(columns);
 
-    return {
-      words: terms,
-      titles: columns
-    };
+    return this.indexes;
   }
 
 
   /**
    * searchIndex method to search for index
-   * @Params {string}
-   * @Returns {object}
+   * @param {string}
+   * @returns {object}
    */
 
   searchIndex(term, criteria = null) {
-    let docPosition = [];
+    const docPosition = [];
     if (this.indexes[term]) {
       if ((criteria === null) || (criteria === undefined)) {
         for (let title of this.indexes[term]) {
@@ -176,7 +189,9 @@ class InvertedIndex {
         }
       }
     }
-    else return false;
+    else{
+      return false;
+    }
   }
 }
 module.exports = InvertedIndex;

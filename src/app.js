@@ -1,12 +1,12 @@
 /**** Inverted Index Application to index, sort and search words in a string ******/
 
 
-let indexApp = angular.module('invertedIndex', []);
+const indexApp = angular.module('invertedIndex', []);
 
 indexApp.controller('rootAppController', ['$scope', ($scope) => {
 
-  let InvertedIndex = require('./inverted-index');
-  let theIndex = new InvertedIndex();
+  const InvertedIndex = require('./inverted-index');
+  const theIndex = new InvertedIndex();
 
   // Define a template Document for the Inverted Index Landing Page
   $scope.columns = [];
@@ -20,13 +20,13 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
 
   /**
    * Method to create index.
-   * @Params {}
-   * @Returns {}
+   * @Param {string}
+   * @returns {}
    */
 
   $scope.createIndex = (url) => {
 
-    let thefile = document.getElementById('filePath').files[0];
+    const thefile = document.getElementById('filePath').files[0];
 
     if ((!thefile) && ($.trim(url) === '')) {
       $('#selectEmptyMsg').show();
@@ -35,7 +35,7 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
 
     $('#selectEmptyMsg').hide();
     if ((thefile.name === '') && ($.trim(url) !== '')) {
-      let httpRequest = new XMLHttpRequest();
+      const httpRequest = new XMLHttpRequest();
 
       // Make a promise to send the http get request
       let promise = new Promise((resolve, reject) => {
@@ -52,41 +52,52 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
         // function to handle the promise
         function alertContents() {
           if (httpRequest.readyState === XMLHttpRequest.DONE) {
-            if (httpRequest.status === 200) resolve(JSON.parse(httpRequest.responseText));
-            else reject('There was an error resolving url');
+            if (httpRequest.status === 200) {
+              resolve(JSON.parse(httpRequest.responseText));
+            }
+            else {
+              reject('There was an error resolving url');
+            }
           }
         }
       });
 
-      promise.then((data) => {
-        resolveData(data);
+      promise.then((response) => {
+        resolveData(response);
       })
         .catch((err) => {
           showErr(err);
         });
     } else {
       // Ensure a valid file is selected and is has a '.json' extension
-      let fileExt = thefile.name.substring(thefile.name.length - 5, thefile.name.length);
+      const fileExt = thefile.name.substring(thefile.name.length - 5, thefile.name.length);
 
-      if ((fileExt !== '.json') && (fileExt !== '.JSON') && ($.trim(url) === '')) return false;
-      let reader = new FileReader();
+      if ((fileExt !== '.json') && (fileExt !== '.JSON') && ($.trim(url) === '')){
+        showErr('Please select a valid json file');
+        return false;
+      }
+      const reader = new FileReader();
       reader.readAsText(thefile);
 
       let promise = new Promise((resolve, reject) => {
 
         reader.onload = ((e) => {
-          if (e.target.result)
+          if (e.target.result) {
             try {
-              if (JSON.parse(e.target.result)) resolve(JSON.parse(e.target.result));
+              if (JSON.parse(e.target.result)) {
+                resolve(JSON.parse(e.target.result));
+              }
             } catch (e) {
               reject('Invalid JSON file. Expected:{ "title" : "item", "content" : "item"  }');
+            }
           }
-          else
+          else{
             reject('Invalid File Selected');
+          }
         });
       });
-      promise.then((data) => {
-        resolveData(data);
+      promise.then((response) => {
+        resolveData(response);
       })
         .catch((err) => {
           showErr(err);
@@ -97,7 +108,7 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
 
   /**
    * function to display error for 8 seconds
-   * @Param{string} error message
+   * @param {string} error message
    */
 
   showErr = (errMsg) => {
@@ -109,22 +120,21 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
     $scope.errMsg = errMsg;
     $scope.errExist = true;
     $scope.$apply();
+    return false;
   };
 
 
   /**
    *  Method to resolve response from the Inverted index function
-   *  @Param {object}
-   *  @Returns {}
+   *  @param {object}
+   *  @returns {}
    */
-  resolveData = (data) => {
-    let objectIndex = theIndex.createIndex(data);
+  resolveData = (jsonData) => {
+    let objectIndex = theIndex.createIndex(jsonData);
     if (!objectIndex) {
       showErr('Error! ensure your json file has a title key and a content key');
       return false;
     }
-    $scope.allContent = theIndex.mergeObjects($scope.allContent, objectIndex);
-    getIndex($scope.allContent);
     $scope.storyTitle = theIndex.getStory().titles;
     $scope.storyContent = theIndex.getStory().stories;
     $scope.$apply();
@@ -133,39 +143,64 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
 
   /**
    * Method to get the index of the object
-   * @Param {object}
-   * @Returns {}
+   * @param {object}
+   * @returns {}
    */
-  getIndex = (data) => {
-    let wordsIndex = theIndex.getIndex(data);
-    $scope.columns = wordsIndex.titles;
-    $scope.terms = wordsIndex.words;
-    $scope.storeTerms = wordsIndex.words;
-    $scope.storeColumns = wordsIndex.titles;
-    $scope.$apply();
+  $scope.getIndex = () => {
+    const wordsIndex = theIndex.getIndex();
+    if(!wordsIndex){
+      showErr('Error! no file uploaded!');
+      return false;
+    }
+    $scope.allContent = theIndex.mergeObjects($scope.allContent, wordsIndex);
+    $scope.terms = Object.keys(wordsIndex);
+    $scope.storeTerms = $scope.terms;
+    for (let term of $scope.terms) {
+      $scope.columns = $scope.columns.concat(wordsIndex[term]);
+    }
+    $scope.columns = theIndex.generateUniqueArray($scope.columns);
+    $scope.storeColumns = $scope.columns;
   };
 
 
   /**
    * Method to change the story being displayed when user clicks next button
-   * @Params {}
-   * @Returns {}
+   * @params {}
+   * @returns {}
    */
-  $scope.changeStory = () => ($scope.storyTitle.length === 0) ? false : ($scope.theIndex === $scope.storyTitle.length - 1) ? $scope.theIndex = 0 : $scope.theIndex += 1;
+
+    $scope.changeStory = (currentStoryIndex) => {
+      $scope.theIndex = currentStoryIndex;
+    };
+
+    $scope.nextPrev = function (value) {
+      if(value === 'next'){
+        if ($scope.theIndex === $scope.storyTitle.length-1){
+          return false;
+        }
+        $scope.theIndex++;
+      } else{
+        if ($scope.theIndex === 0){
+          return false;
+        }
+        $scope.theIndex--;
+      }
+    };
 
 
 
   /**
    * Method to compare the selected word in the array of words and check the
    * story title column where it belongs
-   * @Param {string} {integer}
-   * @Return {}
+   * @param {string} {integer}
+   * @returns {}
    */
   $scope.checkThis = (word, columnIndex) => {
     $scope.count = 0;
     try {
-      if ($scope.allContent[word].indexOf(columnIndex) !== -1)
+      if ($scope.allContent[word].indexOf(columnIndex) !== -1){
         $scope.count += 1;
+      }
     } catch (e) {
       // Fail silently
     }
@@ -174,12 +209,14 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
 
   /**
    * Method to search for a given keyword
-   * @Param {string : number}
-   * @Return {}
+   * @param {string : number}
+   * @returns {}
    */
   $scope.searchWord = (keyword, criteria) => {
     $scope.searchState = false;
-    if (Object.keys($scope.allContent).length === 0) return false;
+    if (Object.keys($scope.allContent).length === 0) {
+      return false;
+    }
 
     let searchTerm = keyword.toLowerCase();
 
@@ -188,7 +225,7 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
     let i = searchTerm.split(' ').length; //get the length of the search field and set the searchterm to the last item.
     searchTerm = searchTerm.split(' ')[i - 1];
 
-    let searchQuery = theIndex.searchIndex(searchTerm, criteria);
+    const searchQuery = theIndex.searchIndex(searchTerm, criteria);
     if (searchQuery) {
       $scope.status = 'Found';
       $scope.searchState = true;
@@ -206,8 +243,8 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
 
   /**
    * Checks the searchKeyword and re-adjust column displayed
-   * @Param {string}
-   * @Return {}
+   * @param {string}
+   * @returns {}
    */
   $scope.changeCriteria = (searchKeyword) => ((searchKeyword) === null ? ($scope.columns = $scope.storeColumns) : `${$scope.columns = []} ${$scope.columns.push(searchKeyword)}`);
 

@@ -1,167 +1,106 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+module.exports=[
+  {
+    "title": "Alice in Wonderland",
+    "text": "Alice falls into a rabbit hole and enters a world full of imagination."
+  },
+
+  {
+    "title": "The Lord of the Rings: The Fellowship of the Ring.",
+    "text": "An unusual alliance of man, elf, dwarf, wizard and hobbit seek to destroy a powerful ring."
+  }
+]
+
+},{}],2:[function(require,module,exports){
 describe('Inverted index class', () => {
-  let InvertedIndex = require('../../src/inverted-index');
-  let indexFile = new InvertedIndex();
+  const InvertedIndex = require('../../src/inverted-index');
+  const book = require('../books.json');
+  
+  const indexFile = new InvertedIndex();
 
   describe('Read book data', () => {
-
-    let emptyFile = {};
-    let emptyJson = indexFile.createIndex(emptyFile);
-    it('Should return false if json file is empty', () => {
-      expect(emptyJson).toBeFalsy();
+    it('Assert that JSON file is not empty', () => {
+      expect(book).not.toEqual({});
     });
 
-    let wrongFormat1 = [ { text: 'Some may trust in' }, { title: 'Travis' } ];
-    let wrongFormat2 = { title: 'Some may trust in', text1: 'Travis', text2: 'CI' };
-
-    it('Should return false if json object is not formatted to have only two keys', () => {
-      expect(indexFile.createIndex(wrongFormat1)).toBeFalsy();
-      expect(indexFile.createIndex(wrongFormat2)).toBeFalsy();
+    it('Should return false if the number of keys of the book object is not exactly 2', () => {
+      const Book1 = {title: 'new title', content1 : 'A new content1', content2 : 'A new content2'};
+      const Book2 = book;
+      Book2[1] = {content: 'content'};
+      expect(indexFile.createIndex(Book1)).toBeFalsy();
+      expect(indexFile.createIndex(Book2)).toBeFalsy();
     });
-
   });
 
   describe('Populate Index', () => {
-    let obj = {
-      a: ['doc1', 'doc2'],
-      b: ['doc2', 'doc3']
-    };
-
-    let singleJsonFile = {
-      a: 'single title',
-      b: 'single content'
-    };
-
-    let multipleJsonArray = [{
-      a: 'multiple title1',
-      b: 'multiple content1'
-    }, {
-      c: 'multiple title2',
-      d: 'multiple content2'
-    }
-    ];
-
-    let createSingle = indexFile.createIndex(singleJsonFile);
-    let createMultiple = indexFile.createIndex(multipleJsonArray);
-
-    it('should return an object which indexes each word in a single or multiple JSON object to an array of the titles they appear in.', () => {
-      expect(JSON.stringify(createSingle)).toBe(JSON.stringify({
-        single: ['single title'],
-        title: ['single title'],
-        content: ['single title']
-      }));
-
-      expect(JSON.stringify(createMultiple)).toBe(JSON.stringify({
-        multiple: ['multiple title1', 'multiple title2'],
-        title1: ['multiple title1'],
-        content1: ['multiple title1'],
-        title2: ['multiple title2'],
-        content2: ['multiple title2'],
-      }));
+    const indexObject = indexFile.createIndex(book);
+    it('Should create an index', () => {
+      expect(indexObject).toBeTruthy();
     });
 
-    indexFile.createIndex(obj);
-    let theData = indexFile.getIndex(obj);
-    it('should return an object that stores arrays of words and titles', () => {
-      expect(JSON.stringify(theData)).toBe(JSON.stringify({
-        words: ['a', 'b'],
-        titles: ['doc1', 'doc2', 'doc3']
-      }));
+    it('Should map string keys to the appropriate json object', () => {
+      const getTheIndex = indexFile.getIndex();
+      expect(getTheIndex['alice']).toEqual(['Alice in Wonderland']);
+      expect(getTheIndex['a']).toEqual(['Alice in Wonderland','The Lord of the Rings: The Fellowship of the Ring.']);
+      expect(getTheIndex['unusual']).toEqual(['The Lord of the Rings: The Fellowship of the Ring.']);
     });
 
-    let emptyIndex = indexFile.getIndex({});
-    it('should return false if an empty object argument is passed in', () => {
-      expect(emptyIndex).toBeFalsy();
-    });
-
-  });
-
-  describe('Search Index', () => {
-    let newSearchIndex = new InvertedIndex();
-    let theFile = {
-      a: 'the title',
-      b: 'movie content'
-    };
-    newSearchIndex.createIndex(theFile);
-    it('Should return an object with the search term as key and an array of the documents as value if term exists and return false otherwise', () => {
-      expect(JSON.stringify(newSearchIndex.searchIndex('movie'))).toBe(JSON.stringify({movie : [0]}));
-      expect(JSON.stringify(newSearchIndex.searchIndex('content', 'the title'))).toBe(JSON.stringify({movie : [0], content : [0]}));
-      expect(newSearchIndex.searchIndex('fruit')).toBeFalsy();
+    it('Should return false if no index is created', () => {
+      const noIndex = new InvertedIndex();
+      expect(noIndex.getIndex()).toBeFalsy();
     });
   });
+
+  describe('Search index', () => {
+    it('Should return an array of the indices of the correct objects that contain the words in the search query', () => {
+      expect(indexFile.searchIndex('alice')).toEqual({alice : [0]});
+      expect(indexFile.searchIndex('of')).toEqual({alice : [0], of : [0,1]});
+      expect(indexFile.searchIndex('alliance')).toEqual({alice : [0], of : [0,1], alliance : [1]});
+    });
+  })
 
   describe('mergeObjects method', () => {
-    let obj1 = {
-      a: '1',
-      b: ['2', '3']
-    };
-
-    let obj2 = {
-      c: '4',
-      b: ['4']
-    };
-
-    let result = {
-      a: '1',
-      b: ['2', '3', '4'],
-      c: '4'
-    };
-    let merge = indexFile.mergeObjects(obj1, obj2);
+    const obj1 = { title: '1', content: ['2', '3'] };
+    const obj2 = { title: '4',content: ['4'] };
+    const result = { title: '1', content: ['2', '3', '4'] };
+    const merge = indexFile.mergeObjects(obj1, obj2);
+  
     it('should merge the content of two objects', () => {
-      expect(JSON.stringify(merge)).toBe(JSON.stringify(result));
+      expect(merge['content']).toEqual(result['content']);
     });
-
-    let invalidObject = indexFile.mergeObjects('arg1', 'arg2');
     it('should return false if the arguments are not objects', () => {
-      expect(invalidObject).toBeFalsy();
+      expect(indexFile.mergeObjects('arg1', 'arg2')).toBeFalsy();
     });
-
   });
 
-  describe('filterWord method', () => {
-    let stringWord = indexFile.filterWord('This$ i_s t£ext, to BE Te:steD');
+  describe('filter method', () => {
     it('should take a string and return an array of filtered text in lower case', () => {
-      expect(JSON.stringify(stringWord)).toBe(JSON.stringify(['this', 'is', 'text', 'to', 'be', 'tested']));
+      expect(indexFile.filter('This$ i_s t£ext, to BE Te:steD')).toEqual(['this', 'is', 'text', 'to', 'be', 'tested']);
     });
-
-    let notString = indexFile.filterWord(['one, two']);
     it('should return false if the argument to be filtered is not a string', () => {
-      expect(notString).toBeFalsy();
+      expect(indexFile.filter(['one, two'])).toBeFalsy();
     });
-
   });
 
   describe('generateUniqueArray method', () => {
-    let generate = indexFile.generateUniqueArray([1, 1, 2, 2, 'yes', 'yes']);
     it('should return an array of unique contents of the array argument', () => {
-      expect(JSON.stringify(generate)).toBe(JSON.stringify([1, 2, 'yes']));
+      expect(indexFile.generateUniqueArray([1, 1, 2, 2, 'yes', 'yes'])).toEqual([1, 2, 'yes']);
     });
-
-    let invalidArray = indexFile.generateUniqueArray('12345');
     it('should return false if the argument specified is not an array', () => {
-      expect(invalidArray).toBeFalsy();
+      expect(indexFile.generateUniqueArray('12345')).toBeFalsy();
     });
-
   });
 
   describe('getStory method', () => {
-    let theStoryFile = {
-      x: 'story title',
-      y: 'story content'
-    };
-    let newIndex = new InvertedIndex();
+    const theStoryFile = { title: 'story title', content: 'story content' };
+    const newIndex = new InvertedIndex();
     newIndex.createIndex(theStoryFile);
-    let theStory = newIndex.getStory();
     it('should return an object of all the titles and stories', () => {
-      expect(JSON.stringify(theStory)).toBe(JSON.stringify({
-        titles: ['story title'],
-        stories: ['story content']
-      }));
+      expect(newIndex.getStory()).toEqual({ titles: ['story title'], stories: ['story content'] });
     });
   });
-
 });
-},{"../../src/inverted-index":2}],2:[function(require,module,exports){
+},{"../../src/inverted-index":3,"../books.json":1}],3:[function(require,module,exports){
 
 /**** Inverted Index Application to index, sort and search words in a string ******/
 
@@ -179,86 +118,102 @@ class InvertedIndex {
 
   /**
 	* Creates an Index of the file at the path specified
-	* @Params {string}
-  * @Returns {object}
+	* @param {string}
+  * @returns {object}
 	**/
 
-  createIndex(data) {
+  createIndex(thisObject) {
 
-    if (Object.keys(data).length <= 0) return false;
+    if (Object.keys(thisObject).length <= 0){
+      return false;
+    }
 
     let objectIndex = {};
 
     // Check if the data is a single json object(one content) and resolve
-    if (!Array.isArray(data)) {
-      let objectTitle = data[Object.keys(data)[0]],
-        objectContent = data[Object.keys(data)[1]];
+    if (!Array.isArray(thisObject)) {
+      if (Object.keys(thisObject).length !== 2){
+        return false;
+      }
 
-      if (Object.keys(data).length !== 2) return false;
+      const objectTitle = thisObject[Object.keys(thisObject)[0]],
+        objectContent = thisObject[Object.keys(thisObject)[1]];  
 
       this.titles.push(objectTitle);
       this.stories.push(objectContent);
 
       let wordsInText = `${objectTitle} ${objectContent}`;
-      wordsInText = this.generateUniqueArray(this.filterWord(wordsInText));
+      wordsInText = this.generateUniqueArray(this.filter(wordsInText));
 
-      for (let word of wordsInText) {
-        objectIndex[word] = [objectTitle];
+      if(wordsInText) {
+        for (let word of wordsInText) {
+          objectIndex[word] = [objectTitle];
+        }
       }
-
     } else {
-      let dataLength = data.length;
+      const dataLength = thisObject.length;
       for (let i = 0; i < dataLength; i++) {
-        let objectTitle = data[i][Object.keys(data[i])[0]],
-          objectContent = data[i][Object.keys(data[i])[1]];
-
-        if (Object.keys(data[i]).length !== 2) return false;
+        if (Object.keys(thisObject[i]).length !== 2){
+          return false;
+        }
+        const objectTitle = thisObject[i][Object.keys(thisObject[i])[0]],
+          objectContent = thisObject[i][Object.keys(thisObject[i])[1]];
 
         this.titles.push(objectTitle);
         this.stories.push(objectContent);
 
         let wordsInText = `${objectTitle} ${objectContent}`;
-        wordsInText = this.generateUniqueArray(this.filterWord(wordsInText));
-
-        for (let word of wordsInText) {
-          if (objectIndex[word])
-            objectIndex[word] = objectIndex[word].concat([objectTitle]);
-          else
-            objectIndex[word] = [objectTitle];
+        wordsInText = this.generateUniqueArray(this.filter(wordsInText));
+        if(wordsInText){
+          for (let word of wordsInText) {
+            if (objectIndex[word]){
+              objectIndex[word] = objectIndex[word].concat([objectTitle]);
+            }
+            else{
+              objectIndex[word] = [objectTitle];
+            }
+          }
         }
       }
     }
     this.indexes = this.mergeObjects(this.indexes, objectIndex);
-    return objectIndex;
+    return true;
   }
 
 
   /**
       * Method to filter out special characters and create a string out of the words specified
-      * @Params {string}
-      * @Returns {array}
+      * @param {string}
+      * @returns {array}
       */
 
-  filterWord(word) {
+  filter(aString) {
 
-    if ((typeof word) !== 'string') return false;
-    return word.replace(/[.,\/#!$£%\^&\*;:'{}=\-_`~()]/g, '').toLowerCase().split(' ');
+    if ((typeof aString) !== 'string'){
+      return false;
+    }
+
+    return aString.replace(/[.,\/#!$£%\^&\*;:'{}=\-_`~()]/g, '').toLowerCase().split(' ');
   }
 
 
   /**
   * Method to merge two objects.
-  * @Params {object} {object}
-  * @Returns {object}
+  * @param {object} {object}
+  * @returns {object}
   */
   mergeObjects(dest, src) {
-    if ((typeof dest !== 'object') || (typeof src !== 'object')) return false;
-    let makeUnique = this.generateUniqueArray;
+    if ((typeof dest !== 'object') || (typeof src !== 'object')){
+      return false;
+    }
+    const makeUnique = this.generateUniqueArray;
     Object.keys(src).forEach(function(key) {
-      if (dest[key])
+      if (dest[key]){
         dest[key] = makeUnique(dest[key].concat(src[key]));
-      else
+      }   
+      else {
         dest[key] = src[key];
+      }
     });
     return dest;
   }
@@ -266,15 +221,19 @@ class InvertedIndex {
 
   /**
     * Method to generate unique array items from the array specified.
-    * @Params {array}
-    * @Returns {array}
+    * @param {array}
+    * @returns {array}
     */
-  generateUniqueArray(data) {
-    if (!Array.isArray(data)) return false;
-    let uniqueArray = [];
-    data.forEach((value) => {
+  generateUniqueArray(thisArray) {
+    if (!Array.isArray(thisArray)){
+      return false;
+    }
+    const uniqueArray = [];
+    thisArray.forEach((value) => {
       let index = uniqueArray.indexOf(value);
-      if (index === -1) uniqueArray.push(value);
+      if (index === -1){
+        uniqueArray.push(value);
+      }
     });
     return uniqueArray;
   }
@@ -282,8 +241,8 @@ class InvertedIndex {
 
   /**
     * getStory method to return an array of titles and corresponding stories
-    * @Params {}
-    * @Returns {object}
+    * @param {}
+    * @returns {object}
     */
 
   getStory() {
@@ -297,34 +256,27 @@ class InvertedIndex {
   /**
    * getIndex Method to get the index of an element
    * @param {object}
-   * @Returns {object}
+   * @returns {object}
    */
 
-  getIndex(data) {
-    if (Object.keys(data).length <= 0) return false;
-    let terms = [];
-    let columns = [];
-    terms = Object.keys(data);
-    for (let term of terms) {
-      columns = columns.concat(data[term]);
+  getIndex() {
+    // Check if an index has been created
+    if (!Object.keys(this.indexes)[0]){
+      return false;
     }
-    columns = this.generateUniqueArray(columns);
 
-    return {
-      words: terms,
-      titles: columns
-    };
+    return this.indexes;
   }
 
 
   /**
    * searchIndex method to search for index
-   * @Params {string}
-   * @Returns {object}
+   * @param {string}
+   * @returns {object}
    */
 
   searchIndex(term, criteria = null) {
-    let docPosition = [];
+    const docPosition = [];
     if (this.indexes[term]) {
       if ((criteria === null) || (criteria === undefined)) {
         for (let title of this.indexes[term]) {
@@ -340,8 +292,10 @@ class InvertedIndex {
         }
       }
     }
-    else return false;
+    else{
+      return false;
+    }
   }
 }
 module.exports = InvertedIndex;
-},{}]},{},[1]);
+},{}]},{},[2]);
