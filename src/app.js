@@ -174,7 +174,6 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
     };
 
     $scope.nextPrev = function (value) {
-      console.log(value);
       if(value === 'next'){
         if ($scope.theIndex === $scope.storyTitle.length-1){
           return false;
