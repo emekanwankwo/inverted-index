@@ -82,12 +82,11 @@
 						<div ng-if="storyTitle.length>0" style="position: relative; margin: 10px;">
 							<h2>{{1 + theIndex}}. {{storyTitle[theIndex]}}</h2>
 							<p>{{storyContent[theIndex]}}</p>
-							<!--<p ng-if="storyTitle.length>0"><a class="btn btn-primary btn-lg" ng-click="changeStory()"></a></p>-->
 						</div>
 							<ul ng-if="storyTitle.length>0" class="pagination" style="margin-bottom: 5px;">
-								<li class="disabled"><a>&laquo;</a></li>
+								<li><a style="cursor: pointer;" ng-click="nextPrev('previous')">&laquo;</a></li>
 								<li><a ng-model="storyNumber" style="cursor: pointer;" ng-repeat="story in storyTitle" ng-click="changeStory(storyTitle.indexOf(story))">{{storyTitle.indexOf(story)+1}}</a></li>
-								<li><a>&raquo;</a></li>
+								<li><a style="cursor: pointer;" ng-click="nextPrev('next')">&raquo;</a></li>
 							</ul>
 					</div>
 

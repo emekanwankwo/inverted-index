@@ -33,7 +33,7 @@ class InvertedIndex {
         return false;
       }
 
-      let objectTitle = thisObject[Object.keys(thisObject)[0]],
+      const objectTitle = thisObject[Object.keys(thisObject)[0]],
         objectContent = thisObject[Object.keys(thisObject)[1]];  
 
       this.titles.push(objectTitle);
@@ -42,24 +42,24 @@ class InvertedIndex {
       let wordsInText = `${objectTitle} ${objectContent}`;
       wordsInText = this.generateUniqueArray(this.filter(wordsInText));
 
-      for (let word of wordsInText) {
-        objectIndex[word] = [objectTitle];
+      if(wordsInText) {
+        for (let word of wordsInText) {
+          objectIndex[word] = [objectTitle];
+        }
       }
-
     } else {
-      let dataLength = thisObject.length;
+      const dataLength = thisObject.length;
       for (let i = 0; i < dataLength; i++) {
         if (Object.keys(thisObject[i]).length !== 2){
           return false;
         }
-        let objectTitle = thisObject[i][Object.keys(thisObject[i])[0]],
+        const objectTitle = thisObject[i][Object.keys(thisObject[i])[0]],
           objectContent = thisObject[i][Object.keys(thisObject[i])[1]];
 
         this.titles.push(objectTitle);
         this.stories.push(objectContent);
 
         let wordsInText = `${objectTitle} ${objectContent}`;
-        console.log(wordsInText);
         wordsInText = this.generateUniqueArray(this.filter(wordsInText));
         if(wordsInText){
           for (let word of wordsInText) {
@@ -103,7 +103,7 @@ class InvertedIndex {
     if ((typeof dest !== 'object') || (typeof src !== 'object')){
       return false;
     }
-    let makeUnique = this.generateUniqueArray;
+    const makeUnique = this.generateUniqueArray;
     Object.keys(src).forEach(function(key) {
       if (dest[key]){
         dest[key] = makeUnique(dest[key].concat(src[key]));
@@ -125,7 +125,7 @@ class InvertedIndex {
     if (!Array.isArray(thisArray)){
       return false;
     }
-    let uniqueArray = [];
+    const uniqueArray = [];
     thisArray.forEach((value) => {
       let index = uniqueArray.indexOf(value);
       if (index === -1){
@@ -173,7 +173,7 @@ class InvertedIndex {
    */
 
   searchIndex(term, criteria = null) {
-    let docPosition = [];
+    const docPosition = [];
     if (this.indexes[term]) {
       if ((criteria === null) || (criteria === undefined)) {
         for (let title of this.indexes[term]) {
