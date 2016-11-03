@@ -38,6 +38,7 @@ gulp.task('styles', () => {
 
 // Test using jasmine-node
 gulp.task('test', () => {
+  run('node node_modules/jasmine-node/bin/jasmine-node --color --verbose jasmine/spec/*.js').exec();
   run('istanbul cover jasmine-node jasmine/spec/inverted-index-test-spec.js').exec();
 });
 
