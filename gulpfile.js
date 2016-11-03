@@ -1,6 +1,6 @@
 //Gulp taskrunner config file
 
-let gulp = require('gulp'),
+const gulp = require('gulp'),
   runSequence = require('run-sequence'),
   run = require('gulp-run'),
   browserify = require('browserify'),
@@ -38,6 +38,7 @@ gulp.task('styles', () => {
 
 // Test using jasmine-node
 gulp.task('test', () => {
+  run('node node_modules/jasmine-node/bin/jasmine-node --color --verbose jasmine/spec/*.js').exec();
   run('istanbul cover jasmine-node jasmine/spec/inverted-index-test-spec.js').exec();
 });
 
@@ -70,7 +71,10 @@ gulp.task('watch', () => {
   gulp.watch('src/styles/*.css', ['styles']);
 
   // Watch .js files
-  gulp.watch('src/*.js', ['bundle']);
+  gulp.watch('src/*.js', ['default']);
+
+    // Watch test spec .js files
+  gulp.watch('jasmine/spec/*.js', ['default']);
 
 });
 

@@ -38,7 +38,7 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
       const httpRequest = new XMLHttpRequest();
 
       // Make a promise to send the http get request
-      let promise = new Promise((resolve, reject) => {
+      const promise = new Promise((resolve, reject) => {
 
         // Make sure the request object was created for modern browsers
         if (httpRequest) {
@@ -54,8 +54,7 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
           if (httpRequest.readyState === XMLHttpRequest.DONE) {
             if (httpRequest.status === 200) {
               resolve(JSON.parse(httpRequest.responseText));
-            }
-            else {
+            } else {
               reject('There was an error resolving url');
             }
           }
@@ -72,15 +71,14 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
       // Ensure a valid file is selected and is has a '.json' extension
       const fileExt = thefile.name.substring(thefile.name.length - 5, thefile.name.length);
 
-      if ((fileExt !== '.json') && (fileExt !== '.JSON') && ($.trim(url) === '')){
+      if ((fileExt !== '.json') && (fileExt !== '.JSON') && ($.trim(url) === '')) {
         showErr('Please select a valid json file');
         return false;
       }
       const reader = new FileReader();
       reader.readAsText(thefile);
 
-      let promise = new Promise((resolve, reject) => {
-
+      const promise = new Promise((resolve, reject) => {
         reader.onload = ((e) => {
           if (e.target.result) {
             try {
@@ -90,8 +88,7 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
             } catch (e) {
               reject('Invalid JSON file. Expected:{ "title" : "item", "content" : "item"  }');
             }
-          }
-          else{
+          } else {
             reject('Invalid File Selected');
           }
         });
@@ -116,7 +113,7 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
       $scope.errExist = false;
       $scope.errMsg = '';
       $scope.$apply();
-    }, 8000);
+    }, 5000);
     $scope.errMsg = errMsg;
     $scope.errExist = true;
     $scope.$apply();
@@ -130,7 +127,7 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
    *  @returns {}
    */
   resolveData = (jsonData) => {
-    let objectIndex = theIndex.createIndex(jsonData);
+    const objectIndex = theIndex.createIndex(jsonData);
     if (!objectIndex) {
       showErr('Error! ensure your json file has a title key and a content key');
       return false;
@@ -148,7 +145,7 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
    */
   $scope.getIndex = () => {
     const wordsIndex = theIndex.getIndex();
-    if(!wordsIndex){
+    if (!wordsIndex) {
       showErr('Error! no file uploaded!');
       return false;
     }
@@ -169,23 +166,23 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
    * @returns {}
    */
 
-    $scope.changeStory = (currentStoryIndex) => {
-      $scope.theIndex = currentStoryIndex;
-    };
+  $scope.changeStory = (currentStoryIndex) => {
+    $scope.theIndex = currentStoryIndex;
+  };
 
-    $scope.nextPrev = function (value) {
-      if(value === 'next'){
-        if ($scope.theIndex === $scope.storyTitle.length-1){
-          return false;
-        }
-        $scope.theIndex++;
-      } else{
-        if ($scope.theIndex === 0){
-          return false;
-        }
-        $scope.theIndex--;
+  $scope.nextPrev = function(value) {
+    if (value === 'next') {
+      if ($scope.theIndex === $scope.storyTitle.length - 1) {
+        return false;
       }
-    };
+      $scope.theIndex++;
+    } else {
+      if ($scope.theIndex === 0) {
+        return false;
+      }
+      $scope.theIndex--;
+    }
+  };
 
 
 
@@ -198,7 +195,7 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
   $scope.checkThis = (word, columnIndex) => {
     $scope.count = 0;
     try {
-      if ($scope.allContent[word].indexOf(columnIndex) !== -1){
+      if ($scope.allContent[word].indexOf(columnIndex) !== -1) {
         $scope.count += 1;
       }
     } catch (e) {
