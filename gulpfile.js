@@ -70,7 +70,10 @@ gulp.task('watch', () => {
   gulp.watch('src/styles/*.css', ['styles']);
 
   // Watch .js files
-  gulp.watch('src/*.js', ['bundle']);
+  gulp.watch('src/*.js', ['default']);
+
+    // Watch test spec .js files
+  gulp.watch('jasmine/spec/*.js', ['default']);
 
 });
 

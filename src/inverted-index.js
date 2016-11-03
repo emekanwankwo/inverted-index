@@ -21,20 +21,20 @@ class InvertedIndex {
 
   createIndex(thisObject) {
 
-    if (Object.keys(thisObject).length <= 0){
+    let objectIndex = {};
+
+    if (Object.keys(thisObject).length <= 0) {
       return false;
     }
 
-    let objectIndex = {};
-
     // Check if the data is a single json object(one content) and resolve
     if (!Array.isArray(thisObject)) {
-      if (Object.keys(thisObject).length !== 2){
+      if (Object.keys(thisObject).length !== 2) {
         return false;
       }
 
       const objectTitle = thisObject[Object.keys(thisObject)[0]],
-        objectContent = thisObject[Object.keys(thisObject)[1]];  
+        objectContent = thisObject[Object.keys(thisObject)[1]];
 
       this.titles.push(objectTitle);
       this.stories.push(objectContent);
@@ -42,7 +42,7 @@ class InvertedIndex {
       let wordsInText = `${objectTitle} ${objectContent}`;
       wordsInText = this.generateUniqueArray(this.filter(wordsInText));
 
-      if(wordsInText) {
+      if (wordsInText) {
         for (let word of wordsInText) {
           objectIndex[word] = [objectTitle];
         }
@@ -50,7 +50,7 @@ class InvertedIndex {
     } else {
       const dataLength = thisObject.length;
       for (let i = 0; i < dataLength; i++) {
-        if (Object.keys(thisObject[i]).length !== 2){
+        if (Object.keys(thisObject[i]).length !== 2) {
           return false;
         }
         const objectTitle = thisObject[i][Object.keys(thisObject[i])[0]],
@@ -61,12 +61,11 @@ class InvertedIndex {
 
         let wordsInText = `${objectTitle} ${objectContent}`;
         wordsInText = this.generateUniqueArray(this.filter(wordsInText));
-        if(wordsInText){
+        if (wordsInText) {
           for (let word of wordsInText) {
-            if (objectIndex[word]){
+            if (objectIndex[word]) {
               objectIndex[word] = objectIndex[word].concat([objectTitle]);
-            }
-            else{
+            } else {
               objectIndex[word] = [objectTitle];
             }
           }
@@ -86,7 +85,7 @@ class InvertedIndex {
 
   filter(aString) {
 
-    if ((typeof aString) !== 'string'){
+    if ((typeof aString) !== 'string') {
       return false;
     }
 
@@ -100,15 +99,14 @@ class InvertedIndex {
   * @returns {object}
   */
   mergeObjects(dest, src) {
-    if ((typeof dest !== 'object') || (typeof src !== 'object')){
+    if ((typeof dest !== 'object') || (typeof src !== 'object')) {
       return false;
     }
     const makeUnique = this.generateUniqueArray;
     Object.keys(src).forEach(function(key) {
-      if (dest[key]){
+      if (dest[key]) {
         dest[key] = makeUnique(dest[key].concat(src[key]));
-      }   
-      else {
+      } else {
         dest[key] = src[key];
       }
     });
@@ -122,13 +120,13 @@ class InvertedIndex {
     * @returns {array}
     */
   generateUniqueArray(thisArray) {
-    if (!Array.isArray(thisArray)){
+    if (!Array.isArray(thisArray)) {
       return false;
     }
     const uniqueArray = [];
     thisArray.forEach((value) => {
       let index = uniqueArray.indexOf(value);
-      if (index === -1){
+      if (index === -1) {
         uniqueArray.push(value);
       }
     });
@@ -158,7 +156,7 @@ class InvertedIndex {
 
   getIndex() {
     // Check if an index has been created
-    if (!Object.keys(this.indexes)[0]){
+    if (!Object.keys(this.indexes)[0]) {
       return false;
     }
 
@@ -189,8 +187,7 @@ class InvertedIndex {
           return this.searchResult;
         }
       }
-    }
-    else{
+    } else {
       return false;
     }
   }

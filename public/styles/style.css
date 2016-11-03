@@ -9,5 +9,6 @@
 #display_table_div{ overflow: auto;}
 #search_div { position:relative; float: right; right:10px; top: -40px; width: 44%; }
 #search_status { position: absolute; top: 20px; right:37%; width:200px; height: 30px; float:right; z-index: 9999;}
-#alert_div{ position: relative; width: 40%; background-color: indianred; height: 50px; margin: 0 auto; border-radius: 15px; z-index: 999999; text-align: center;}
-#alert_div span{ position: absolute; width: 90%; top: 15px; left: 25px; font-family: "Caudex", serif; margin: 0 auto; float: left;}
+#alert_div{ position: relative; width: 40%; height: 50px; margin: 0 auto; border-radius: 15px; z-index: 999999; text-align: center;}
+#alert_div span{ position: absolute; height: inherit; background-color: indianred; width: 100%; border-radius: 15px; top: 15px; left: 25px; font-family: "Caudex", serif; margin: 0 auto; float: left;}
+#alert_div span p{ position: relative; top: 15px;}

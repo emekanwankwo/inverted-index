@@ -27,7 +27,7 @@ An inverted index (also referred to as postings file or inverted file) is an ind
     - Sample json file: [{ title: 'Book Title', content: 'This is the book content'}]
 
 ### How to use
- [Click here](https://inverted-index-develop.herokuapp.com/) to open the application.
+ [Click here](https://inverted-index-app.herokuapp.com/) to open the application.
 
     - Select a valid (single or multiple) json file or enter a url 
     to a json file and click create index.

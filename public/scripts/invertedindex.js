@@ -107,8 +107,7 @@
 	          if (httpRequest.readyState === XMLHttpRequest.DONE) {
 	            if (httpRequest.status === 200) {
 	              resolve(JSON.parse(httpRequest.responseText));
-	            }
-	            else {
+	            } else {
 	              reject('There was an error resolving url');
 	            }
 	          }
@@ -125,7 +124,7 @@
 	      // Ensure a valid file is selected and is has a '.json' extension
 	      const fileExt = thefile.name.substring(thefile.name.length - 5, thefile.name.length);
 
-	      if ((fileExt !== '.json') && (fileExt !== '.JSON') && ($.trim(url) === '')){
+	      if ((fileExt !== '.json') && (fileExt !== '.JSON') && ($.trim(url) === '')) {
 	        showErr('Please select a valid json file');
 	        return false;
 	      }
@@ -143,8 +142,7 @@
 	            } catch (e) {
 	              reject('Invalid JSON file. Expected:{ "title" : "item", "content" : "item"  }');
 	            }
-	          }
-	          else{
+	          } else {
 	            reject('Invalid File Selected');
 	          }
 	        });
@@ -169,7 +167,7 @@
 	      $scope.errExist = false;
 	      $scope.errMsg = '';
 	      $scope.$apply();
-	    }, 8000);
+	    }, 5000);
 	    $scope.errMsg = errMsg;
 	    $scope.errExist = true;
 	    $scope.$apply();
@@ -201,7 +199,7 @@
 	   */
 	  $scope.getIndex = () => {
 	    const wordsIndex = theIndex.getIndex();
-	    if(!wordsIndex){
+	    if (!wordsIndex) {
 	      showErr('Error! no file uploaded!');
 	      return false;
 	    }
@@ -222,23 +220,23 @@
 	   * @returns {}
 	   */
 
-	    $scope.changeStory = (currentStoryIndex) => {
-	      $scope.theIndex = currentStoryIndex;
-	    };
+	  $scope.changeStory = (currentStoryIndex) => {
+	    $scope.theIndex = currentStoryIndex;
+	  };
 
-	    $scope.nextPrev = function (value) {
-	      if(value === 'next'){
-	        if ($scope.theIndex === $scope.storyTitle.length-1){
-	          return false;
-	        }
-	        $scope.theIndex++;
-	      } else{
-	        if ($scope.theIndex === 0){
-	          return false;
-	        }
-	        $scope.theIndex--;
+	  $scope.nextPrev = function(value) {
+	    if (value === 'next') {
+	      if ($scope.theIndex === $scope.storyTitle.length - 1) {
+	        return false;
 	      }
-	    };
+	      $scope.theIndex++;
+	    } else {
+	      if ($scope.theIndex === 0) {
+	        return false;
+	      }
+	      $scope.theIndex--;
+	    }
+	  };
 
 
 
@@ -251,7 +249,7 @@
 	  $scope.checkThis = (word, columnIndex) => {
 	    $scope.count = 0;
 	    try {
-	      if ($scope.allContent[word].indexOf(columnIndex) !== -1){
+	      if ($scope.allContent[word].indexOf(columnIndex) !== -1) {
 	        $scope.count += 1;
 	      }
 	    } catch (e) {
@@ -331,20 +329,20 @@
 
 	  createIndex(thisObject) {
 
-	    if (Object.keys(thisObject).length <= 0){
+	    let objectIndex = {};
+
+	    if (Object.keys(thisObject).length <= 0) {
 	      return false;
 	    }
 
-	    let objectIndex = {};
-
 	    // Check if the data is a single json object(one content) and resolve
 	    if (!Array.isArray(thisObject)) {
-	      if (Object.keys(thisObject).length !== 2){
+	      if (Object.keys(thisObject).length !== 2) {
 	        return false;
 	      }
 
 	      const objectTitle = thisObject[Object.keys(thisObject)[0]],
-	        objectContent = thisObject[Object.keys(thisObject)[1]];  
+	        objectContent = thisObject[Object.keys(thisObject)[1]];
 
 	      this.titles.push(objectTitle);
 	      this.stories.push(objectContent);
@@ -352,7 +350,7 @@
 	      let wordsInText = `${objectTitle} ${objectContent}`;
 	      wordsInText = this.generateUniqueArray(this.filter(wordsInText));
 
-	      if(wordsInText) {
+	      if (wordsInText) {
 	        for (let word of wordsInText) {
 	          objectIndex[word] = [objectTitle];
 	        }
@@ -360,7 +358,7 @@
 	    } else {
 	      const dataLength = thisObject.length;
 	      for (let i = 0; i < dataLength; i++) {
-	        if (Object.keys(thisObject[i]).length !== 2){
+	        if (Object.keys(thisObject[i]).length !== 2) {
 	          return false;
 	        }
 	        const objectTitle = thisObject[i][Object.keys(thisObject[i])[0]],
@@ -371,12 +369,11 @@
 
 	        let wordsInText = `${objectTitle} ${objectContent}`;
 	        wordsInText = this.generateUniqueArray(this.filter(wordsInText));
-	        if(wordsInText){
+	        if (wordsInText) {
 	          for (let word of wordsInText) {
-	            if (objectIndex[word]){
+	            if (objectIndex[word]) {
 	              objectIndex[word] = objectIndex[word].concat([objectTitle]);
-	            }
-	            else{
+	            } else {
 	              objectIndex[word] = [objectTitle];
 	            }
 	          }
@@ -396,7 +393,7 @@
 
 	  filter(aString) {
 
-	    if ((typeof aString) !== 'string'){
+	    if ((typeof aString) !== 'string') {
 	      return false;
 	    }
 
@@ -410,15 +407,14 @@
 	  * @returns {object}
 	  */
 	  mergeObjects(dest, src) {
-	    if ((typeof dest !== 'object') || (typeof src !== 'object')){
+	    if ((typeof dest !== 'object') || (typeof src !== 'object')) {
 	      return false;
 	    }
 	    const makeUnique = this.generateUniqueArray;
 	    Object.keys(src).forEach(function(key) {
-	      if (dest[key]){
+	      if (dest[key]) {
 	        dest[key] = makeUnique(dest[key].concat(src[key]));
-	      }   
-	      else {
+	      } else {
 	        dest[key] = src[key];
 	      }
 	    });
@@ -432,13 +428,13 @@
 	    * @returns {array}
 	    */
 	  generateUniqueArray(thisArray) {
-	    if (!Array.isArray(thisArray)){
+	    if (!Array.isArray(thisArray)) {
 	      return false;
 	    }
 	    const uniqueArray = [];
 	    thisArray.forEach((value) => {
 	      let index = uniqueArray.indexOf(value);
-	      if (index === -1){
+	      if (index === -1) {
 	        uniqueArray.push(value);
 	      }
 	    });
@@ -468,7 +464,7 @@
 
 	  getIndex() {
 	    // Check if an index has been created
-	    if (!Object.keys(this.indexes)[0]){
+	    if (!Object.keys(this.indexes)[0]) {
 	      return false;
 	    }
 
@@ -484,7 +480,7 @@
 
 	  searchIndex(term, criteria = null) {
 	    const docPosition = [];
-	    this.searchResult = {}
+	    this.searchResult = {};
 	    if (this.indexes[term]) {
 	      if ((criteria === null) || (criteria === undefined)) {
 	        for (let title of this.indexes[term]) {
@@ -499,8 +495,7 @@
 	          return this.searchResult;
 	        }
 	      }
-	    }
-	    else{
+	    } else {
 	      return false;
 	    }
 	  }
