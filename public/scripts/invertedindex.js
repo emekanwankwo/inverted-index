@@ -184,10 +184,11 @@
 	    if (!objectIndex) {
 	      showErr('Error! ensure your json file has a title key and a content key');
 	      return false;
+	    } else {
+	      $scope.storyTitle = theIndex.getStory().titles;
+	      $scope.storyContent = theIndex.getStory().stories;
+	      $scope.$apply();
 	    }
-	    $scope.storyTitle = theIndex.getStory().titles;
-	    $scope.storyContent = theIndex.getStory().stories;
-	    $scope.$apply();
 	  };
 
 
@@ -343,16 +344,21 @@
 	      const objectTitle = thisObject[Object.keys(thisObject)[0]],
 	        objectContent = thisObject[Object.keys(thisObject)[1]];
 
-	      this.titles.push(objectTitle);
-	      this.stories.push(objectContent);
+	      if (objectTitle.trim().length === 0 || objectContent.trim().length === 0) {
+	        return false;
+	      }
 
 	      let wordsInText = `${objectTitle} ${objectContent}`;
-	      wordsInText = this.generateUniqueArray(this.filter(wordsInText));
 
+	      wordsInText = this.generateUniqueArray(this.filter(wordsInText));
 	      if (wordsInText) {
+	        this.titles.push(objectTitle);
+	        this.stories.push(objectContent);
 	        for (let word of wordsInText) {
 	          objectIndex[word] = [objectTitle];
 	        }
+	      } else {
+	        return false;
 	      }
 	    } else {
 	      const dataLength = thisObject.length;
@@ -363,12 +369,15 @@
 	        const objectTitle = thisObject[i][Object.keys(thisObject[i])[0]],
 	          objectContent = thisObject[i][Object.keys(thisObject[i])[1]];
 
-	        this.titles.push(objectTitle);
-	        this.stories.push(objectContent);
+	        if (objectTitle.trim().length === 0 || objectContent.trim().length === 0) {
+	          return false;
+	        }
 
 	        let wordsInText = `${objectTitle} ${objectContent}`;
 	        wordsInText = this.generateUniqueArray(this.filter(wordsInText));
 	        if (wordsInText) {
+	          this.titles.push(objectTitle);
+	          this.stories.push(objectContent);
 	          for (let word of wordsInText) {
 	            if (objectIndex[word]) {
 	              objectIndex[word] = objectIndex[word].concat([objectTitle]);
@@ -376,6 +385,8 @@
 	              objectIndex[word] = [objectTitle];
 	            }
 	          }
+	        } else {
+	          return false;
 	        }
 	      }
 	    }
@@ -396,7 +407,13 @@
 	      return false;
 	    }
 
-	    return aString.replace(/[.,\/#!$£%\^&\*;:'{}=\-_`~()]/g, '').toLowerCase().split(' ');
+	    const filtered = aString.replace(/[.,\/#!$£%\^&\*;:'{}=\-_`~()]/g, '').toLowerCase();
+
+	    if (filtered.trim().length > 0) {
+	      return filtered.split(' ');
+	    } else {
+	      return false;
+	    }
 	  }
 
 

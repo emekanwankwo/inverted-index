@@ -23,12 +23,20 @@ describe('Inverted index class', () => {
       expect(book).not.toEqual({});
     });
 
-    it('Should return false if the number of keys of the book object is not exactly 2', () => {
-      const Book1 = {title: 'new title', content1 : 'A new content1', content2 : 'A new content2'};
-      const Book2 = book;
-      Book2[1] = {content: 'content'};
-      expect(indexFile.createIndex(Book1)).toBeFalsy();
-      expect(indexFile.createIndex(Book2)).toBeFalsy();
+    it('Should return false if the number of keys of the book object is not exactly 2 or if the values are invalid', () => {
+      const invalidBook1 = {title: 'new title', content1 : 'A new content1', content2 : 'A new content2'};
+      const invalidBook2 = book;
+      const invalidBook3 =  {title: '', content : ''};
+      const invalidBook4 =  [{title: '', content : ''}]
+      const invalidBook5 =  {title: '.;,', content : ',;.'};
+      const invalidBook6 =  [{title: '.;,', content : ',;.'}];
+      invalidBook2[1] = {content: 'content'};
+      expect(indexFile.createIndex(invalidBook1)).toBeFalsy();
+      expect(indexFile.createIndex(invalidBook2)).toBeFalsy();
+      expect(indexFile.createIndex(invalidBook3)).toBeFalsy();
+      expect(indexFile.createIndex(invalidBook4)).toBeFalsy();
+      expect(indexFile.createIndex(invalidBook5)).toBeFalsy();
+      expect(indexFile.createIndex(invalidBook6)).toBeFalsy();
     });
   });
 
@@ -79,6 +87,9 @@ describe('Inverted index class', () => {
     });
     it('should return false if the argument to be filtered is not a string', () => {
       expect(indexFile.filter(['one, two'])).toBeFalsy();
+    });
+    it('should return false if string is empty after filtering', () => {
+      expect(indexFile.filter('.,;:-')).toBeFalsy();
     });
   });
 
@@ -139,16 +150,21 @@ class InvertedIndex {
       const objectTitle = thisObject[Object.keys(thisObject)[0]],
         objectContent = thisObject[Object.keys(thisObject)[1]];
 
-      this.titles.push(objectTitle);
-      this.stories.push(objectContent);
+      if (objectTitle.trim().length === 0 || objectContent.trim().length === 0) {
+        return false;
+      }
 
       let wordsInText = `${objectTitle} ${objectContent}`;
-      wordsInText = this.generateUniqueArray(this.filter(wordsInText));
 
+      wordsInText = this.generateUniqueArray(this.filter(wordsInText));
       if (wordsInText) {
+        this.titles.push(objectTitle);
+        this.stories.push(objectContent);
         for (let word of wordsInText) {
           objectIndex[word] = [objectTitle];
         }
+      } else {
+        return false;
       }
     } else {
       const dataLength = thisObject.length;
@@ -159,12 +175,15 @@ class InvertedIndex {
         const objectTitle = thisObject[i][Object.keys(thisObject[i])[0]],
           objectContent = thisObject[i][Object.keys(thisObject[i])[1]];
 
-        this.titles.push(objectTitle);
-        this.stories.push(objectContent);
+        if (objectTitle.trim().length === 0 || objectContent.trim().length === 0) {
+          return false;
+        }
 
         let wordsInText = `${objectTitle} ${objectContent}`;
         wordsInText = this.generateUniqueArray(this.filter(wordsInText));
         if (wordsInText) {
+          this.titles.push(objectTitle);
+          this.stories.push(objectContent);
           for (let word of wordsInText) {
             if (objectIndex[word]) {
               objectIndex[word] = objectIndex[word].concat([objectTitle]);
@@ -172,6 +191,8 @@ class InvertedIndex {
               objectIndex[word] = [objectTitle];
             }
           }
+        } else {
+          return false;
         }
       }
     }
@@ -192,7 +213,13 @@ class InvertedIndex {
       return false;
     }
 
-    return aString.replace(/[.,\/#!$£%\^&\*;:'{}=\-_`~()]/g, '').toLowerCase().split(' ');
+    const filtered = aString.replace(/[.,\/#!$£%\^&\*;:'{}=\-_`~()]/g, '').toLowerCase();
+
+    if (filtered.trim().length > 0) {
+      return filtered.split(' ');
+    } else {
+      return false;
+    }
   }
 
 
