@@ -131,10 +131,11 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
     if (!objectIndex) {
       showErr('Error! ensure your json file has a title key and a content key');
       return false;
+    } else {
+      $scope.storyTitle = theIndex.getStory().titles;
+      $scope.storyContent = theIndex.getStory().stories;
+      $scope.$apply();
     }
-    $scope.storyTitle = theIndex.getStory().titles;
-    $scope.storyContent = theIndex.getStory().stories;
-    $scope.$apply();
   };
 
 
