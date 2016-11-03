@@ -21,7 +21,7 @@ class InvertedIndex {
 
   createIndex(thisObject) {
 
-    let objectIndex = {};
+    const objectIndex = {};
 
     if (Object.keys(thisObject).length <= 0) {
       return false;

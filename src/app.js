@@ -38,7 +38,7 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
       const httpRequest = new XMLHttpRequest();
 
       // Make a promise to send the http get request
-      let promise = new Promise((resolve, reject) => {
+      const promise = new Promise((resolve, reject) => {
 
         // Make sure the request object was created for modern browsers
         if (httpRequest) {
@@ -78,8 +78,7 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
       const reader = new FileReader();
       reader.readAsText(thefile);
 
-      let promise = new Promise((resolve, reject) => {
-
+      const promise = new Promise((resolve, reject) => {
         reader.onload = ((e) => {
           if (e.target.result) {
             try {
@@ -128,7 +127,7 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
    *  @returns {}
    */
   resolveData = (jsonData) => {
-    let objectIndex = theIndex.createIndex(jsonData);
+    const objectIndex = theIndex.createIndex(jsonData);
     if (!objectIndex) {
       showErr('Error! ensure your json file has a title key and a content key');
       return false;

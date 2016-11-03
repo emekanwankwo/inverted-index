@@ -1,5 +1,5 @@
-let BrowserSyncPlugin = require('browser-sync-webpack-plugin');
-let port = process.env.PORT || 3000;
+const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
+const port = process.env.PORT || 3000;
 
 module.exports = {
   entry: ['./src/app.js'],

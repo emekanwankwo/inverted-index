@@ -1,6 +1,6 @@
 //Gulp taskrunner config file
 
-let gulp = require('gulp'),
+const gulp = require('gulp'),
   runSequence = require('run-sequence'),
   run = require('gulp-run'),
   browserify = require('browserify'),
