@@ -51,7 +51,7 @@
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/**** Inverted Index Application to index, sort and search words in a string ******/
+	/***Inverted Index Application to index, sort and search words in a string***/
 
 
 	const indexApp = angular.module('invertedIndex', []);
@@ -64,11 +64,13 @@
 	  // Define a template Document for the Inverted Index Landing Page
 	  $scope.columns = [];
 	  $scope.terms = [];
-
 	  $scope.allContent = {};
 	  $scope.storyTitle = [];
 	  $scope.storyContent = [];
 	  $scope.theIndex = 0;
+	  $scope.bookNames = [];
+	  $scope.books = {};
+	  $scope.fileSelected = true;
 
 
 	  /**
@@ -77,17 +79,17 @@
 	   * @returns {}
 	   */
 
-	  $scope.createIndex = (url) => {
+	  $scope.uploadFile = (url) => {
 
-	    const thefile = document.getElementById('filePath').files[0];
+	    const theJsonFile = document.getElementById('filePath').files[0];
 
-	    if ((!thefile) && ($.trim(url) === '')) {
-	      $('#selectEmptyMsg').show();
+	    if ((!theJsonFile) && ($.trim(url) === '')) {
+	      $scope.selectEmptyMsg = true;
 	      return false;
 	    }
 
-	    $('#selectEmptyMsg').hide();
-	    if (!thefile && ($.trim(url) !== '')) {
+	    $scope.selectEmptyMsg = false;
+	    if (!theJsonFile && ($.trim(url) !== '')) {
 	      const httpRequest = new XMLHttpRequest();
 
 	      // Make a promise to send the http get request
@@ -115,21 +117,22 @@
 	      });
 
 	      promise.then((response) => {
-	        resolveData(response);
+	        resolveData(response, url);
 	      })
 	        .catch((err) => {
 	          showErr(err);
 	        });
 	    } else {
 	      // Ensure a valid file is selected and is has a '.json' extension
-	      const fileExt = thefile.name.substring(thefile.name.length - 5, thefile.name.length);
+	      const fileExt = theJsonFile.name
+	        .substring(theJsonFile.name.length - 5, theJsonFile.name.length);
 
 	      if ((fileExt !== '.json') && (fileExt !== '.JSON') && ($.trim(url) === '')) {
 	        showErr('Please select a valid json file');
 	        return false;
 	      }
 	      const reader = new FileReader();
-	      reader.readAsText(thefile);
+	      reader.readAsText(theJsonFile);
 
 	      const promise = new Promise((resolve, reject) => {
 	        reader.onload = ((e) => {
@@ -139,7 +142,7 @@
 	                resolve(JSON.parse(e.target.result));
 	              }
 	            } catch (e) {
-	              reject('Invalid JSON file. Expected:{ "title" : "item", "content" : "item"  }');
+	              reject('Invalid JSON file');
 	            }
 	          } else {
 	            reject('Invalid File Selected');
@@ -147,7 +150,7 @@
 	        });
 	      });
 	      promise.then((response) => {
-	        resolveData(response);
+	        resolveData(response, theJsonFile.name);
 	      })
 	        .catch((err) => {
 	          showErr(err);
@@ -179,18 +182,36 @@
 	   *  @param {object}
 	   *  @returns {}
 	   */
-	  resolveData = (jsonData) => {
-	    const objectIndex = theIndex.createIndex(jsonData);
+	  resolveData = (jsonData, jsonFileName) => {
+	    $scope.books[jsonFileName] = jsonData;
+	    $scope.bookNames = Object.keys($scope.books);
+	    $scope.numberOfTitles = jsonData.length;
+	    $scope.$apply();
+	  };
+
+	  $scope.setBook = (name) => {
+	    $scope.fileToRead = name;
+	  };
+
+	  $scope.createIndex = () => {
+	    if (!$scope.fileToRead) {
+	      $scope.fileSelected = false;
+	      return false;
+	    }
+	    $scope.fileSelected = true;
+	    const filename = $scope.fileToRead;
+	    const thisBook = $scope.books[filename];
+	    const objectIndex = theIndex.createIndex(thisBook);
+
 	    if (!objectIndex) {
 	      showErr('Error! ensure your json file has a title key and a content key');
 	      return false;
-	    } else {
-	      $scope.storyTitle = theIndex.getStory().titles;
-	      $scope.storyContent = theIndex.getStory().stories;
-	      $scope.$apply();
 	    }
-	  };
 
+	    $scope.storyTitle = theIndex.getStory().titles;
+	    $scope.storyContent = theIndex.getStory().stories;
+	    $scope.getIndex();
+	  };
 
 	  /**
 	   * Method to get the index of the object
@@ -297,7 +318,9 @@
 	   * @param {string}
 	   * @returns {}
 	   */
-	  $scope.changeCriteria = (searchKeyword) => ((searchKeyword) === null ? ($scope.columns = $scope.storeColumns) : `${$scope.columns = []} ${$scope.columns.push(searchKeyword)}`);
+	  $scope.changeCriteria = (searchKeyword) => (
+	  (searchKeyword) === null ? ($scope.columns = $scope.storeColumns) :
+	    `${$scope.columns = []} ${$scope.columns.push(searchKeyword)}`);
 
 	}]);
 
@@ -307,7 +330,7 @@
 /***/ function(module, exports) {
 
 	
-	/**** Inverted Index Application to index, sort and search words in a string ******/
+	/***Inverted Index Application to index, sort and search words in a string***/
 
 	class InvertedIndex {
 
@@ -407,7 +430,8 @@
 	      return false;
 	    }
 
-	    const filtered = aString.replace(/[.,\/#!$£%\^&\*;:'{}=\-_`~()]/g, '').toLowerCase();
+	    const filtered = aString.replace(/[.,\/#!$£%\^&\*;:'{}=\-_`~()]/g, '')
+	      .toLowerCase();
 
 	    if (filtered.trim().length > 0) {
 	      return filtered.split(' ');

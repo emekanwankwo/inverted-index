@@ -113,7 +113,7 @@ describe('Inverted index class', () => {
 });
 },{"../../src/inverted-index":3,"../books.json":1}],3:[function(require,module,exports){
 
-/**** Inverted Index Application to index, sort and search words in a string ******/
+/***Inverted Index Application to index, sort and search words in a string***/
 
 class InvertedIndex {
 
@@ -213,7 +213,8 @@ class InvertedIndex {
       return false;
     }
 
-    const filtered = aString.replace(/[.,\/#!$£%\^&\*;:'{}=\-_`~()]/g, '').toLowerCase();
+    const filtered = aString.replace(/[.,\/#!$£%\^&\*;:'{}=\-_`~()]/g, '')
+      .toLowerCase();
 
     if (filtered.trim().length > 0) {
       return filtered.split(' ');

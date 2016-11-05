@@ -23,6 +23,7 @@
   		<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   		<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
   		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/css/bootstrap.min.css" integrity="sha384-AysaV+vQoT3kOAXZkl02PThvDr8HYKPZhNT5h/CXfBThSRXQ6jW5DO2ekP5ViFdi" crossorigin="anonymous">
 		
 	</head>
 	<body>
@@ -98,30 +99,40 @@
 								<div class="panel-heading">
 									<h3 class="panel-title"><label class="control-label"><p class="font-effect-3d-float" style="font-size: 25px;" >Create New Index</p></label><br></h3>
 								</div>
-								<div class="panel-body">
-									
-									<input type="file" id="filePath" file-model="thefilename" ><p id="selectEmptyMsg" style="color: red; display:none;"><i>Select a json file</i></p><br>
+								<div class="panel-body">									
+									<input type="file" id="filePath" file-model="thefilename" ><p ng-show="selectEmptyMsg" style="color: red;"><i>Select a json file</i></p><br>
 									<div class="input-group">
 										<span class="input-group-addon">File Url:</span>
 											<input type="input" id="filename" ng-model="theFileUrl" placeholder=" e.g. https://inverted-index-develop.herokuapp.com//books/books.json" class="form-control">
 										<span class="input-group-btn">
-											<button class="btn btn-default" type="button" ng-click="createIndex(theFileUrl)">Upload File</button>
+											<button class="btn btn-default" type="button" ng-click="uploadFile(theFileUrl)">Upload File</button>
 										</span>
 										<span class="input-group-btn">
-											<button class="btn btn-default" type="button" ng-click="getIndex()">Show Index</button>
+											<button class="btn btn-default" type="button" ng-click="createIndex()">Create Index</button>
 										</span>
 									</div>
-
 									</div>
 							</div>	
 						</div>
 					</div>
 
+					<!-- Show uploaded json files panel -->
+
+					<div class="Uploadlist">
+						<ul class="list-group">
+						<li class="list-group-item disabled">
+							Uploaded Files
+							<span ng-show="!fileSelected"  style="color: red; float: right;"><i>Select a file below</i></span>
+						</li>						
+						<li class="list-group-item" ng-repeat="name in bookNames" ng-click="setBook(name)">
+							<span class="tag tag-default tag-pill float-xs-right">{{books[name].length}}</span>
+							{{name}}
+						</li>
+						</ul>
+					</div>
+
 				</div>
-
 			</div>
-
 		</div>
-
 	</body>
 </html>
