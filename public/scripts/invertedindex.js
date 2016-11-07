@@ -342,6 +342,7 @@
 	    this.titles = [];
 	    this.indexes = {};
 	    this.searchResult = {};
+	    this.objectIndex = {};
 	  }
 
 	  /**
@@ -351,8 +352,6 @@
 		**/
 
 	  createIndex(thisObject) {
-
-	    const objectIndex = {};
 
 	    if (Object.keys(thisObject).length <= 0) {
 	      return false;
@@ -367,22 +366,8 @@
 	      const objectTitle = thisObject[Object.keys(thisObject)[0]],
 	        objectContent = thisObject[Object.keys(thisObject)[1]];
 
-	      if (objectTitle.trim().length === 0 || objectContent.trim().length === 0) {
-	        return false;
-	      }
+	      this.objectIndex = this.generateObject(objectTitle, objectContent);
 
-	      let wordsInText = `${objectTitle} ${objectContent}`;
-
-	      wordsInText = this.generateUniqueArray(this.filter(wordsInText));
-	      if (wordsInText) {
-	        this.titles.push(objectTitle);
-	        this.stories.push(objectContent);
-	        for (let word of wordsInText) {
-	          objectIndex[word] = [objectTitle];
-	        }
-	      } else {
-	        return false;
-	      }
 	    } else {
 	      const dataLength = thisObject.length;
 	      for (let i = 0; i < dataLength; i++) {
@@ -392,29 +377,43 @@
 	        const objectTitle = thisObject[i][Object.keys(thisObject[i])[0]],
 	          objectContent = thisObject[i][Object.keys(thisObject[i])[1]];
 
-	        if (objectTitle.trim().length === 0 || objectContent.trim().length === 0) {
-	          return false;
-	        }
-
-	        let wordsInText = `${objectTitle} ${objectContent}`;
-	        wordsInText = this.generateUniqueArray(this.filter(wordsInText));
-	        if (wordsInText) {
-	          this.titles.push(objectTitle);
-	          this.stories.push(objectContent);
-	          for (let word of wordsInText) {
-	            if (objectIndex[word]) {
-	              objectIndex[word] = objectIndex[word].concat([objectTitle]);
-	            } else {
-	              objectIndex[word] = [objectTitle];
-	            }
-	          }
-	        } else {
-	          return false;
-	        }
+	        this.objectIndex = this.generateObject(objectTitle, objectContent);
 	      }
 	    }
-	    this.indexes = this.mergeObjects(this.indexes, objectIndex);
+	    if (!this.objectIndex) {
+	      return false;
+	    }
+	    this.indexes = this.mergeObjects(this.indexes, this.objectIndex);
 	    return true;
+	  }
+
+	  /**
+	   * Method to generate an object for each text in the specified array arguments.
+	   * @param {array} {array}
+	   * @returns {object}
+	   */
+	  generateObject(objectTitle, objectContent) {
+	    if (objectTitle.trim().length === 0 || objectContent.trim().length === 0) {
+	      return false;
+	    }
+
+	    let wordsInText = `${objectTitle} ${objectContent}`;
+	    wordsInText = this.generateUniqueArray(this.filter(wordsInText));
+	    if (wordsInText) {
+	      this.titles.push(objectTitle);
+	      this.stories.push(objectContent);
+	      for (let word of wordsInText) {
+	        if (this.objectIndex[word]) {
+	          this.objectIndex[word] = this.objectIndex[word].concat([objectTitle]);
+	        } else {
+	          this.objectIndex[word] = [objectTitle];
+	        }
+	      }
+	    } else {
+	      return false;
+	    }
+
+	    return this.objectIndex;
 	  }
 
 
