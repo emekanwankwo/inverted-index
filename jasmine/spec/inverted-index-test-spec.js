@@ -2,9 +2,7 @@ describe('Inverted index class', () => {
   const InvertedIndex = require('../../src/inverted-index'),
     book = require('../books.json'),
     invalidBook1 = require('../invalid/book1.json'),
-    invalidBook2 = require('../invalid/book2.json'),
-    invalidBook3 = require('../invalid/book3.json'),
-    invalidBook4 = require('../invalid/book4.json');
+    invalidBook2 = require('../invalid/book2.json');
   
   const invertedIndex = new InvertedIndex();
 
@@ -16,8 +14,6 @@ describe('Inverted index class', () => {
     it('Should return false if the number of keys of the book object is not exactly 2 or if the values are invalid', () => {
       expect(invertedIndex.createIndex(invalidBook1)).toBeFalsy();
       expect(invertedIndex.createIndex(invalidBook2)).toBeFalsy();
-      expect(invertedIndex.createIndex(invalidBook3)).toBeFalsy();
-      expect(invertedIndex.createIndex(invalidBook4)).toBeFalsy();
     });
   });
 

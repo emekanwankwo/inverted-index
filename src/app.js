@@ -6,7 +6,7 @@ const indexApp = angular.module('invertedIndex', []);
 indexApp.controller('rootAppController', ['$scope', ($scope) => {
 
   const InvertedIndex = require('./inverted-index');
-  const theIndex = new InvertedIndex();
+  const invertedIndex = new InvertedIndex();
 
   // Define a template Document for the Inverted Index Landing Page
   $scope.columns = [];
@@ -14,7 +14,7 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
   $scope.allContent = {};
   $scope.storyTitle = [];
   $scope.storyContent = [];
-  $scope.theIndex = 0;
+  $scope.storyIndex = 0;
   $scope.bookNames = [];
   $scope.books = {};
   $scope.fileSelected = true;
@@ -28,15 +28,15 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
 
   $scope.uploadFile = (url) => {
 
-    const theJsonFile = document.getElementById('filePath').files[0];
+    const uploadedFile = document.getElementById('filePath').files[0];
 
-    if ((!theJsonFile) && ($.trim(url) === '')) {
+    if ((!uploadedFile) && ($.trim(url) === '')) {
       $scope.selectEmptyMsg = true;
       return false;
     }
 
     $scope.selectEmptyMsg = false;
-    if (!theJsonFile && ($.trim(url) !== '')) {
+    if (!uploadedFile && ($.trim(url) !== '')) {
       const httpRequest = new XMLHttpRequest();
 
       // Make a promise to send the http get request
@@ -71,15 +71,15 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
         });
     } else {
       // Ensure a valid file is selected and is has a '.json' extension
-      const fileExt = theJsonFile.name
-        .substring(theJsonFile.name.length - 5, theJsonFile.name.length);
+      const fileExt = uploadedFile.name
+        .substring(uploadedFile.name.length - 5, uploadedFile.name.length);
 
       if ((fileExt !== '.json') && (fileExt !== '.JSON') && ($.trim(url) === '')) {
         showErr('Please select a valid json file');
         return false;
       }
       const reader = new FileReader();
-      reader.readAsText(theJsonFile);
+      reader.readAsText(uploadedFile);
 
       const promise = new Promise((resolve, reject) => {
         reader.onload = ((e) => {
@@ -96,8 +96,9 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
           }
         });
       });
+
       promise.then((response) => {
-        resolveData(response, theJsonFile.name);
+        resolveData(response, uploadedFile.name);
       })
         .catch((err) => {
           showErr(err);
@@ -129,14 +130,36 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
    *  @param {object}
    *  @returns {}
    */
-  resolveData = (jsonData, jsonFileName) => {
-    $scope.books[jsonFileName] = jsonData;
+  resolveData = (responseData, responseDataName) => {
+    document.getElementById('uploadJsonForm').reset();
+    if (Object.keys(responseData).length <= 0) {
+      showErr('error! cannot upload empty file');
+      return false;
+    }
+    if (!Array.isArray(responseData)) {
+      if (Object.keys(responseData).length !== 2) {
+        showErr('error! file must have only title and content keys');
+        return false;
+      }
+    } else {
+      const bookLength = responseData.length;
+      for (let i = 0; i < bookLength; i++) {
+        if (Object.keys(responseData[i]).length !== 2) {
+          showErr('error! each file must have only title and content keys');
+          return false;
+        }
+      }
+    }
+    $scope.books[responseDataName] = responseData;
     $scope.bookNames = Object.keys($scope.books);
-    $scope.numberOfTitles = jsonData.length;
+    $scope.numberOfTitles = responseData.length;
+    $scope.validBook = true;
     $scope.$apply();
   };
 
   $scope.setBook = (name) => {
+    $('.list-group-item').not(':first').css('background-color', 'white');
+    document.getElementById(name).style.backgroundColor = 'lightgray';
     $scope.fileToRead = name;
   };
 
@@ -148,15 +171,18 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
     $scope.fileSelected = true;
     const filename = $scope.fileToRead;
     const thisBook = $scope.books[filename];
-    const objectIndex = theIndex.createIndex(thisBook);
+    const bookIndex = invertedIndex.createIndex(thisBook);
 
-    if (!objectIndex) {
+    if (!bookIndex) {
+      // Delete the object from the books object.
+      delete $scope.books[filename];
+      $scope.bookNames.splice($scope.bookNames.indexOf(filename), 1);
       showErr('Error! ensure your json file has a title key and a content key');
       return false;
     }
 
-    $scope.storyTitle = theIndex.getStory().titles;
-    $scope.storyContent = theIndex.getStory().stories;
+    $scope.storyTitle = invertedIndex.getStory().titles;
+    $scope.storyContent = invertedIndex.getStory().stories;
     $scope.getIndex();
   };
 
@@ -166,18 +192,18 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
    * @returns {}
    */
   $scope.getIndex = () => {
-    const wordsIndex = theIndex.getIndex();
+    const wordsIndex = invertedIndex.getIndex();
     if (!wordsIndex) {
       showErr('Error! no file uploaded!');
       return false;
     }
-    $scope.allContent = theIndex.mergeObjects($scope.allContent, wordsIndex);
+    $scope.allContent = invertedIndex.mergeObjects($scope.allContent, wordsIndex);
     $scope.terms = Object.keys(wordsIndex);
     $scope.storeTerms = $scope.terms;
     for (let term of $scope.terms) {
       $scope.columns = $scope.columns.concat(wordsIndex[term]);
     }
-    $scope.columns = theIndex.generateUniqueArray($scope.columns);
+    $scope.columns = invertedIndex.generateUniqueArray($scope.columns);
     $scope.storeColumns = $scope.columns;
   };
 
@@ -189,20 +215,20 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
    */
 
   $scope.changeStory = (currentStoryIndex) => {
-    $scope.theIndex = currentStoryIndex;
+    $scope.storyIndex = currentStoryIndex;
   };
 
   $scope.nextPrev = function(value) {
     if (value === 'next') {
-      if ($scope.theIndex === $scope.storyTitle.length - 1) {
+      if ($scope.storyIndex === $scope.storyTitle.length - 1) {
         return false;
       }
-      $scope.theIndex++;
+      $scope.storyIndex++;
     } else {
-      if ($scope.theIndex === 0) {
+      if ($scope.storyIndex === 0) {
         return false;
       }
-      $scope.theIndex--;
+      $scope.storyIndex--;
     }
   };
 
@@ -239,12 +265,12 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
 
     let searchTerm = keyword.toLowerCase();
 
-    $scope.terms = theIndex.generateUniqueArray(searchTerm.split(' '));
+    $scope.terms = invertedIndex.generateUniqueArray(searchTerm.split(' '));
 
     let i = searchTerm.split(' ').length; //get the length of the search field and set the searchterm to the last item.
     searchTerm = searchTerm.split(' ')[i - 1];
 
-    const searchQuery = theIndex.searchIndex(searchTerm, criteria);
+    const searchQuery = invertedIndex.searchIndex(searchTerm, criteria);
     if (searchQuery) {
       $scope.status = 'Found';
       $scope.searchState = true;
