@@ -152,6 +152,7 @@ class InvertedIndex {
       }
     }
     if (!this.bookIndex) {
+      this.bookIndex = {};
       return false;
     }
     this.indexes = this.mergeObjects(this.indexes, this.bookIndex);
@@ -194,12 +195,12 @@ class InvertedIndex {
     * @returns {array}
     */
 
-  filter(aString) {
-    if ((typeof aString) !== 'string') {
+  filter(words) {
+    if ((typeof words) !== 'string') {
       return false;
     }
 
-    const filtered = aString.replace(/[.,\/#!$£%\^&\*;:'{}=\-_`~()]/g, '')
+    const filtered = words.replace(/[.,\/#!$£%\^&\*;:'{}=\-_`~()]/g, '')
       .toLowerCase();
 
     if (filtered.trim().length > 0) {

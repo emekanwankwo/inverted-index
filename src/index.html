@@ -81,8 +81,8 @@
 				<div id="file_content_div">
 					<div class="jumbotron">
 						<div ng-if="storyTitle.length>0" style="position: relative; margin: 10px;">
-							<h2>{{1 + theIndex}}. {{storyTitle[theIndex]}}</h2>
-							<p>{{storyContent[theIndex]}}</p>
+							<h2>{{1 + storyIndex}}. {{storyTitle[storyIndex]}}</h2>
+							<p>{{storyContent[storyIndex]}}</p>
 						</div>
 							<ul ng-if="storyTitle.length>0" class="pagination" style="margin-bottom: 5px;">
 								<li><a style="cursor: pointer;" ng-click="nextPrev('previous')">&laquo;</a></li>
@@ -100,7 +100,7 @@
 									<h3 class="panel-title"><label class="control-label"><p class="font-effect-3d-float" style="font-size: 25px;" >Create New Index</p></label><br></h3>
 								</div>
 								<div class="panel-body">									
-									<input type="file" id="filePath" file-model="thefilename" ><p ng-show="selectEmptyMsg" style="color: red;"><i>Select a json file</i></p><br>
+									<input type="file" id="filePath"><p ng-show="selectEmptyMsg" style="color: red;"><i>Select a json file</i></p><br>
 									<div class="input-group">
 										<span class="input-group-addon">File Url:</span>
 											<input type="input" id="filename" ng-model="theFileUrl" placeholder=" e.g. https://inverted-index-develop.herokuapp.com//books/books.json" class="form-control">
@@ -119,15 +119,15 @@
 					<!-- Show uploaded json files panel -->
 
 					<div class="Uploadlist">
-						<ul class="list-group">
-						<li class="list-group-item list-group-item-action disabled">
-							Uploaded Files
-							<span ng-show="!fileSelected"  style="color: red; float: right;"><i>Select a file below</i></span>
-						</li>						
-						<li class="list-group-item" ng-repeat="name in bookNames" id="{{name}}" ng-click="setBook(name)">
-							<span class="tag tag-default tag-pill float-xs-right">{{books[name].length}}</span>
-							{{name}}
-						</li>
+						<ul class="list-group" id="uploadedFiles">
+							<li class="list-group-item list-group-item-action disabled">
+								Uploaded Files
+								<span ng-show="!fileSelected"  style="color: red; float: right;"><i>Select a file below</i></span>
+							</li>						
+							<li class="list-group-item" ng-repeat="name in bookNames" id="{{name}}" ng-click="setBook(name)">
+								<span class="tag tag-default tag-pill float-xs-right">{{books[name].length}}</span>
+								{{name}}
+							</li>
 						</ul>
 					</div>
 

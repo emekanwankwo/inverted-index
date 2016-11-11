@@ -6,7 +6,7 @@ const indexApp = angular.module('invertedIndex', []);
 indexApp.controller('rootAppController', ['$scope', ($scope) => {
 
   const InvertedIndex = require('./inverted-index');
-  const theIndex = new InvertedIndex();
+  const invertedIndex = new InvertedIndex();
 
   // Define a template Document for the Inverted Index Landing Page
   $scope.columns = [];
@@ -14,7 +14,7 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
   $scope.allContent = {};
   $scope.storyTitle = [];
   $scope.storyContent = [];
-  $scope.theIndex = 0;
+  $scope.storyIndex = 0;
   $scope.bookNames = [];
   $scope.books = {};
   $scope.fileSelected = true;
@@ -152,11 +152,12 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
     $scope.books[responseDataName] = responseData;
     $scope.bookNames = Object.keys($scope.books);
     $scope.numberOfTitles = responseData.length;
+    $scope.validBook = true;
     $scope.$apply();
   };
 
   $scope.setBook = (name) => {
-    $('.list-group-item').not(":first").css('background-color','white');
+    $('.list-group-item').not(':first').css('background-color','white');
     document.getElementById(name).style.backgroundColor = 'lightgray';
     $scope.fileToRead = name;
   };
@@ -169,15 +170,21 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
     $scope.fileSelected = true;
     const filename = $scope.fileToRead;
     const thisBook = $scope.books[filename];
-    const objectIndex = theIndex.createIndex(thisBook);
+    const bookIndex = invertedIndex.createIndex(thisBook);
 
-    if (!objectIndex) {
+    if (!bookIndex) {
+      // show error and remove book.
+      const top = document.getElementById('uploadedFiles');
+      const invalidBook = document.getElementById(filename);
+      top.removeChild(invalidBook);
+      document.getElementById('filePath').value = '';
       showErr('Error! ensure your json file has a title key and a content key');
+
       return false;
     }
 
-    $scope.storyTitle = theIndex.getStory().titles;
-    $scope.storyContent = theIndex.getStory().stories;
+    $scope.storyTitle = invertedIndex.getStory().titles;
+    $scope.storyContent = invertedIndex.getStory().stories;
     $scope.getIndex();
   };
 
@@ -187,18 +194,18 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
    * @returns {}
    */
   $scope.getIndex = () => {
-    const wordsIndex = theIndex.getIndex();
+    const wordsIndex = invertedIndex.getIndex();
     if (!wordsIndex) {
       showErr('Error! no file uploaded!');
       return false;
     }
-    $scope.allContent = theIndex.mergeObjects($scope.allContent, wordsIndex);
+    $scope.allContent = invertedIndex.mergeObjects($scope.allContent, wordsIndex);
     $scope.terms = Object.keys(wordsIndex);
     $scope.storeTerms = $scope.terms;
     for (let term of $scope.terms) {
       $scope.columns = $scope.columns.concat(wordsIndex[term]);
     }
-    $scope.columns = theIndex.generateUniqueArray($scope.columns);
+    $scope.columns = invertedIndex.generateUniqueArray($scope.columns);
     $scope.storeColumns = $scope.columns;
   };
 
@@ -210,20 +217,20 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
    */
 
   $scope.changeStory = (currentStoryIndex) => {
-    $scope.theIndex = currentStoryIndex;
+    $scope.storyIndex = currentStoryIndex;
   };
 
   $scope.nextPrev = function(value) {
     if (value === 'next') {
-      if ($scope.theIndex === $scope.storyTitle.length - 1) {
+      if ($scope.storyIndex === $scope.storyTitle.length - 1) {
         return false;
       }
-      $scope.theIndex++;
+      $scope.storyIndex++;
     } else {
-      if ($scope.theIndex === 0) {
+      if ($scope.storyIndex === 0) {
         return false;
       }
-      $scope.theIndex--;
+      $scope.storyIndex--;
     }
   };
 
@@ -260,12 +267,12 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
 
     let searchTerm = keyword.toLowerCase();
 
-    $scope.terms = theIndex.generateUniqueArray(searchTerm.split(' '));
+    $scope.terms = invertedIndex.generateUniqueArray(searchTerm.split(' '));
 
     let i = searchTerm.split(' ').length; //get the length of the search field and set the searchterm to the last item.
     searchTerm = searchTerm.split(' ')[i - 1];
 
-    const searchQuery = theIndex.searchIndex(searchTerm, criteria);
+    const searchQuery = invertedIndex.searchIndex(searchTerm, criteria);
     if (searchQuery) {
       $scope.status = 'Found';
       $scope.searchState = true;
