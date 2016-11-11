@@ -81,15 +81,15 @@
 
 	  $scope.uploadFile = (url) => {
 
-	    const theJsonFile = document.getElementById('filePath').files[0];
+	    const uploadedFile = document.getElementById('filePath').files[0];
 
-	    if ((!theJsonFile) && ($.trim(url) === '')) {
+	    if ((!uploadedFile) && ($.trim(url) === '')) {
 	      $scope.selectEmptyMsg = true;
 	      return false;
 	    }
 
 	    $scope.selectEmptyMsg = false;
-	    if (!theJsonFile && ($.trim(url) !== '')) {
+	    if (!uploadedFile && ($.trim(url) !== '')) {
 	      const httpRequest = new XMLHttpRequest();
 
 	      // Make a promise to send the http get request
@@ -124,15 +124,15 @@
 	        });
 	    } else {
 	      // Ensure a valid file is selected and is has a '.json' extension
-	      const fileExt = theJsonFile.name
-	        .substring(theJsonFile.name.length - 5, theJsonFile.name.length);
+	      const fileExt = uploadedFile.name
+	        .substring(uploadedFile.name.length - 5, uploadedFile.name.length);
 
 	      if ((fileExt !== '.json') && (fileExt !== '.JSON') && ($.trim(url) === '')) {
 	        showErr('Please select a valid json file');
 	        return false;
 	      }
 	      const reader = new FileReader();
-	      reader.readAsText(theJsonFile);
+	      reader.readAsText(uploadedFile);
 
 	      const promise = new Promise((resolve, reject) => {
 	        reader.onload = ((e) => {
@@ -149,8 +149,9 @@
 	          }
 	        });
 	      });
+
 	      promise.then((response) => {
-	        resolveData(response, theJsonFile.name);
+	        resolveData(response, uploadedFile.name);
 	      })
 	        .catch((err) => {
 	          showErr(err);
@@ -182,14 +183,34 @@
 	   *  @param {object}
 	   *  @returns {}
 	   */
-	  resolveData = (jsonData, jsonFileName) => {
-	    $scope.books[jsonFileName] = jsonData;
+	  resolveData = (responseData, responseDataName) => {
+	    if (Object.keys(responseData).length <= 0) {
+	      showErr('error! cannot upload empty file');
+	      return false;
+	    }
+	    if (!Array.isArray(responseData)) {
+	      if (Object.keys(responseData).length !== 2) {
+	        showErr('error! file must have only title and content keys');
+	        return false;
+	      }
+	    } else {
+	      const bookLength = responseData.length;
+	      for (let i = 0; i < bookLength; i++) {
+	        if (Object.keys(responseData[i]).length !== 2) {
+	          showErr('error! each file must have only title and content keys');
+	          return false;
+	        }
+	      }
+	    }
+	    $scope.books[responseDataName] = responseData;
 	    $scope.bookNames = Object.keys($scope.books);
-	    $scope.numberOfTitles = jsonData.length;
+	    $scope.numberOfTitles = responseData.length;
 	    $scope.$apply();
 	  };
 
 	  $scope.setBook = (name) => {
+	    $('.list-group-item').not(":first").css('background-color','white');
+	    document.getElementById(name).style.backgroundColor = 'lightgray';
 	    $scope.fileToRead = name;
 	  };
 
@@ -335,14 +356,14 @@
 	class InvertedIndex {
 
 	  /**
-	   @constructor
+	   *  @constructor
 	   */
 	  constructor() {
 	    this.stories = [];
 	    this.titles = [];
 	    this.indexes = {};
 	    this.searchResult = {};
-	    this.objectIndex = {};
+	    this.bookIndex = {};
 	  }
 
 	  /**
@@ -351,39 +372,24 @@
 	  * @returns {object}
 		**/
 
-	  createIndex(thisObject) {
-
-	    if (Object.keys(thisObject).length <= 0) {
-	      return false;
-	    }
-
+	  createIndex(book) {
 	    // Check if the data is a single json object(one content) and resolve
-	    if (!Array.isArray(thisObject)) {
-	      if (Object.keys(thisObject).length !== 2) {
-	        return false;
-	      }
-
-	      const objectTitle = thisObject[Object.keys(thisObject)[0]],
-	        objectContent = thisObject[Object.keys(thisObject)[1]];
-
-	      this.objectIndex = this.generateObject(objectTitle, objectContent);
-
+	    if (!Array.isArray(book)) {
+	      const bookTitle = book[Object.keys(book)[0]],
+	        bookContent = book[Object.keys(book)[1]];
+	      this.bookIndex = this.generateObject(bookTitle, bookContent);
 	    } else {
-	      const dataLength = thisObject.length;
+	      const dataLength = book.length;
 	      for (let i = 0; i < dataLength; i++) {
-	        if (Object.keys(thisObject[i]).length !== 2) {
-	          return false;
-	        }
-	        const objectTitle = thisObject[i][Object.keys(thisObject[i])[0]],
-	          objectContent = thisObject[i][Object.keys(thisObject[i])[1]];
-
-	        this.objectIndex = this.generateObject(objectTitle, objectContent);
+	        const bookTitle = book[i][Object.keys(book[i])[0]],
+	          bookContent = book[i][Object.keys(book[i])[1]];
+	        this.bookIndex = this.generateObject(bookTitle, bookContent);
 	      }
 	    }
-	    if (!this.objectIndex) {
+	    if (!this.bookIndex) {
 	      return false;
 	    }
-	    this.indexes = this.mergeObjects(this.indexes, this.objectIndex);
+	    this.indexes = this.mergeObjects(this.indexes, this.bookIndex);
 	    return true;
 	  }
 
@@ -392,39 +398,38 @@
 	   * @param {array} {array}
 	   * @returns {object}
 	   */
-	  generateObject(objectTitle, objectContent) {
-	    if (objectTitle.trim().length === 0 || objectContent.trim().length === 0) {
+	  generateObject(bookTitle, bookContent) {
+	    if (bookTitle.trim().length === 0 || bookContent.trim().length === 0) {
 	      return false;
 	    }
 
-	    let wordsInText = `${objectTitle} ${objectContent}`;
+	    let wordsInText = `${bookTitle} ${bookContent}`;
 	    wordsInText = this.generateUniqueArray(this.filter(wordsInText));
 	    if (wordsInText) {
-	      this.titles.push(objectTitle);
-	      this.stories.push(objectContent);
+	      this.titles.push(bookTitle);
+	      this.stories.push(bookContent);
 	      for (let word of wordsInText) {
-	        if (this.objectIndex[word]) {
-	          this.objectIndex[word] = this.objectIndex[word].concat([objectTitle]);
+	        if (this.bookIndex[word]) {
+	          this.bookIndex[word] = this.bookIndex[word].concat([bookTitle]);
 	        } else {
-	          this.objectIndex[word] = [objectTitle];
+	          this.bookIndex[word] = [bookTitle];
 	        }
 	      }
 	    } else {
 	      return false;
 	    }
 
-	    return this.objectIndex;
+	    return this.bookIndex;
 	  }
 
 
 	  /**
-	      * Method to filter out special characters and create a string out of the words specified
-	      * @param {string}
-	      * @returns {array}
-	      */
+	    * Method to filter out special characters and create a string out of the words specified
+	    * @param {string}
+	    * @returns {array}
+	    */
 
 	  filter(aString) {
-
 	    if ((typeof aString) !== 'string') {
 	      return false;
 	    }

@@ -120,11 +120,11 @@
 
 					<div class="Uploadlist">
 						<ul class="list-group">
-						<li class="list-group-item disabled">
+						<li class="list-group-item list-group-item-action disabled">
 							Uploaded Files
 							<span ng-show="!fileSelected"  style="color: red; float: right;"><i>Select a file below</i></span>
 						</li>						
-						<li class="list-group-item" ng-repeat="name in bookNames" ng-click="setBook(name)">
+						<li class="list-group-item" ng-repeat="name in bookNames" id="{{name}}" ng-click="setBook(name)">
 							<span class="tag tag-default tag-pill float-xs-right">{{books[name].length}}</span>
 							{{name}}
 						</li>

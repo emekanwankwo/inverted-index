@@ -13,4 +13,5 @@
 #alert_div span{ position: absolute; height: inherit; background-color: indianred; width: 100%; border-radius: 15px; top: 15px; left: 25px; font-family: "Caudex", serif; margin: 0 auto; float: left;}
 #alert_div span p{ position: relative; top: 15px;}
 .Uploadlist li{ cursor: pointer;}
+.Uploadlist li::first-child{ background-color:orange; }
 .Uploadlist li:hover{ background-color:lightgray;}

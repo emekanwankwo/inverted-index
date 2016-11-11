@@ -28,15 +28,15 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
 
   $scope.uploadFile = (url) => {
 
-    const theJsonFile = document.getElementById('filePath').files[0];
+    const uploadedFile = document.getElementById('filePath').files[0];
 
-    if ((!theJsonFile) && ($.trim(url) === '')) {
+    if ((!uploadedFile) && ($.trim(url) === '')) {
       $scope.selectEmptyMsg = true;
       return false;
     }
 
     $scope.selectEmptyMsg = false;
-    if (!theJsonFile && ($.trim(url) !== '')) {
+    if (!uploadedFile && ($.trim(url) !== '')) {
       const httpRequest = new XMLHttpRequest();
 
       // Make a promise to send the http get request
@@ -71,15 +71,15 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
         });
     } else {
       // Ensure a valid file is selected and is has a '.json' extension
-      const fileExt = theJsonFile.name
-        .substring(theJsonFile.name.length - 5, theJsonFile.name.length);
+      const fileExt = uploadedFile.name
+        .substring(uploadedFile.name.length - 5, uploadedFile.name.length);
 
       if ((fileExt !== '.json') && (fileExt !== '.JSON') && ($.trim(url) === '')) {
         showErr('Please select a valid json file');
         return false;
       }
       const reader = new FileReader();
-      reader.readAsText(theJsonFile);
+      reader.readAsText(uploadedFile);
 
       const promise = new Promise((resolve, reject) => {
         reader.onload = ((e) => {
@@ -96,8 +96,9 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
           }
         });
       });
+
       promise.then((response) => {
-        resolveData(response, theJsonFile.name);
+        resolveData(response, uploadedFile.name);
       })
         .catch((err) => {
           showErr(err);
@@ -129,14 +130,34 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
    *  @param {object}
    *  @returns {}
    */
-  resolveData = (jsonData, jsonFileName) => {
-    $scope.books[jsonFileName] = jsonData;
+  resolveData = (responseData, responseDataName) => {
+    if (Object.keys(responseData).length <= 0) {
+      showErr('error! cannot upload empty file');
+      return false;
+    }
+    if (!Array.isArray(responseData)) {
+      if (Object.keys(responseData).length !== 2) {
+        showErr('error! file must have only title and content keys');
+        return false;
+      }
+    } else {
+      const bookLength = responseData.length;
+      for (let i = 0; i < bookLength; i++) {
+        if (Object.keys(responseData[i]).length !== 2) {
+          showErr('error! each file must have only title and content keys');
+          return false;
+        }
+      }
+    }
+    $scope.books[responseDataName] = responseData;
     $scope.bookNames = Object.keys($scope.books);
-    $scope.numberOfTitles = jsonData.length;
+    $scope.numberOfTitles = responseData.length;
     $scope.$apply();
   };
 
   $scope.setBook = (name) => {
+    $('.list-group-item').not(":first").css('background-color','white');
+    document.getElementById(name).style.backgroundColor = 'lightgray';
     $scope.fileToRead = name;
   };
 
