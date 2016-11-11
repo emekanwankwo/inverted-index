@@ -184,6 +184,7 @@
 	   *  @returns {}
 	   */
 	  resolveData = (responseData, responseDataName) => {
+	    document.getElementById('uploadJsonForm').reset();
 	    if (Object.keys(responseData).length <= 0) {
 	      showErr('error! cannot upload empty file');
 	      return false;
@@ -227,10 +228,12 @@
 
 	    if (!bookIndex) {
 	      // show error and remove book.
-	      const top = document.getElementById('uploadedFiles');
-	      const invalidBook = document.getElementById(filename);
-	      top.removeChild(invalidBook);
-	      document.getElementById('filePath').value = '';
+	      // const top = document.getElementById('uploadedFiles');
+	      // const invalidBook = document.getElementById(filename);
+	      // top.removeChild(invalidBook);
+	      // Delete the object from the books object.
+	      delete $scope.books[filename];
+	      $scope.bookNames.splice($scope.bookNames.indexOf(filename), 1);
 	      showErr('Error! ensure your json file has a title key and a content key');
 
 	      return false;

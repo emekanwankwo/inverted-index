@@ -131,6 +131,7 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
    *  @returns {}
    */
   resolveData = (responseData, responseDataName) => {
+    document.getElementById('uploadJsonForm').reset();
     if (Object.keys(responseData).length <= 0) {
       showErr('error! cannot upload empty file');
       return false;
@@ -157,7 +158,7 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
   };
 
   $scope.setBook = (name) => {
-    $('.list-group-item').not(':first').css('background-color','white');
+    $('.list-group-item').not(':first').css('background-color', 'white');
     document.getElementById(name).style.backgroundColor = 'lightgray';
     $scope.fileToRead = name;
   };
@@ -173,13 +174,10 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
     const bookIndex = invertedIndex.createIndex(thisBook);
 
     if (!bookIndex) {
-      // show error and remove book.
-      const top = document.getElementById('uploadedFiles');
-      const invalidBook = document.getElementById(filename);
-      top.removeChild(invalidBook);
-      document.getElementById('filePath').value = '';
+      // Delete the object from the books object.
+      delete $scope.books[filename];
+      $scope.bookNames.splice($scope.bookNames.indexOf(filename), 1);
       showErr('Error! ensure your json file has a title key and a content key');
-
       return false;
     }
 
