@@ -1,0 +1,4 @@
+# Ignore test files and app.js in src directory
+jasmine/
+public/
+src/app.js
