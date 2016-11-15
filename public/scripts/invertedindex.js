@@ -211,7 +211,7 @@
 	  };
 
 	  $scope.setBook = (name) => {
-	    $('.list-group-item').not(':first').css('background-color','white');
+	    $('.list-group-item').not(':first').css('background-color', 'white');
 	    document.getElementById(name).style.backgroundColor = 'lightgray';
 	    $scope.fileToRead = name;
 	  };
@@ -227,15 +227,10 @@
 	    const bookIndex = invertedIndex.createIndex(thisBook);
 
 	    if (!bookIndex) {
-	      // show error and remove book.
-	      // const top = document.getElementById('uploadedFiles');
-	      // const invalidBook = document.getElementById(filename);
-	      // top.removeChild(invalidBook);
 	      // Delete the object from the books object.
 	      delete $scope.books[filename];
 	      $scope.bookNames.splice($scope.bookNames.indexOf(filename), 1);
 	      showErr('Error! ensure your json file has a title key and a content key');
-
 	      return false;
 	    }
 

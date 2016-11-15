@@ -49,7 +49,7 @@ gulp.task('bundle', () => {
 
 gulp.task('webpack-dev-server', function() {
   // modify some webpack config options
-  let myConfig = Object.create(webpackConfig);
+  const myConfig = Object.create(webpackConfig);
   myConfig.devtool = 'eval';
   myConfig.debug = true;
 
