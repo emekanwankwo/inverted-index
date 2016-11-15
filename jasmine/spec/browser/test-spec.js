@@ -24,9 +24,24 @@ module.exports=[{
 }]
 
 },{}],4:[function(require,module,exports){
+module.exports={
+"title": ["1"],
+"content": ["2", "3"]
+}
+
+},{}],5:[function(require,module,exports){
+module.exports={
+"title": ["1"],
+"content": ["4"]
+}
+
+},{}],6:[function(require,module,exports){
 describe('Inverted index class', () => {
   const InvertedIndex = require('../../src/inverted-index'),
     book = require('../books.json'),
+    storyBook = require('../storybook.json'),
+    mergeSrc = require('../merge-source.json'),
+    mergeDest = require('../merge-dest.json'),
     invalidBook1 = require('../invalid/book1.json'),
     invalidBook2 = require('../invalid/book2.json');
   
@@ -37,8 +52,11 @@ describe('Inverted index class', () => {
       expect(book).not.toEqual({});
     });
 
-    it('Should return false if the number of keys of the book object is not exactly 2 or if the values are invalid', () => {
+    it('Should return false if the values of the keys are empty', () => {
       expect(invertedIndex.createIndex(invalidBook1)).toBeFalsy();
+    });
+
+    it('Should return false if the values of the keys are invalid', () => {
       expect(invertedIndex.createIndex(invalidBook2)).toBeFalsy();
     });
   });
@@ -70,21 +88,18 @@ describe('Inverted index class', () => {
     });
   })
 
-  describe('mergeObjects method', () => {
-    const obj1 = { title: ['1'], content: ['2', '3'] },
-      obj2 = { title: ['1'], content: ['4'] },
-      result = { title: ['1'], content: ['2', '3', '4'] },
-      merge = invertedIndex.mergeObjects(obj1, obj2);
+  describe('merge objects', () => {
+    const merge = invertedIndex.mergeObjects(mergeDest, mergeSrc);
   
     it('should merge the content of two objects', () => {
-      expect(merge).toEqual(result);
+      expect(merge).toEqual({ title: ['1'], content: ['2', '3', '4'] });
     });
     it('should return false if the arguments are not objects', () => {
       expect(invertedIndex.mergeObjects('arg1', 'arg2')).toBeFalsy();
     });
   });
 
-  describe('filter method', () => {
+  describe('filter string', () => {
     it('should take a string and return an array of filtered text in lower case', () => {
       expect(invertedIndex.filter('This$ i_s t£ext, Te:steD')).toEqual(['this', 'is', 'text', 'tested']);
     });
@@ -96,7 +111,7 @@ describe('Inverted index class', () => {
     });
   });
 
-  describe('generateUniqueArray method', () => {
+  describe('generate unique array', () => {
     it('should return an array of unique contents of the array argument', () => {
       expect(invertedIndex.generateUniqueArray([1, 1, 2, 2, 'yes', 'yes'])).toEqual([1, 2, 'yes']);
     });
@@ -105,18 +120,23 @@ describe('Inverted index class', () => {
     });
   });
 
-  describe('getStory method', () => {
-    const theStoryFile = { title: 'story title', content: 'story content' };
-    const newIndex = new InvertedIndex();
-    newIndex.createIndex(theStoryFile);
+  describe('get story', () => {
+    const newInvertedIndex = new InvertedIndex();
+    newInvertedIndex.createIndex(storyBook);
     it('should return an object of all the titles and stories', () => {
-      expect(newIndex.getStory()).toEqual({ titles: ['story title'], stories: ['story content'] });
+      expect(newInvertedIndex.getStory()).toEqual({ titles: ['story title'], stories: ['story content'] });
     });
   });
 });
-},{"../../src/inverted-index":5,"../books.json":1,"../invalid/book1.json":2,"../invalid/book2.json":3}],5:[function(require,module,exports){
+},{"../../src/inverted-index":8,"../books.json":1,"../invalid/book1.json":2,"../invalid/book2.json":3,"../merge-dest.json":4,"../merge-source.json":5,"../storybook.json":7}],7:[function(require,module,exports){
+module.exports={
+"title": "story title",
+"content": "story content"
+}
 
-/***Inverted Index Application to index, sort and search words in a string***/
+},{}],8:[function(require,module,exports){
+
+/** *Inverted Index Application to index, sort and search words in a string***/
 
 class InvertedIndex {
 
@@ -174,7 +194,7 @@ class InvertedIndex {
     if (wordsInText) {
       this.titles.push(bookTitle);
       this.stories.push(bookContent);
-      for (let word of wordsInText) {
+      for (const word of wordsInText) {
         if (this.bookIndex[word]) {
           this.bookIndex[word] = this.bookIndex[word].concat([bookTitle]);
         } else {
@@ -221,7 +241,7 @@ class InvertedIndex {
       return false;
     }
     const makeUnique = this.generateUniqueArray;
-    Object.keys(src).forEach(function(key) {
+    Object.keys(src).forEach((key) => {
       if (dest[key]) {
         dest[key] = makeUnique(dest[key].concat(src[key]));
       } else {
@@ -243,7 +263,7 @@ class InvertedIndex {
     }
     const uniqueArray = [];
     thisArray.forEach((value) => {
-      let index = uniqueArray.indexOf(value);
+      const index = uniqueArray.indexOf(value);
       if (index === -1) {
         uniqueArray.push(value);
       }
@@ -261,7 +281,7 @@ class InvertedIndex {
   getStory() {
     return {
       titles: this.generateUniqueArray(this.titles),
-      stories: this.stories
+      stories: this.stories,
     };
   }
 
@@ -293,17 +313,15 @@ class InvertedIndex {
     this.searchResult = {};
     if (this.indexes[term]) {
       if ((criteria === null) || (criteria === undefined)) {
-        for (let title of this.indexes[term]) {
+        for (const title of this.indexes[term]) {
           docPosition.push(this.titles.indexOf(title));
         }
         this.searchResult[term] = docPosition;
         return this.searchResult;
-      } else {
-        if (this.indexes[term].indexOf(criteria) !== -1) {
-          docPosition.push(this.indexes[term].indexOf(criteria));
-          this.searchResult[term] = docPosition;
-          return this.searchResult;
-        }
+      } else if (this.indexes[term].indexOf(criteria) !== -1) {
+        docPosition.push(this.indexes[term].indexOf(criteria));
+        this.searchResult[term] = docPosition;
+        return this.searchResult;
       }
     } else {
       return false;
@@ -311,4 +329,5 @@ class InvertedIndex {
   }
 }
 module.exports = InvertedIndex;
-},{}]},{},[4]);
+
+},{}]},{},[6]);

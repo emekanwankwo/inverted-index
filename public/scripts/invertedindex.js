@@ -211,7 +211,7 @@
 	  };
 
 	  $scope.setBook = (name) => {
-	    $('.list-group-item').not(':first').css('background-color','white');
+	    $('.list-group-item').not(':first').css('background-color', 'white');
 	    document.getElementById(name).style.backgroundColor = 'lightgray';
 	    $scope.fileToRead = name;
 	  };
@@ -227,15 +227,10 @@
 	    const bookIndex = invertedIndex.createIndex(thisBook);
 
 	    if (!bookIndex) {
-	      // show error and remove book.
-	      // const top = document.getElementById('uploadedFiles');
-	      // const invalidBook = document.getElementById(filename);
-	      // top.removeChild(invalidBook);
 	      // Delete the object from the books object.
 	      delete $scope.books[filename];
 	      $scope.bookNames.splice($scope.bookNames.indexOf(filename), 1);
 	      showErr('Error! ensure your json file has a title key and a content key');
-
 	      return false;
 	    }
 
@@ -361,7 +356,7 @@
 /***/ function(module, exports) {
 
 	
-	/***Inverted Index Application to index, sort and search words in a string***/
+	/** *Inverted Index Application to index, sort and search words in a string***/
 
 	class InvertedIndex {
 
@@ -419,7 +414,7 @@
 	    if (wordsInText) {
 	      this.titles.push(bookTitle);
 	      this.stories.push(bookContent);
-	      for (let word of wordsInText) {
+	      for (const word of wordsInText) {
 	        if (this.bookIndex[word]) {
 	          this.bookIndex[word] = this.bookIndex[word].concat([bookTitle]);
 	        } else {
@@ -466,7 +461,7 @@
 	      return false;
 	    }
 	    const makeUnique = this.generateUniqueArray;
-	    Object.keys(src).forEach(function(key) {
+	    Object.keys(src).forEach((key) => {
 	      if (dest[key]) {
 	        dest[key] = makeUnique(dest[key].concat(src[key]));
 	      } else {
@@ -488,7 +483,7 @@
 	    }
 	    const uniqueArray = [];
 	    thisArray.forEach((value) => {
-	      let index = uniqueArray.indexOf(value);
+	      const index = uniqueArray.indexOf(value);
 	      if (index === -1) {
 	        uniqueArray.push(value);
 	      }
@@ -506,7 +501,7 @@
 	  getStory() {
 	    return {
 	      titles: this.generateUniqueArray(this.titles),
-	      stories: this.stories
+	      stories: this.stories,
 	    };
 	  }
 
@@ -538,17 +533,15 @@
 	    this.searchResult = {};
 	    if (this.indexes[term]) {
 	      if ((criteria === null) || (criteria === undefined)) {
-	        for (let title of this.indexes[term]) {
+	        for (const title of this.indexes[term]) {
 	          docPosition.push(this.titles.indexOf(title));
 	        }
 	        this.searchResult[term] = docPosition;
 	        return this.searchResult;
-	      } else {
-	        if (this.indexes[term].indexOf(criteria) !== -1) {
-	          docPosition.push(this.indexes[term].indexOf(criteria));
-	          this.searchResult[term] = docPosition;
-	          return this.searchResult;
-	        }
+	      } else if (this.indexes[term].indexOf(criteria) !== -1) {
+	        docPosition.push(this.indexes[term].indexOf(criteria));
+	        this.searchResult[term] = docPosition;
+	        return this.searchResult;
 	      }
 	    } else {
 	      return false;
@@ -556,6 +549,7 @@
 	  }
 	}
 	module.exports = InvertedIndex;
+
 
 /***/ }
 /******/ ]);

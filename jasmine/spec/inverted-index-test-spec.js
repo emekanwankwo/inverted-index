@@ -1,6 +1,9 @@
 describe('Inverted index class', () => {
   const InvertedIndex = require('../../src/inverted-index'),
     book = require('../books.json'),
+    storyBook = require('../storybook.json'),
+    mergeSrc = require('../merge-source.json'),
+    mergeDest = require('../merge-dest.json'),
     invalidBook1 = require('../invalid/book1.json'),
     invalidBook2 = require('../invalid/book2.json');
   
@@ -11,8 +14,11 @@ describe('Inverted index class', () => {
       expect(book).not.toEqual({});
     });
 
-    it('Should return false if the number of keys of the book object is not exactly 2 or if the values are invalid', () => {
+    it('Should return false if the values of the keys are empty', () => {
       expect(invertedIndex.createIndex(invalidBook1)).toBeFalsy();
+    });
+
+    it('Should return false if the values of the keys are invalid', () => {
       expect(invertedIndex.createIndex(invalidBook2)).toBeFalsy();
     });
   });
@@ -44,21 +50,18 @@ describe('Inverted index class', () => {
     });
   })
 
-  describe('mergeObjects method', () => {
-    const obj1 = { title: ['1'], content: ['2', '3'] },
-      obj2 = { title: ['1'], content: ['4'] },
-      result = { title: ['1'], content: ['2', '3', '4'] },
-      merge = invertedIndex.mergeObjects(obj1, obj2);
+  describe('merge objects', () => {
+    const merge = invertedIndex.mergeObjects(mergeDest, mergeSrc);
   
     it('should merge the content of two objects', () => {
-      expect(merge).toEqual(result);
+      expect(merge).toEqual({ title: ['1'], content: ['2', '3', '4'] });
     });
     it('should return false if the arguments are not objects', () => {
       expect(invertedIndex.mergeObjects('arg1', 'arg2')).toBeFalsy();
     });
   });
 
-  describe('filter method', () => {
+  describe('filter string', () => {
     it('should take a string and return an array of filtered text in lower case', () => {
       expect(invertedIndex.filter('This$ i_s t£ext, Te:steD')).toEqual(['this', 'is', 'text', 'tested']);
     });
@@ -70,7 +73,7 @@ describe('Inverted index class', () => {
     });
   });
 
-  describe('generateUniqueArray method', () => {
+  describe('generate unique array', () => {
     it('should return an array of unique contents of the array argument', () => {
       expect(invertedIndex.generateUniqueArray([1, 1, 2, 2, 'yes', 'yes'])).toEqual([1, 2, 'yes']);
     });
@@ -79,12 +82,11 @@ describe('Inverted index class', () => {
     });
   });
 
-  describe('getStory method', () => {
-    const theStoryFile = { title: 'story title', content: 'story content' };
-    const newIndex = new InvertedIndex();
-    newIndex.createIndex(theStoryFile);
+  describe('get story', () => {
+    const newInvertedIndex = new InvertedIndex();
+    newInvertedIndex.createIndex(storyBook);
     it('should return an object of all the titles and stories', () => {
-      expect(newIndex.getStory()).toEqual({ titles: ['story title'], stories: ['story content'] });
+      expect(newInvertedIndex.getStory()).toEqual({ titles: ['story title'], stories: ['story content'] });
     });
   });
 });
