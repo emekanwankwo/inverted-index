@@ -137,7 +137,9 @@ module.exports={
 },{}],8:[function(require,module,exports){
 
 /** *Inverted Index Application to index, sort and search words in a string***/
-
+/**
+ * InvertedIndex Class.
+ */
 class InvertedIndex {
 
   /**
@@ -152,11 +154,10 @@ class InvertedIndex {
   }
 
   /**
-	* Creates an Index of the file at the path specified
-	* @param {string}
-  * @returns {object}
-	**/
-
+    * Creates an Index of the file at the path specified
+    * @param {string}
+    * @returns {object}
+    */
   createIndex(book) {
     // Check if the data is a single json object(one content) and resolve
     if (!Array.isArray(book)) {
@@ -181,7 +182,8 @@ class InvertedIndex {
 
   /**
    * Method to generate an object for each text in the specified array arguments.
-   * @param {array} {array}
+   * @param {array}
+   * @param {array}
    * @returns {object}
    */
   generateObject(bookTitle, bookContent) {
@@ -214,7 +216,6 @@ class InvertedIndex {
     * @param {string}
     * @returns {array}
     */
-
   filter(words) {
     if ((typeof words) !== 'string') {
       return false;
@@ -233,7 +234,8 @@ class InvertedIndex {
 
   /**
   * Method to merge two objects.
-  * @param {object} {object}
+  * @param {object}
+  * @param {object}
   * @returns {object}
   */
   mergeObjects(dest, src) {
@@ -274,10 +276,8 @@ class InvertedIndex {
 
   /**
     * getStory method to return an array of titles and corresponding stories
-    * @param {}
     * @returns {object}
     */
-
   getStory() {
     return {
       titles: this.generateUniqueArray(this.titles),
@@ -291,7 +291,6 @@ class InvertedIndex {
    * @param {object}
    * @returns {object}
    */
-
   getIndex() {
     // Check if an index has been created
     if (!Object.keys(this.indexes)[0]) {
@@ -307,7 +306,6 @@ class InvertedIndex {
    * @param {string}
    * @returns {object}
    */
-
   searchIndex(term, criteria = null) {
     const docPosition = [];
     this.searchResult = {};
