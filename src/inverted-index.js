@@ -18,8 +18,8 @@ class InvertedIndex {
 
   /**
     * Creates an Index of the file at the path specified
-    * @param {string}
-    * @returns {object}
+    * @param {string} book
+    * @returns {boolean} true if index is created and false otherwise
     */
   createIndex(book) {
     // Check if the data is a single json object(one content) and resolve
@@ -29,7 +29,7 @@ class InvertedIndex {
       this.bookIndex = this.generateObject(bookTitle, bookContent);
     } else {
       const dataLength = book.length;
-      for (let i = 0; i < dataLength; i++) {
+      for (let i = 0; i < dataLength; i += 1) {
         const bookTitle = book[i][Object.keys(book[i])[0]],
           bookContent = book[i][Object.keys(book[i])[1]];
         this.bookIndex = this.generateObject(bookTitle, bookContent);
@@ -45,9 +45,9 @@ class InvertedIndex {
 
   /**
    * Method to generate an object for each text in the specified array arguments.
-   * @param {array}
-   * @param {array}
-   * @returns {object}
+   * @param {array} bookTitle
+   * @param {array} bookContent
+   * @returns {object} indexed words object.
    */
   generateObject(bookTitle, bookContent) {
     if (bookTitle.trim().length === 0 || bookContent.trim().length === 0) {
@@ -56,19 +56,19 @@ class InvertedIndex {
 
     let wordsInText = `${bookTitle} ${bookContent}`;
     wordsInText = this.generateUniqueArray(this.filter(wordsInText));
-    if (wordsInText) {
-      this.titles.push(bookTitle);
-      this.stories.push(bookContent);
-      for (const word of wordsInText) {
-        if (this.bookIndex[word]) {
-          this.bookIndex[word] = this.bookIndex[word].concat([bookTitle]);
-        } else {
-          this.bookIndex[word] = [bookTitle];
-        }
-      }
-    } else {
+    if (!wordsInText) {
       return false;
     }
+
+    this.titles.push(bookTitle);
+    this.stories.push(bookContent);
+    wordsInText.forEach((word) => {
+      if (this.bookIndex[word]) {
+        this.bookIndex[word] = this.bookIndex[word].concat([bookTitle]);
+      } else {
+        this.bookIndex[word] = [bookTitle];
+      }
+    });
 
     return this.bookIndex;
   }
@@ -76,8 +76,8 @@ class InvertedIndex {
 
   /**
     * Method to filter out special characters and create a string out of the words specified
-    * @param {string}
-    * @returns {array}
+    * @param {string} words
+    * @returns {array} filtered array
     */
   filter(words) {
     if ((typeof words) !== 'string') {
@@ -89,17 +89,15 @@ class InvertedIndex {
 
     if (filtered.trim().length > 0) {
       return filtered.split(' ');
-    } else {
-      return false;
     }
   }
 
 
   /**
   * Method to merge two objects.
-  * @param {object}
-  * @param {object}
-  * @returns {object}
+  * @param {object} dest destination object to be merged into
+  * @param {object} src source object to merge into destination.
+  * @returns {object} merged object containing the two object arguments.
   */
   mergeObjects(dest, src) {
     if ((typeof dest !== 'object') || (typeof src !== 'object')) {
@@ -119,15 +117,15 @@ class InvertedIndex {
 
   /**
     * Method to generate unique array items from the array specified.
-    * @param {array}
-    * @returns {array}
+    * @param {array} sampleArray
+    * @returns {array} array of unique words
     */
-  generateUniqueArray(thisArray) {
-    if (!Array.isArray(thisArray)) {
+  generateUniqueArray(sampleArray) {
+    if (!Array.isArray(sampleArray)) {
       return false;
     }
     const uniqueArray = [];
-    thisArray.forEach((value) => {
+    sampleArray.forEach((value) => {
       const index = uniqueArray.indexOf(value);
       if (index === -1) {
         uniqueArray.push(value);
@@ -139,7 +137,7 @@ class InvertedIndex {
 
   /**
     * getStory method to return an array of titles and corresponding stories
-    * @returns {object}
+    * @returns {object} object containing the titles and stories of the book
     */
   getStory() {
     return {
@@ -151,8 +149,7 @@ class InvertedIndex {
 
   /**
    * getIndex Method to get the index of an element
-   * @param {object}
-   * @returns {object}
+   * @returns {object} object of the indexes created for the book file.
    */
   getIndex() {
     // Check if an index has been created
@@ -166,17 +163,18 @@ class InvertedIndex {
 
   /**
    * searchIndex method to search for index
-   * @param {string}
-   * @returns {object}
+   * @param {string} term term to be searched for.
+   * @param {string} criteria a particular title to search in.
+   * @returns {object} object containing the term and array of index of titles where it appears.
    */
   searchIndex(term, criteria = null) {
     const docPosition = [];
     this.searchResult = {};
     if (this.indexes[term]) {
       if ((criteria === null) || (criteria === undefined)) {
-        for (const title of this.indexes[term]) {
+        this.indexes[term].forEach((title) => {
           docPosition.push(this.titles.indexOf(title));
-        }
+        });
         this.searchResult[term] = docPosition;
         return this.searchResult;
       } else if (this.indexes[term].indexOf(criteria) !== -1) {
