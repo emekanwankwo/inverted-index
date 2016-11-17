@@ -250,13 +250,13 @@
 	      showErr('Error! no file uploaded!');
 	      return false;
 	    }
-	    $scope.allContent = invertedIndex.mergeObjects($scope.allContent, wordsIndex);
+	    $scope.allContent = InvertedIndex.mergeObjects($scope.allContent, wordsIndex);
 	    $scope.terms = Object.keys(wordsIndex);
 	    $scope.storeTerms = $scope.terms;
 	    for (let term of $scope.terms) {
 	      $scope.columns = $scope.columns.concat(wordsIndex[term]);
 	    }
-	    $scope.columns = invertedIndex.generateUniqueArray($scope.columns);
+	    $scope.columns = InvertedIndex.generateUniqueArray($scope.columns);
 	    $scope.storeColumns = $scope.columns;
 	  };
 
@@ -318,7 +318,7 @@
 
 	    let searchTerm = keyword.toLowerCase();
 
-	    $scope.terms = invertedIndex.generateUniqueArray(searchTerm.split(' '));
+	    $scope.terms = InvertedIndex.generateUniqueArray(searchTerm.split(' '));
 
 	    let i = searchTerm.split(' ').length; //get the length of the search field and set the searchterm to the last item.
 	    searchTerm = searchTerm.split(' ')[i - 1];
@@ -396,7 +396,7 @@
 	      this.bookIndex = {};
 	      return false;
 	    }
-	    this.indexes = this.mergeObjects(this.indexes, this.bookIndex);
+	    this.indexes = InvertedIndex.mergeObjects(this.indexes, this.bookIndex);
 	    return true;
 	  }
 
@@ -412,7 +412,7 @@
 	    }
 
 	    let wordsInText = `${bookTitle} ${bookContent}`;
-	    wordsInText = this.generateUniqueArray(this.filter(wordsInText));
+	    wordsInText = InvertedIndex.generateUniqueArray(InvertedIndex.filter(wordsInText));
 	    if (!wordsInText) {
 	      return false;
 	    }
@@ -436,7 +436,7 @@
 	    * @param {string} words
 	    * @returns {array} filtered array
 	    */
-	  filter(words) {
+	  static filter(words) {
 	    if ((typeof words) !== 'string') {
 	      return false;
 	    }
@@ -456,11 +456,11 @@
 	  * @param {object} input2 source object to merge into input1.
 	  * @returns {object} merged object containing the two object arguments.
 	  */
-	  mergeObjects(input1, input2) {
+	  static mergeObjects(input1, input2) {
 	    if ((typeof input1 !== 'object') || (typeof input2 !== 'object')) {
 	      return false;
 	    }
-	    const makeUnique = this.generateUniqueArray;
+	    const makeUnique = InvertedIndex.generateUniqueArray;
 	    Object.keys(input2).forEach((key) => {
 	      if (input1[key]) {
 	        input1[key] = makeUnique(input1[key].concat(input2[key]));
@@ -477,7 +477,7 @@
 	    * @param {array} item an array item.
 	    * @returns {array} array of unique words
 	    */
-	  generateUniqueArray(item) {
+	  static generateUniqueArray(item) {
 	    if (!Array.isArray(item)) {
 	      return false;
 	    }
@@ -498,7 +498,7 @@
 	    */
 	  getStory() {
 	    return {
-	      titles: this.generateUniqueArray(this.titles),
+	      titles: InvertedIndex.generateUniqueArray(this.titles),
 	      stories: this.stories,
 	    };
 	  }

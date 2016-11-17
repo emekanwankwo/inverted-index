@@ -61,7 +61,7 @@ describe('Inverted index class', () => {
     });
   });
 
-  describe('Populate Index', () => {
+  describe('Populate index', () => {
     const indexObject = invertedIndex.createIndex(book);
     it('Should create an index', () => {
       expect(indexObject).toBeTruthy();
@@ -88,39 +88,39 @@ describe('Inverted index class', () => {
     });
   });
 
-  describe('merge objects', () => {
-    const merge = invertedIndex.mergeObjects(mergeDest, mergeSrc);
+  describe('Merge objects', () => {
+    const merge = InvertedIndex.mergeObjects(mergeDest, mergeSrc);
   
     it('should merge the content of two objects', () => {
       expect(merge).toEqual({ title: ['1'], content: ['2', '3', '4'] });
     });
     it('should return false if the arguments are not objects', () => {
-      expect(invertedIndex.mergeObjects('arg1', 'arg2')).toBeFalsy();
+      expect(InvertedIndex.mergeObjects('arg1', 'arg2')).toBeFalsy();
     });
   });
 
-  describe('filter string', () => {
+  describe('Filter string', () => {
     it('should take a string and return an array of filtered text in lower case', () => {
-      expect(invertedIndex.filter('This$ i_s t£ext, Te:steD')).toEqual(['this', 'is', 'text', 'tested']);
+      expect(InvertedIndex.filter('This$ i_s t£ext, Te:steD')).toEqual(['this', 'is', 'text', 'tested']);
     });
     it('should return false if the argument to be filtered is not a string', () => {
-      expect(invertedIndex.filter(['one, two'])).toBeFalsy();
+      expect(InvertedIndex.filter(['one, two'])).toBeFalsy();
     });
     it('should return false if string is empty after filtering', () => {
-      expect(invertedIndex.filter('.,;:-')).toBeFalsy();
+      expect(InvertedIndex.filter('.,;:-')).toBeFalsy();
     });
   });
 
-  describe('generate unique array', () => {
+  describe('Generate unique array', () => {
     it('should return an array of unique contents of the array argument', () => {
-      expect(invertedIndex.generateUniqueArray([1, 1, 2, 2, 'yes', 'yes'])).toEqual([1, 2, 'yes']);
+      expect(InvertedIndex.generateUniqueArray([1, 1, 2, 2, 'yes', 'yes'])).toEqual([1, 2, 'yes']);
     });
     it('should return false if the argument specified is not an array', () => {
-      expect(invertedIndex.generateUniqueArray('12345')).toBeFalsy();
+      expect(InvertedIndex.generateUniqueArray('12345')).toBeFalsy();
     });
   });
 
-  describe('get story', () => {
+  describe('Get story', () => {
     const newInvertedIndex = new InvertedIndex();
     newInvertedIndex.createIndex(storyBook);
     it('should return an object of all the titles and stories', () => {
@@ -177,7 +177,7 @@ class InvertedIndex {
       this.bookIndex = {};
       return false;
     }
-    this.indexes = this.mergeObjects(this.indexes, this.bookIndex);
+    this.indexes = InvertedIndex.mergeObjects(this.indexes, this.bookIndex);
     return true;
   }
 
@@ -193,7 +193,7 @@ class InvertedIndex {
     }
 
     let wordsInText = `${bookTitle} ${bookContent}`;
-    wordsInText = this.generateUniqueArray(this.filter(wordsInText));
+    wordsInText = InvertedIndex.generateUniqueArray(InvertedIndex.filter(wordsInText));
     if (!wordsInText) {
       return false;
     }
@@ -217,7 +217,7 @@ class InvertedIndex {
     * @param {string} words
     * @returns {array} filtered array
     */
-  filter(words) {
+  static filter(words) {
     if ((typeof words) !== 'string') {
       return false;
     }
@@ -237,11 +237,11 @@ class InvertedIndex {
   * @param {object} input2 source object to merge into input1.
   * @returns {object} merged object containing the two object arguments.
   */
-  mergeObjects(input1, input2) {
+  static mergeObjects(input1, input2) {
     if ((typeof input1 !== 'object') || (typeof input2 !== 'object')) {
       return false;
     }
-    const makeUnique = this.generateUniqueArray;
+    const makeUnique = InvertedIndex.generateUniqueArray;
     Object.keys(input2).forEach((key) => {
       if (input1[key]) {
         input1[key] = makeUnique(input1[key].concat(input2[key]));
@@ -258,7 +258,7 @@ class InvertedIndex {
     * @param {array} item an array item.
     * @returns {array} array of unique words
     */
-  generateUniqueArray(item) {
+  static generateUniqueArray(item) {
     if (!Array.isArray(item)) {
       return false;
     }
@@ -279,7 +279,7 @@ class InvertedIndex {
     */
   getStory() {
     return {
-      titles: this.generateUniqueArray(this.titles),
+      titles: InvertedIndex.generateUniqueArray(this.titles),
       stories: this.stories,
     };
   }

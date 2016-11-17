@@ -39,7 +39,7 @@ class InvertedIndex {
       this.bookIndex = {};
       return false;
     }
-    this.indexes = this.mergeObjects(this.indexes, this.bookIndex);
+    this.indexes = InvertedIndex.mergeObjects(this.indexes, this.bookIndex);
     return true;
   }
 
@@ -55,7 +55,7 @@ class InvertedIndex {
     }
 
     let wordsInText = `${bookTitle} ${bookContent}`;
-    wordsInText = this.generateUniqueArray(this.filter(wordsInText));
+    wordsInText = InvertedIndex.generateUniqueArray(InvertedIndex.filter(wordsInText));
     if (!wordsInText) {
       return false;
     }
@@ -79,7 +79,7 @@ class InvertedIndex {
     * @param {string} words
     * @returns {array} filtered array
     */
-  filter(words) {
+  static filter(words) {
     if ((typeof words) !== 'string') {
       return false;
     }
@@ -99,11 +99,11 @@ class InvertedIndex {
   * @param {object} input2 source object to merge into input1.
   * @returns {object} merged object containing the two object arguments.
   */
-  mergeObjects(input1, input2) {
+  static mergeObjects(input1, input2) {
     if ((typeof input1 !== 'object') || (typeof input2 !== 'object')) {
       return false;
     }
-    const makeUnique = this.generateUniqueArray;
+    const makeUnique = InvertedIndex.generateUniqueArray;
     Object.keys(input2).forEach((key) => {
       if (input1[key]) {
         input1[key] = makeUnique(input1[key].concat(input2[key]));
@@ -120,7 +120,7 @@ class InvertedIndex {
     * @param {array} item an array item.
     * @returns {array} array of unique words
     */
-  generateUniqueArray(item) {
+  static generateUniqueArray(item) {
     if (!Array.isArray(item)) {
       return false;
     }
@@ -141,7 +141,7 @@ class InvertedIndex {
     */
   getStory() {
     return {
-      titles: this.generateUniqueArray(this.titles),
+      titles: InvertedIndex.generateUniqueArray(this.titles),
       stories: this.stories,
     };
   }

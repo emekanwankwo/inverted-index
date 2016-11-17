@@ -197,13 +197,13 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
       showErr('Error! no file uploaded!');
       return false;
     }
-    $scope.allContent = invertedIndex.mergeObjects($scope.allContent, wordsIndex);
+    $scope.allContent = InvertedIndex.mergeObjects($scope.allContent, wordsIndex);
     $scope.terms = Object.keys(wordsIndex);
     $scope.storeTerms = $scope.terms;
     for (let term of $scope.terms) {
       $scope.columns = $scope.columns.concat(wordsIndex[term]);
     }
-    $scope.columns = invertedIndex.generateUniqueArray($scope.columns);
+    $scope.columns = InvertedIndex.generateUniqueArray($scope.columns);
     $scope.storeColumns = $scope.columns;
   };
 
@@ -265,7 +265,7 @@ indexApp.controller('rootAppController', ['$scope', ($scope) => {
 
     let searchTerm = keyword.toLowerCase();
 
-    $scope.terms = invertedIndex.generateUniqueArray(searchTerm.split(' '));
+    $scope.terms = InvertedIndex.generateUniqueArray(searchTerm.split(' '));
 
     let i = searchTerm.split(' ').length; //get the length of the search field and set the searchterm to the last item.
     searchTerm = searchTerm.split(' ')[i - 1];
