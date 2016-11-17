@@ -48,7 +48,7 @@ describe('Inverted index class', () => {
       expect(invertedIndex.searchIndex('of','Alice in Wonderland')).toEqual({of : [0]});
       expect(invertedIndex.searchIndex('foodie')).toBeFalsy();
     });
-  })
+  });
 
   describe('merge objects', () => {
     const merge = invertedIndex.mergeObjects(mergeDest, mergeSrc);

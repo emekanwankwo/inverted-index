@@ -86,7 +86,7 @@ describe('Inverted index class', () => {
       expect(invertedIndex.searchIndex('of','Alice in Wonderland')).toEqual({of : [0]});
       expect(invertedIndex.searchIndex('foodie')).toBeFalsy();
     });
-  })
+  });
 
   describe('merge objects', () => {
     const merge = invertedIndex.mergeObjects(mergeDest, mergeSrc);
@@ -128,6 +128,7 @@ describe('Inverted index class', () => {
     });
   });
 });
+
 },{"../../src/inverted-index":8,"../books.json":1,"../invalid/book1.json":2,"../invalid/book2.json":3,"../merge-dest.json":4,"../merge-source.json":5,"../storybook.json":7}],7:[function(require,module,exports){
 module.exports={
 "title": "story title",
@@ -232,37 +233,37 @@ class InvertedIndex {
 
   /**
   * Method to merge two objects.
-  * @param {object} dest destination object to be merged into
-  * @param {object} src source object to merge into destination.
+  * @param {object} input1 destination object to be merged into
+  * @param {object} input2 source object to merge into input1.
   * @returns {object} merged object containing the two object arguments.
   */
-  mergeObjects(dest, src) {
-    if ((typeof dest !== 'object') || (typeof src !== 'object')) {
+  mergeObjects(input1, input2) {
+    if ((typeof input1 !== 'object') || (typeof input2 !== 'object')) {
       return false;
     }
     const makeUnique = this.generateUniqueArray;
-    Object.keys(src).forEach((key) => {
-      if (dest[key]) {
-        dest[key] = makeUnique(dest[key].concat(src[key]));
+    Object.keys(input2).forEach((key) => {
+      if (input1[key]) {
+        input1[key] = makeUnique(input1[key].concat(input2[key]));
       } else {
-        dest[key] = src[key];
+        input1[key] = input2[key];
       }
     });
-    return dest;
+    return input1;
   }
 
 
   /**
     * Method to generate unique array items from the array specified.
-    * @param {array} sampleArray
+    * @param {array} item an array item.
     * @returns {array} array of unique words
     */
-  generateUniqueArray(sampleArray) {
-    if (!Array.isArray(sampleArray)) {
+  generateUniqueArray(item) {
+    if (!Array.isArray(item)) {
       return false;
     }
     const uniqueArray = [];
-    sampleArray.forEach((value) => {
+    item.forEach((value) => {
       const index = uniqueArray.indexOf(value);
       if (index === -1) {
         uniqueArray.push(value);
