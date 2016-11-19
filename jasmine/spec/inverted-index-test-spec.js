@@ -23,7 +23,7 @@ describe('Inverted index class', () => {
     });
   });
 
-  describe('Populate Index', () => {
+  describe('Populate index', () => {
     const indexObject = invertedIndex.createIndex(book);
     it('Should create an index', () => {
       expect(indexObject).toBeTruthy();
@@ -48,41 +48,41 @@ describe('Inverted index class', () => {
       expect(invertedIndex.searchIndex('of','Alice in Wonderland')).toEqual({of : [0]});
       expect(invertedIndex.searchIndex('foodie')).toBeFalsy();
     });
-  })
+  });
 
-  describe('merge objects', () => {
-    const merge = invertedIndex.mergeObjects(mergeDest, mergeSrc);
+  describe('Merge objects', () => {
+    const merge = InvertedIndex.mergeObjects(mergeDest, mergeSrc);
   
     it('should merge the content of two objects', () => {
       expect(merge).toEqual({ title: ['1'], content: ['2', '3', '4'] });
     });
     it('should return false if the arguments are not objects', () => {
-      expect(invertedIndex.mergeObjects('arg1', 'arg2')).toBeFalsy();
+      expect(InvertedIndex.mergeObjects('arg1', 'arg2')).toBeFalsy();
     });
   });
 
-  describe('filter string', () => {
+  describe('Filter string', () => {
     it('should take a string and return an array of filtered text in lower case', () => {
-      expect(invertedIndex.filter('This$ i_s t£ext, Te:steD')).toEqual(['this', 'is', 'text', 'tested']);
+      expect(InvertedIndex.filter('This$ i_s t£ext, Te:steD')).toEqual(['this', 'is', 'text', 'tested']);
     });
     it('should return false if the argument to be filtered is not a string', () => {
-      expect(invertedIndex.filter(['one, two'])).toBeFalsy();
+      expect(InvertedIndex.filter(['one, two'])).toBeFalsy();
     });
     it('should return false if string is empty after filtering', () => {
-      expect(invertedIndex.filter('.,;:-')).toBeFalsy();
+      expect(InvertedIndex.filter('.,;:-')).toBeFalsy();
     });
   });
 
-  describe('generate unique array', () => {
+  describe('Generate unique array', () => {
     it('should return an array of unique contents of the array argument', () => {
-      expect(invertedIndex.generateUniqueArray([1, 1, 2, 2, 'yes', 'yes'])).toEqual([1, 2, 'yes']);
+      expect(InvertedIndex.generateUniqueArray([1, 1, 2, 2, 'yes', 'yes'])).toEqual([1, 2, 'yes']);
     });
     it('should return false if the argument specified is not an array', () => {
-      expect(invertedIndex.generateUniqueArray('12345')).toBeFalsy();
+      expect(InvertedIndex.generateUniqueArray('12345')).toBeFalsy();
     });
   });
 
-  describe('get story', () => {
+  describe('Get story', () => {
     const newInvertedIndex = new InvertedIndex();
     newInvertedIndex.createIndex(storyBook);
     it('should return an object of all the titles and stories', () => {
